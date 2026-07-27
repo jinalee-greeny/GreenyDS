@@ -1,0 +1,94 @@
+{
+  "motion": {
+    "$description": "모션 primitive (DP-5) — duration·easing. prefers-reduced-motion은 소비 레이어 책임.",
+    "duration": {
+      "$description": "지속 시간 — ms 고정(#12 부칙). 0=즉시, 단조 증가.",
+      "duration-instant": {
+        "$value": "0ms",
+        "$type": "duration",
+        "$extensions": {
+          "ms": 0
+        }
+      },
+      "duration-fast": {
+        "$value": "120ms",
+        "$type": "duration",
+        "$extensions": {
+          "ms": 120
+        }
+      },
+      "duration-base": {
+        "$value": "200ms",
+        "$type": "duration",
+        "$extensions": {
+          "ms": 200
+        }
+      },
+      "duration-slow": {
+        "$value": "320ms",
+        "$type": "duration",
+        "$extensions": {
+          "ms": 320
+        }
+      },
+      "duration-slower": {
+        "$value": "480ms",
+        "$type": "duration",
+        "$extensions": {
+          "ms": 480
+        }
+      }
+    },
+    "easing": {
+      "$description": "가속 곡선 — cubic-bezier 4튜플. 파생 아닌 선택.",
+      "linear": {
+        "$value": "cubic-bezier(0, 0, 1, 1)",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "tuple": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      },
+      "standard": {
+        "$value": "cubic-bezier(0.2, 0, 0, 1)",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "tuple": [
+            0.2,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "decelerate": {
+        "$value": "cubic-bezier(0, 0, 0.2, 1)",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "tuple": [
+            0,
+            0,
+            0.2,
+            1
+          ]
+        }
+      },
+      "accelerate": {
+        "$value": "cubic-bezier(0.4, 0, 1, 1)",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "tuple": [
+            0.4,
+            0,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  }
+}

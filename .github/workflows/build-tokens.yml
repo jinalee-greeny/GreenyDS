@@ -1,0 +1,53 @@
+# build-tokens.yml — 토큰 생성·검증·빌드 CI
+#
+# 무엇: push/PR마다 파라미터→primitive→semantic→component 전 체인을 재현·검증하고 빌드한다.
+# 왜:   각 레이어의 자동 검증(✗ 하드 게이트)을 사람 손 없이 항상 실행(로드맵 B1).
+#       interim 빌더는 Style Dictionary와 diff=0 확인(상호운용 런 #4) 후 제거됨 — 공식 SD가 유일 빌더.
+name: build-tokens
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Style Dictionary
+        run: npm install style-dictionary@^4
+
+      # 파라미터→primitive 재현 검증: 생성기(gen-tokens.cjs)와 SSOT 드리프트 방지
+      - name: Check generator reproduces SSOT
+        run: node scripts/gen-tokens.cjs --check
+
+      # primitive 엔진 자동 검증(✗ 하드 게이트 / △ 권고)
+      - name: Validate primitive tokens (hard gates)
+        run: node scripts/validate-tokens.cjs
+
+      # 시맨틱 재생성(대비 자동 해결·alias 무결성 검증 내장)
+      - name: Generate semantic layer
+        run: node scripts/gen-semantic.cjs tokens/tokens.semantic.json
+
+      # 컴포넌트 재생성 + 8종 아키텍처 검사 191건(✗0 하드 게이트)
+      - name: Generate + check component layer
+        run: node scripts/gen-component.cjs
+
+      # 섭동 매트릭스 — 6 프리셋 × 191 = 1,146검사 (엔진 적응 하드 게이트)
+      - name: Perturbation matrix (engine adaptation gate)
+        run: node scripts/perturb.cjs
+
+      # 공식 빌드 (Style Dictionary) → build/
+      - name: Build (Style Dictionary, official)
+        run: npx style-dictionary build --config config/sd.config.mjs
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tokens-build
+          path: build/

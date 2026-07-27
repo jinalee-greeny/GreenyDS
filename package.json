@@ -1,0 +1,12 @@
+{
+  "name": "preset-tokens",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "gen": "node scripts/gen-tokens.cjs",
+    "gen:check": "node scripts/gen-tokens.cjs --check",
+    "validate": "node scripts/validate-tokens.cjs",
+    "build": "style-dictionary build --config config/sd.config.mjs"
+  }
+}

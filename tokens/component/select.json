@@ -1,0 +1,142 @@
+{
+  "component": {
+    "select": {
+      "$description": "Select — 트리거(Input 동형) + 메뉴(raised 쌍, 중첩 정합)",
+      "trigger": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "placeholder": {
+            "$value": "{semantic.color.fg.placeholder}",
+            "ref": "color.fg.placeholder"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "stroke": {
+          "default": {
+            "$value": "{semantic.color.stroke.default}",
+            "ref": "color.stroke.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.stroke.strong}",
+            "ref": "color.stroke.strong"
+          },
+          "focus": {
+            "$value": "{semantic.color.stroke.focus}",
+            "ref": "color.stroke.focus"
+          },
+          "disabled": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          },
+          "lg": {
+            "$value": "{semantic.size.control.lg}",
+            "ref": "size.control.lg"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        }
+      },
+      "menu": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-raised}",
+          "ref": "color.bg.surface-raised"
+        },
+        "elevation": {
+          "$value": "{semantic.elevation.raised}",
+          "ref": "elevation.raised"
+        },
+        "radius": {
+          "$value": "{semantic.radius.container}",
+          "ref": "radius.container"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.inset.sm}",
+          "ref": "spacing.inset.sm"
+        },
+        "stroke": {
+          "$value": "{semantic.color.stroke.subtle}",
+          "ref": "color.stroke.subtle"
+        }
+      },
+      "item": {
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "bg-hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "radius": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "nesting",
+              "formula": "max(0, radius.container − inset.sm)",
+              "why": "중첩 정합(#10)·inset 인자 호출(§5.2)"
+            }
+          }
+        },
+        "selected": {
+          "bg": {
+            "$value": "{semantic.color.bg.brand-subtle}",
+            "ref": "color.bg.brand-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.brand}",
+            "ref": "color.fg.brand"
+          },
+          "$extensions": {
+            "rule": {
+              "type": "component-state",
+              "state": "selected",
+              "why": "컴포넌트 고유 상태 — Tabs와 반복 시 시맨틱 승격 검토(§4.2-3)"
+            }
+          }
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

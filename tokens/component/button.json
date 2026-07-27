@@ -1,0 +1,163 @@
+{
+  "component": {
+    "button": {
+      "$description": "Button — action 3계열(primary/secondary/ghost)×상태, 높이 sm/md/lg",
+      "primary": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-primary.hover}",
+            "ref": "color.bg.action-primary.hover"
+          },
+          "active": {
+            "$value": "{semantic.color.bg.action-primary.active}",
+            "ref": "color.bg.action-primary.active"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.on-action}",
+          "ref": "color.fg.on-action"
+        },
+        "fg-disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        }
+      },
+      "secondary": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.action-secondary.default}",
+            "ref": "color.bg.action-secondary.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-secondary.hover}",
+            "ref": "color.bg.action-secondary.hover"
+          },
+          "active": {
+            "$value": "{semantic.color.bg.action-secondary.active}",
+            "ref": "color.bg.action-secondary.active"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "fg-disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        },
+        "stroke": {
+          "$value": "{semantic.color.stroke.default}",
+          "ref": "color.stroke.default"
+        }
+      },
+      "ghost": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.action-ghost.default}",
+            "ref": "color.bg.action-ghost.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "active": {
+            "$value": "{semantic.color.bg.action-ghost.active}",
+            "ref": "color.bg.action-ghost.active"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "fg-disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        }
+      },
+      "height": {
+        "sm": {
+          "$value": "{semantic.size.control.sm}",
+          "ref": "size.control.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        },
+        "lg": {
+          "$value": "{semantic.size.control.lg}",
+          "ref": "size.control.lg"
+        }
+      },
+      "icon": {
+        "sm": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "lg": {
+          "$value": "{semantic.size.icon.lg}",
+          "ref": "size.icon.lg"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.control}",
+        "ref": "radius.control"
+      },
+      "padding-x": {
+        "sm": {
+          "$value": "{semantic.spacing.inline.md}",
+          "ref": "spacing.inline.md"
+        },
+        "md": {
+          "$value": "{semantic.spacing.inline.lg}",
+          "ref": "spacing.inline.lg"
+        },
+        "lg": {
+          "$value": "{semantic.spacing.inline.lg}",
+          "ref": "spacing.inline.lg"
+        }
+      },
+      "gap": {
+        "$value": "{semantic.spacing.inline.sm}",
+        "ref": "spacing.inline.sm"
+      },
+      "typography": {
+        "$value": "{semantic.typography.label}",
+        "ref": "typography.label"
+      },
+      "stroke-width": {
+        "focus": {
+          "$value": "{semantic.stroke-width.focus}",
+          "ref": "stroke-width.focus"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

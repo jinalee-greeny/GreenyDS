@@ -1,0 +1,1316 @@
+{
+  "$description": "디자인 시스템 마스터 프리셋 — primitive 토큰 (5 레이어). SSOT 실체화. 단위(결정 #12): elevation=rem, spacing·radius·typography 크기=rem·px 병기.",
+  "color": {
+    "$description": "Primitive 색 램프 (OKLCH 파생, sRGB, even anchoring, taper 1.0). 역할 없음.",
+    "brand": {
+      "50": {
+        "$value": "#f5f4ff"
+      },
+      "100": {
+        "$value": "#eae8ff"
+      },
+      "200": {
+        "$value": "#d6d4ff"
+      },
+      "300": {
+        "$value": "#bdb7ff"
+      },
+      "400": {
+        "$value": "#a294ff"
+      },
+      "500": {
+        "$value": "#8974f0"
+      },
+      "600": {
+        "$value": "#725cd3"
+      },
+      "700": {
+        "$value": "#5b46af"
+      },
+      "800": {
+        "$value": "#46338c"
+      },
+      "900": {
+        "$value": "#332567"
+      },
+      "950": {
+        "$value": "#22184a"
+      },
+      "$type": "color"
+    },
+    "warm-gray": {
+      "50": {
+        "$value": "#f7f5f4"
+      },
+      "100": {
+        "$value": "#ecebea"
+      },
+      "200": {
+        "$value": "#dad9d7"
+      },
+      "300": {
+        "$value": "#c2c0bf"
+      },
+      "400": {
+        "$value": "#a7a5a4"
+      },
+      "500": {
+        "$value": "#8c8b89"
+      },
+      "600": {
+        "$value": "#757472"
+      },
+      "700": {
+        "$value": "#5d5c5a"
+      },
+      "800": {
+        "$value": "#474645"
+      },
+      "900": {
+        "$value": "#343332"
+      },
+      "950": {
+        "$value": "#232221"
+      },
+      "$type": "color"
+    },
+    "cool-gray": {
+      "50": {
+        "$value": "#f4f6fa"
+      },
+      "100": {
+        "$value": "#e9ebef"
+      },
+      "200": {
+        "$value": "#d6d9dd"
+      },
+      "300": {
+        "$value": "#bec1c6"
+      },
+      "400": {
+        "$value": "#a3a6ab"
+      },
+      "500": {
+        "$value": "#898b90"
+      },
+      "600": {
+        "$value": "#717478"
+      },
+      "700": {
+        "$value": "#5a5c60"
+      },
+      "800": {
+        "$value": "#44474a"
+      },
+      "900": {
+        "$value": "#313337"
+      },
+      "950": {
+        "$value": "#212326"
+      },
+      "$type": "color"
+    },
+    "red": {
+      "50": {
+        "$value": "#fff2f1"
+      },
+      "100": {
+        "$value": "#ffe4e2"
+      },
+      "200": {
+        "$value": "#ffcac6"
+      },
+      "300": {
+        "$value": "#ffa5a0"
+      },
+      "400": {
+        "$value": "#ff7372"
+      },
+      "500": {
+        "$value": "#e94c50"
+      },
+      "600": {
+        "$value": "#cb323b"
+      },
+      "700": {
+        "$value": "#a81b29"
+      },
+      "800": {
+        "$value": "#850d1c"
+      },
+      "900": {
+        "$value": "#630a13"
+      },
+      "950": {
+        "$value": "#46040a"
+      },
+      "$type": "color"
+    },
+    "amber": {
+      "50": {
+        "$value": "#fff4e7"
+      },
+      "100": {
+        "$value": "#ffe7ca"
+      },
+      "200": {
+        "$value": "#ffd095"
+      },
+      "300": {
+        "$value": "#f8b14f"
+      },
+      "400": {
+        "$value": "#e09306"
+      },
+      "500": {
+        "$value": "#bd7b00"
+      },
+      "600": {
+        "$value": "#9e6600"
+      },
+      "700": {
+        "$value": "#7e5100"
+      },
+      "800": {
+        "$value": "#623e00"
+      },
+      "900": {
+        "$value": "#492c00"
+      },
+      "950": {
+        "$value": "#331d00"
+      },
+      "$type": "color"
+    },
+    "green": {
+      "50": {
+        "$value": "#dfffeb"
+      },
+      "100": {
+        "$value": "#c7f9da"
+      },
+      "200": {
+        "$value": "#a5ecc1"
+      },
+      "300": {
+        "$value": "#7bd8a3"
+      },
+      "400": {
+        "$value": "#54be86"
+      },
+      "500": {
+        "$value": "#2ea36b"
+      },
+      "600": {
+        "$value": "#048a55"
+      },
+      "700": {
+        "$value": "#006e42"
+      },
+      "800": {
+        "$value": "#005532"
+      },
+      "900": {
+        "$value": "#003f23"
+      },
+      "950": {
+        "$value": "#002b16"
+      },
+      "$type": "color"
+    },
+    "blue": {
+      "50": {
+        "$value": "#f1f6ff"
+      },
+      "100": {
+        "$value": "#e0ecff"
+      },
+      "200": {
+        "$value": "#c4dbff"
+      },
+      "300": {
+        "$value": "#9dc2ff"
+      },
+      "400": {
+        "$value": "#6fa5ff"
+      },
+      "500": {
+        "$value": "#3f86fb"
+      },
+      "600": {
+        "$value": "#296edd"
+      },
+      "700": {
+        "$value": "#1655b9"
+      },
+      "800": {
+        "$value": "#0b4193"
+      },
+      "900": {
+        "$value": "#072f6d"
+      },
+      "950": {
+        "$value": "#031f4f"
+      },
+      "$type": "color"
+    },
+    "alpha": {
+      "$type": "color",
+      "$description": "고정 불투명도 알파 (오버레이·스크림·상태)",
+      "black": {
+        "a4": {
+          "$value": "rgba(0,0,0,0.04)"
+        },
+        "a8": {
+          "$value": "rgba(0,0,0,0.08)"
+        },
+        "a12": {
+          "$value": "rgba(0,0,0,0.12)"
+        },
+        "a16": {
+          "$value": "rgba(0,0,0,0.16)"
+        },
+        "a24": {
+          "$value": "rgba(0,0,0,0.24)"
+        },
+        "a36": {
+          "$value": "rgba(0,0,0,0.36)"
+        },
+        "a48": {
+          "$value": "rgba(0,0,0,0.48)"
+        },
+        "a64": {
+          "$value": "rgba(0,0,0,0.64)"
+        },
+        "a80": {
+          "$value": "rgba(0,0,0,0.8)"
+        },
+        "a92": {
+          "$value": "rgba(0,0,0,0.92)"
+        }
+      },
+      "white": {
+        "a4": {
+          "$value": "rgba(255,255,255,0.04)"
+        },
+        "a8": {
+          "$value": "rgba(255,255,255,0.08)"
+        },
+        "a12": {
+          "$value": "rgba(255,255,255,0.12)"
+        },
+        "a16": {
+          "$value": "rgba(255,255,255,0.16)"
+        },
+        "a24": {
+          "$value": "rgba(255,255,255,0.24)"
+        },
+        "a36": {
+          "$value": "rgba(255,255,255,0.36)"
+        },
+        "a48": {
+          "$value": "rgba(255,255,255,0.48)"
+        },
+        "a64": {
+          "$value": "rgba(255,255,255,0.64)"
+        },
+        "a80": {
+          "$value": "rgba(255,255,255,0.8)"
+        },
+        "a92": {
+          "$value": "rgba(255,255,255,0.92)"
+        }
+      },
+      "brand": {
+        "a4": {
+          "$value": "rgba(114,92,211,0.04)"
+        },
+        "a8": {
+          "$value": "rgba(114,92,211,0.08)"
+        },
+        "a12": {
+          "$value": "rgba(114,92,211,0.12)"
+        },
+        "a16": {
+          "$value": "rgba(114,92,211,0.16)"
+        },
+        "a24": {
+          "$value": "rgba(114,92,211,0.24)"
+        },
+        "a36": {
+          "$value": "rgba(114,92,211,0.36)"
+        },
+        "a48": {
+          "$value": "rgba(114,92,211,0.48)"
+        },
+        "a64": {
+          "$value": "rgba(114,92,211,0.64)"
+        },
+        "a80": {
+          "$value": "rgba(114,92,211,0.8)"
+        },
+        "a92": {
+          "$value": "rgba(114,92,211,0.92)"
+        }
+      }
+    }
+  },
+  "typography": {
+    "$description": "Primitive 타이포. 크기=rem(브레이크포인트 세트), 행간=unitless, 자간=em, 굵기·패밀리=공유. 역할 없음.",
+    "font-size": {
+      "$description": "브레이크포인트별 크기 스케일. 단위 rem·px 병기(결정 #12).",
+      "rem": {
+        "$type": "dimension",
+        "mobile": {
+          "xs": {
+            "$value": "0.6563rem"
+          },
+          "sm": {
+            "$value": "0.7813rem"
+          },
+          "base": {
+            "$value": "0.9375rem"
+          },
+          "md": {
+            "$value": "1.125rem"
+          },
+          "lg": {
+            "$value": "1.3438rem"
+          },
+          "xl": {
+            "$value": "1.625rem"
+          },
+          "2xl": {
+            "$value": "1.9375rem"
+          },
+          "3xl": {
+            "$value": "2.3438rem"
+          },
+          "4xl": {
+            "$value": "2.8125rem"
+          },
+          "5xl": {
+            "$value": "3.3438rem"
+          },
+          "6xl": {
+            "$value": "4.0313rem"
+          }
+        },
+        "tablet": {
+          "xs": {
+            "$value": "0.6875rem"
+          },
+          "sm": {
+            "$value": "0.8438rem"
+          },
+          "base": {
+            "$value": "1rem"
+          },
+          "md": {
+            "$value": "1.1875rem"
+          },
+          "lg": {
+            "$value": "1.4375rem"
+          },
+          "xl": {
+            "$value": "1.7188rem"
+          },
+          "2xl": {
+            "$value": "2.0625rem"
+          },
+          "3xl": {
+            "$value": "2.5rem"
+          },
+          "4xl": {
+            "$value": "3rem"
+          },
+          "5xl": {
+            "$value": "3.5938rem"
+          },
+          "6xl": {
+            "$value": "4.3125rem"
+          }
+        },
+        "desktop": {
+          "xs": {
+            "$value": "0.625rem"
+          },
+          "sm": {
+            "$value": "0.8125rem"
+          },
+          "base": {
+            "$value": "1rem"
+          },
+          "md": {
+            "$value": "1.25rem"
+          },
+          "lg": {
+            "$value": "1.5625rem"
+          },
+          "xl": {
+            "$value": "1.9688rem"
+          },
+          "2xl": {
+            "$value": "2.4375rem"
+          },
+          "3xl": {
+            "$value": "3.0625rem"
+          },
+          "4xl": {
+            "$value": "3.8125rem"
+          },
+          "5xl": {
+            "$value": "4.7813rem"
+          },
+          "6xl": {
+            "$value": "5.9688rem"
+          }
+        }
+      },
+      "px": {
+        "$type": "dimension",
+        "mobile": {
+          "xs": {
+            "$value": "10.5px"
+          },
+          "sm": {
+            "$value": "12.5px"
+          },
+          "base": {
+            "$value": "15px"
+          },
+          "md": {
+            "$value": "18px"
+          },
+          "lg": {
+            "$value": "21.5px"
+          },
+          "xl": {
+            "$value": "26px"
+          },
+          "2xl": {
+            "$value": "31px"
+          },
+          "3xl": {
+            "$value": "37.5px"
+          },
+          "4xl": {
+            "$value": "45px"
+          },
+          "5xl": {
+            "$value": "53.5px"
+          },
+          "6xl": {
+            "$value": "64.5px"
+          }
+        },
+        "tablet": {
+          "xs": {
+            "$value": "11px"
+          },
+          "sm": {
+            "$value": "13.5px"
+          },
+          "base": {
+            "$value": "16px"
+          },
+          "md": {
+            "$value": "19px"
+          },
+          "lg": {
+            "$value": "23px"
+          },
+          "xl": {
+            "$value": "27.5px"
+          },
+          "2xl": {
+            "$value": "33px"
+          },
+          "3xl": {
+            "$value": "40px"
+          },
+          "4xl": {
+            "$value": "48px"
+          },
+          "5xl": {
+            "$value": "57.5px"
+          },
+          "6xl": {
+            "$value": "69px"
+          }
+        },
+        "desktop": {
+          "xs": {
+            "$value": "10px"
+          },
+          "sm": {
+            "$value": "13px"
+          },
+          "base": {
+            "$value": "16px"
+          },
+          "md": {
+            "$value": "20px"
+          },
+          "lg": {
+            "$value": "25px"
+          },
+          "xl": {
+            "$value": "31.5px"
+          },
+          "2xl": {
+            "$value": "39px"
+          },
+          "3xl": {
+            "$value": "49px"
+          },
+          "4xl": {
+            "$value": "61px"
+          },
+          "5xl": {
+            "$value": "76.5px"
+          },
+          "6xl": {
+            "$value": "95.5px"
+          }
+        }
+      }
+    },
+    "line-height": {
+      "$type": "number",
+      "$description": "행간 (unitless). 본문 평평·디스플레이 조임(본문 WCAG1.5 보장)",
+      "xs": {
+        "$value": 1.6
+      },
+      "sm": {
+        "$value": 1.6
+      },
+      "base": {
+        "$value": 1.6
+      },
+      "md": {
+        "$value": 1.6
+      },
+      "lg": {
+        "$value": 1.5214
+      },
+      "xl": {
+        "$value": 1.4429
+      },
+      "2xl": {
+        "$value": 1.3643
+      },
+      "3xl": {
+        "$value": 1.2857
+      },
+      "4xl": {
+        "$value": 1.2071
+      },
+      "5xl": {
+        "$value": 1.1286
+      },
+      "6xl": {
+        "$value": 1.05
+      }
+    },
+    "letter-spacing": {
+      "$type": "dimension",
+      "$description": "자간 (em)",
+      "xs": {
+        "$value": "0.012em"
+      },
+      "sm": {
+        "$value": "0.006em"
+      },
+      "base": {
+        "$value": "0em"
+      },
+      "md": {
+        "$value": "-0.006em"
+      },
+      "lg": {
+        "$value": "-0.012em"
+      },
+      "xl": {
+        "$value": "-0.018em"
+      },
+      "2xl": {
+        "$value": "-0.024em"
+      },
+      "3xl": {
+        "$value": "-0.03em"
+      },
+      "4xl": {
+        "$value": "-0.036em"
+      },
+      "5xl": {
+        "$value": "-0.042em"
+      },
+      "6xl": {
+        "$value": "-0.048em"
+      }
+    },
+    "font-weight": {
+      "$type": "fontWeight",
+      "$description": "기본 포함 굵기 (서비스가 선택)",
+      "regular": {
+        "$value": 400
+      },
+      "medium": {
+        "$value": 500
+      },
+      "semibold": {
+        "$value": 600
+      },
+      "bold": {
+        "$value": 700
+      }
+    },
+    "font-family": {
+      "$type": "fontFamily",
+      "$description": "패밀리 슬롯 + fallback (서비스가 primary 지정)",
+      "sans": {
+        "$value": [
+          "Pretendard Variable",
+          "Pretendard",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
+      "serif": {
+        "$value": [
+          "Georgia",
+          "Times New Roman",
+          "serif"
+        ]
+      },
+      "mono": {
+        "$value": [
+          "JetBrains Mono",
+          "ui-monospace",
+          "monospace"
+        ]
+      }
+    }
+  },
+  "spacing": {
+    "$description": "Primitive 간격. base 8px + half 4px 그리드. 단위 rem·px 병기(둘다, 결정 #12). 값과 분리된 서수 id.",
+    "rem": {
+      "$type": "dimension",
+      "space-0": {
+        "$value": "0rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-1": {
+        "$value": "0.25rem",
+        "$extensions": {
+          "onGrid": false
+        }
+      },
+      "space-2": {
+        "$value": "0.5rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-3": {
+        "$value": "0.75rem",
+        "$extensions": {
+          "onGrid": false
+        }
+      },
+      "space-4": {
+        "$value": "1rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-5": {
+        "$value": "1.5rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-6": {
+        "$value": "2rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-7": {
+        "$value": "2.5rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-8": {
+        "$value": "3rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-9": {
+        "$value": "4rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-10": {
+        "$value": "5rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-11": {
+        "$value": "6rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-12": {
+        "$value": "8rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      }
+    },
+    "px": {
+      "$type": "dimension",
+      "space-0": {
+        "$value": "0px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-1": {
+        "$value": "4px",
+        "$extensions": {
+          "onGrid": false
+        }
+      },
+      "space-2": {
+        "$value": "8px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-3": {
+        "$value": "12px",
+        "$extensions": {
+          "onGrid": false
+        }
+      },
+      "space-4": {
+        "$value": "16px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-5": {
+        "$value": "24px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-6": {
+        "$value": "32px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-7": {
+        "$value": "40px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-8": {
+        "$value": "48px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-9": {
+        "$value": "64px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-10": {
+        "$value": "80px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-11": {
+        "$value": "96px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "space-12": {
+        "$value": "128px",
+        "$extensions": {
+          "onGrid": true
+        }
+      }
+    }
+  },
+  "radius": {
+    "$description": "Primitive radius. base 4px, 간격 그리드 정렬. 단위 rem·px 병기(둘다, 결정 #12).",
+    "rem": {
+      "$type": "dimension",
+      "radius-0": {
+        "$value": "0rem"
+      },
+      "radius-1": {
+        "$value": "0.25rem"
+      },
+      "radius-2": {
+        "$value": "0.5rem"
+      },
+      "radius-3": {
+        "$value": "0.75rem"
+      },
+      "radius-4": {
+        "$value": "1rem"
+      },
+      "radius-5": {
+        "$value": "1.5rem"
+      },
+      "radius-6": {
+        "$value": "2rem"
+      }
+    },
+    "px": {
+      "$type": "dimension",
+      "radius-0": {
+        "$value": "0px"
+      },
+      "radius-1": {
+        "$value": "4px"
+      },
+      "radius-2": {
+        "$value": "8px"
+      },
+      "radius-3": {
+        "$value": "12px"
+      },
+      "radius-4": {
+        "$value": "16px"
+      },
+      "radius-5": {
+        "$value": "24px"
+      },
+      "radius-6": {
+        "$value": "32px"
+      }
+    },
+    "special": {
+      "$type": "dimension",
+      "$description": "센티넬(단위 무관)",
+      "radius-full": {
+        "$value": "9999px",
+        "$description": "pill"
+      },
+      "radius-circle": {
+        "$value": "50%",
+        "$description": "원형"
+      }
+    }
+  },
+  "elevation": {
+    "$description": "Primitive 고도. 다중 레이어 그림자(단위 rem, 결정 #12; px는 $extensions). 다크는 표면 밝기+보더+그림자 병행 — 다크 표면 색·기준 램프는 시맨틱에서 선택(결정 #13).",
+    "light": {
+      "$type": "shadow",
+      "$description": "light 표면 그림자 (rem)",
+      "elevation-0": {
+        "$value": [],
+        "$description": "평면"
+      },
+      "elevation-1": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.16)",
+            "offsetX": "0rem",
+            "offsetY": "0.0625rem",
+            "blur": "0.125rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.1)",
+            "offsetX": "0rem",
+            "offsetY": "0.125rem",
+            "blur": "0.25rem",
+            "spread": "0rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.16)",
+              "offsetX": "0px",
+              "offsetY": "1px",
+              "blur": "2px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.1)",
+              "offsetX": "0px",
+              "offsetY": "2px",
+              "blur": "4px",
+              "spread": "0px"
+            }
+          ]
+        }
+      },
+      "elevation-2": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.16)",
+            "offsetX": "0rem",
+            "offsetY": "0.125rem",
+            "blur": "0.25rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.1)",
+            "offsetX": "0rem",
+            "offsetY": "0.25rem",
+            "blur": "0.5625rem",
+            "spread": "0rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.16)",
+              "offsetX": "0px",
+              "offsetY": "2px",
+              "blur": "4px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.1)",
+              "offsetX": "0px",
+              "offsetY": "4px",
+              "blur": "9px",
+              "spread": "0px"
+            }
+          ]
+        }
+      },
+      "elevation-3": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.16)",
+            "offsetX": "0rem",
+            "offsetY": "0.1875rem",
+            "blur": "0.4375rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.1)",
+            "offsetX": "0rem",
+            "offsetY": "0.5rem",
+            "blur": "1.125rem",
+            "spread": "-0.0625rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.16)",
+              "offsetX": "0px",
+              "offsetY": "3px",
+              "blur": "7px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.1)",
+              "offsetX": "0px",
+              "offsetY": "8px",
+              "blur": "18px",
+              "spread": "-1px"
+            }
+          ]
+        }
+      },
+      "elevation-4": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.16)",
+            "offsetX": "0rem",
+            "offsetY": "0.375rem",
+            "blur": "0.875rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.1)",
+            "offsetX": "0rem",
+            "offsetY": "1rem",
+            "blur": "2.1875rem",
+            "spread": "-0.125rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.16)",
+              "offsetX": "0px",
+              "offsetY": "6px",
+              "blur": "14px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.1)",
+              "offsetX": "0px",
+              "offsetY": "16px",
+              "blur": "35px",
+              "spread": "-2px"
+            }
+          ]
+        }
+      },
+      "elevation-5": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.16)",
+            "offsetX": "0rem",
+            "offsetY": "0.625rem",
+            "blur": "1.375rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.1)",
+            "offsetX": "0rem",
+            "offsetY": "1.5rem",
+            "blur": "3.3125rem",
+            "spread": "-0.1875rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.16)",
+              "offsetX": "0px",
+              "offsetY": "10px",
+              "blur": "22px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.1)",
+              "offsetX": "0px",
+              "offsetY": "24px",
+              "blur": "53px",
+              "spread": "-3px"
+            }
+          ]
+        }
+      }
+    },
+    "dark": {
+      "$type": "shadow",
+      "$description": "dark 표면 그림자(alpha↑, rem). overlay/border 알파 델타는 $extensions (표면색은 시맨틱에서 합성)",
+      "elevation-0": {
+        "$value": [],
+        "$extensions": {
+          "overlayWhiteAlpha": 0,
+          "borderWhiteAlpha": 0
+        }
+      },
+      "elevation-1": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.42)",
+            "offsetX": "0rem",
+            "offsetY": "0.0625rem",
+            "blur": "0.125rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.3)",
+            "offsetX": "0rem",
+            "offsetY": "0.125rem",
+            "blur": "0.25rem",
+            "spread": "0rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.42)",
+              "offsetX": "0px",
+              "offsetY": "1px",
+              "blur": "2px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.3)",
+              "offsetX": "0px",
+              "offsetY": "2px",
+              "blur": "4px",
+              "spread": "0px"
+            }
+          ],
+          "overlayWhiteAlpha": 0.0117,
+          "borderWhiteAlpha": 0.0075
+        }
+      },
+      "elevation-2": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.42)",
+            "offsetX": "0rem",
+            "offsetY": "0.125rem",
+            "blur": "0.25rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.3)",
+            "offsetX": "0rem",
+            "offsetY": "0.25rem",
+            "blur": "0.5625rem",
+            "spread": "0rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.42)",
+              "offsetX": "0px",
+              "offsetY": "2px",
+              "blur": "4px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.3)",
+              "offsetX": "0px",
+              "offsetY": "4px",
+              "blur": "9px",
+              "spread": "0px"
+            }
+          ],
+          "overlayWhiteAlpha": 0.0233,
+          "borderWhiteAlpha": 0.015
+        }
+      },
+      "elevation-3": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.42)",
+            "offsetX": "0rem",
+            "offsetY": "0.1875rem",
+            "blur": "0.4375rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.3)",
+            "offsetX": "0rem",
+            "offsetY": "0.5rem",
+            "blur": "1.125rem",
+            "spread": "-0.0625rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.42)",
+              "offsetX": "0px",
+              "offsetY": "3px",
+              "blur": "7px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.3)",
+              "offsetX": "0px",
+              "offsetY": "8px",
+              "blur": "18px",
+              "spread": "-1px"
+            }
+          ],
+          "overlayWhiteAlpha": 0.0467,
+          "borderWhiteAlpha": 0.03
+        }
+      },
+      "elevation-4": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.42)",
+            "offsetX": "0rem",
+            "offsetY": "0.375rem",
+            "blur": "0.875rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.3)",
+            "offsetX": "0rem",
+            "offsetY": "1rem",
+            "blur": "2.1875rem",
+            "spread": "-0.125rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.42)",
+              "offsetX": "0px",
+              "offsetY": "6px",
+              "blur": "14px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.3)",
+              "offsetX": "0px",
+              "offsetY": "16px",
+              "blur": "35px",
+              "spread": "-2px"
+            }
+          ],
+          "overlayWhiteAlpha": 0.0933,
+          "borderWhiteAlpha": 0.06
+        }
+      },
+      "elevation-5": {
+        "$value": [
+          {
+            "color": "rgba(0,0,0,0.42)",
+            "offsetX": "0rem",
+            "offsetY": "0.625rem",
+            "blur": "1.375rem",
+            "spread": "0rem"
+          },
+          {
+            "color": "rgba(0,0,0,0.3)",
+            "offsetX": "0rem",
+            "offsetY": "1.5rem",
+            "blur": "3.3125rem",
+            "spread": "-0.1875rem"
+          }
+        ],
+        "$extensions": {
+          "px": [
+            {
+              "color": "rgba(0,0,0,0.42)",
+              "offsetX": "0px",
+              "offsetY": "10px",
+              "blur": "22px",
+              "spread": "0px"
+            },
+            {
+              "color": "rgba(0,0,0,0.3)",
+              "offsetX": "0px",
+              "offsetY": "24px",
+              "blur": "53px",
+              "spread": "-3px"
+            }
+          ],
+          "overlayWhiteAlpha": 0.14,
+          "borderWhiteAlpha": 0.09
+        }
+      }
+    }
+  }
+}

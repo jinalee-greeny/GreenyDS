@@ -1,0 +1,67 @@
+{
+  "component": {
+    "card": {
+      "$description": "Card — 열린 컨테이너(고정 높이 금지), radius 중첩 공식 첫 적용처",
+      "bg": {
+        "$value": "{semantic.color.bg.surface}",
+        "ref": "color.bg.surface"
+      },
+      "bg-raised": {
+        "$value": "{semantic.color.bg.surface-raised}",
+        "ref": "color.bg.surface-raised"
+      },
+      "stroke": {
+        "$value": "{semantic.color.stroke.subtle}",
+        "ref": "color.stroke.subtle"
+      },
+      "radius": {
+        "$value": "{semantic.radius.container}",
+        "ref": "radius.container"
+      },
+      "elevation": {
+        "resting": {
+          "$value": "{semantic.elevation.resting}",
+          "ref": "elevation.resting"
+        },
+        "raised": {
+          "$value": "{semantic.elevation.raised}",
+          "ref": "elevation.raised"
+        }
+      },
+      "inset": {
+        "$value": "{semantic.spacing.inset.lg}",
+        "ref": "spacing.inset.lg"
+      },
+      "gap": {
+        "$value": "{semantic.spacing.stack.md}",
+        "ref": "spacing.stack.md"
+      },
+      "child-radius": {
+        "$value": "0rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 0,
+          "rule": {
+            "type": "nesting",
+            "formula": "max(0, radius.container − inset.lg)",
+            "why": "중첩 정합(#10)·inset 인자 호출(§5.2)"
+          }
+        }
+      },
+      "media-radius": {
+        "$value": "{semantic.radius.container}",
+        "ref": "radius.container"
+      },
+      "typography": {
+        "title": {
+          "$value": "{semantic.typography.title}",
+          "ref": "typography.title"
+        },
+        "body": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      }
+    }
+  }
+}

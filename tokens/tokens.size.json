@@ -1,0 +1,81 @@
+{
+  "size": {
+    "$description": "요소 치수 — 간격 엔진 재사용(4px 그리드 선형). rem·px 병기(#12 부칙).",
+    "control": {
+      "$extensions": {
+        "rule": {
+          "type": "linear",
+          "base": 36,
+          "step": 8,
+          "grid": 4
+        },
+        "why": "닫힌 컨트롤 높이"
+      },
+      "sm": {
+        "$value": "2.25rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 36,
+          "onGrid": true,
+          "halfStep": true
+        }
+      },
+      "md": {
+        "$value": "2.75rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 44,
+          "onGrid": true,
+          "halfStep": true
+        }
+      },
+      "lg": {
+        "$value": "3.25rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 52,
+          "onGrid": true,
+          "halfStep": true
+        }
+      }
+    },
+    "icon": {
+      "$extensions": {
+        "rule": {
+          "type": "linear",
+          "base": 16,
+          "step": 4,
+          "grid": 4
+        },
+        "why": "아이콘 슬롯"
+      },
+      "sm": {
+        "$value": "1rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 16,
+          "onGrid": true,
+          "halfStep": false
+        }
+      },
+      "md": {
+        "$value": "1.25rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 20,
+          "onGrid": true,
+          "halfStep": true
+        }
+      },
+      "lg": {
+        "$value": "1.5rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 24,
+          "onGrid": true,
+          "halfStep": false
+        }
+      }
+    }
+  }
+}

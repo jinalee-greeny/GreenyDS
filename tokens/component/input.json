@@ -1,0 +1,103 @@
+{
+  "component": {
+    "input": {
+      "$description": "Input — 표면·stroke 3상태·placeholder, 높이 sm/md/lg",
+      "bg": {
+        "default": {
+          "$value": "{semantic.color.bg.surface}",
+          "ref": "color.bg.surface"
+        },
+        "disabled": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        }
+      },
+      "fg": {
+        "default": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "placeholder": {
+          "$value": "{semantic.color.fg.placeholder}",
+          "ref": "color.fg.placeholder"
+        },
+        "disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        }
+      },
+      "stroke": {
+        "default": {
+          "$value": "{semantic.color.stroke.default}",
+          "ref": "color.stroke.default"
+        },
+        "hover": {
+          "$value": "{semantic.color.stroke.strong}",
+          "ref": "color.stroke.strong"
+        },
+        "focus": {
+          "$value": "{semantic.color.stroke.focus}",
+          "ref": "color.stroke.focus"
+        },
+        "invalid": {
+          "$value": "{semantic.color.stroke.danger}",
+          "ref": "color.stroke.danger"
+        },
+        "disabled": {
+          "$value": "{semantic.color.stroke.subtle}",
+          "ref": "color.stroke.subtle"
+        }
+      },
+      "stroke-width": {
+        "default": {
+          "$value": "{semantic.stroke-width.default}",
+          "ref": "stroke-width.default"
+        },
+        "focus": {
+          "$value": "{semantic.stroke-width.focus}",
+          "ref": "stroke-width.focus"
+        }
+      },
+      "height": {
+        "sm": {
+          "$value": "{semantic.size.control.sm}",
+          "ref": "size.control.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        },
+        "lg": {
+          "$value": "{semantic.size.control.lg}",
+          "ref": "size.control.lg"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.control}",
+        "ref": "radius.control"
+      },
+      "padding-x": {
+        "$value": "{semantic.spacing.inset.md}",
+        "ref": "spacing.inset.md"
+      },
+      "typography": {
+        "$value": "{semantic.typography.body}",
+        "ref": "typography.body"
+      },
+      "icon": {
+        "sm": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        }
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

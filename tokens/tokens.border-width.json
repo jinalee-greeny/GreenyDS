@@ -1,0 +1,33 @@
+{
+  "border-width": {
+    "$description": "보더 굵기 — 기본 집합, px 고정(#12 부칙). 파생 아닌 선택(#8 weight 사상).",
+    "border-width-0": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$extensions": {
+        "px": 0
+      }
+    },
+    "border-width-1": {
+      "$value": "1px",
+      "$type": "dimension",
+      "$extensions": {
+        "px": 1
+      }
+    },
+    "border-width-2": {
+      "$value": "2px",
+      "$type": "dimension",
+      "$extensions": {
+        "px": 2
+      }
+    },
+    "border-width-4": {
+      "$value": "4px",
+      "$type": "dimension",
+      "$extensions": {
+        "px": 4
+      }
+    }
+  }
+}

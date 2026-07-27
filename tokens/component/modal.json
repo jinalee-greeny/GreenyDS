@@ -1,0 +1,59 @@
+{
+  "component": {
+    "modal": {
+      "$description": "Modal — scrim + surface-overlay(elevation.overlay 쌍) + enter/exit 모션",
+      "scrim": {
+        "$value": "{semantic.color.bg.scrim}",
+        "ref": "color.bg.scrim"
+      },
+      "surface": {
+        "$value": "{semantic.color.bg.surface-overlay}",
+        "ref": "color.bg.surface-overlay"
+      },
+      "elevation": {
+        "$value": "{semantic.elevation.overlay}",
+        "ref": "elevation.overlay"
+      },
+      "stroke": {
+        "$value": "{semantic.color.stroke.subtle}",
+        "ref": "color.stroke.subtle"
+      },
+      "radius": {
+        "$value": "{semantic.radius.overlay}",
+        "ref": "radius.overlay"
+      },
+      "inset": {
+        "$value": "{semantic.spacing.inset.lg}",
+        "ref": "spacing.inset.lg"
+      },
+      "gap": {
+        "$value": "{semantic.spacing.stack.md}",
+        "ref": "spacing.stack.md"
+      },
+      "close-icon": {
+        "$value": "{semantic.size.icon.md}",
+        "ref": "size.icon.md"
+      },
+      "motion": {
+        "enter": {
+          "$value": "{semantic.motion.overlay-enter}",
+          "ref": "motion.overlay-enter"
+        },
+        "exit": {
+          "$value": "{semantic.motion.overlay-exit}",
+          "ref": "motion.overlay-exit"
+        }
+      },
+      "typography": {
+        "title": {
+          "$value": "{semantic.typography.heading}",
+          "ref": "typography.heading"
+        },
+        "body": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      }
+    }
+  }
+}

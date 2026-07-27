@@ -1,0 +1,70 @@
+{
+  "component": {
+    "tabs": {
+      "$description": "Tabs — 탭+인디케이터 슬라이드, selected 고유 상태(승격 후보)",
+      "tab": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "selected": {
+            "$value": "{semantic.color.fg.brand}",
+            "ref": "color.fg.brand"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "bg": {
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          }
+        },
+        "height": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        }
+      },
+      "indicator": {
+        "color": {
+          "$value": "{semantic.color.fg.brand}",
+          "ref": "color.fg.brand"
+        },
+        "thickness": {
+          "$value": "{semantic.stroke-width.selected}",
+          "ref": "stroke-width.selected"
+        },
+        "motion": {
+          "$value": "{semantic.motion.control}",
+          "ref": "motion.control"
+        },
+        "$extensions": {
+          "rule": {
+            "type": "component-state",
+            "state": "selected",
+            "why": "Select.item.selected와 반복 — 시맨틱 승격 후보(컨펌 큐, §0.3)"
+          }
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

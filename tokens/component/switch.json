@@ -1,0 +1,85 @@
+{
+  "component": {
+    "switch": {
+      "$description": "Switch — 트랙(pill)+노브 슬라이드, 모션 소비(motion.control)",
+      "track": {
+        "bg": {
+          "off": {
+            "$value": "{semantic.color.bg.action-secondary.default}",
+            "ref": "color.bg.action-secondary.default"
+          },
+          "on": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.pill}",
+          "ref": "radius.pill"
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          },
+          "md": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          }
+        }
+      },
+      "knob": {
+        "bg": {
+          "$value": "{semantic.color.bg.control-knob}",
+          "ref": "color.bg.control-knob"
+        },
+        "stroke": {
+          "$value": "{semantic.color.stroke.subtle}",
+          "ref": "color.stroke.subtle"
+        },
+        "size": {
+          "sm": {
+            "$value": "1rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 16,
+              "rule": {
+                "type": "nesting",
+                "formula": "track-height(icon.md) − 2×2px",
+                "why": "노브 중첩 정합(#10 사상)"
+              }
+            }
+          },
+          "md": {
+            "$value": "1.25rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 20,
+              "rule": {
+                "type": "nesting",
+                "formula": "track-height(icon.lg) − 2×2px",
+                "why": "노브 중첩 정합(#10 사상)"
+              }
+            }
+          }
+        },
+        "motion": {
+          "$value": "{semantic.motion.control}",
+          "ref": "motion.control"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}
