@@ -314,11 +314,38 @@ function generate(params = DEFAULT_PARAMS) {
 
 module.exports = { DEFAULT_PARAMS, generate, deriveRamp, seedOklch, hexToRgb, srgbToLin };
 
+/* ============================ config 병합 (export 연결) ============================ */
+// 컨피규레이터 export config(파라미터 override)를 DEFAULT_PARAMS 위에 깊은 병합.
+// color.ramps는 id 기준 병합(brand.seed만 바꿔도 됨). 그 외 배열은 있으면 교체.
+const isObj = (x) => x && typeof x === 'object' && !Array.isArray(x);
+function deepMerge(base, over) {
+  if (over === undefined) return base;
+  if (Array.isArray(base)) return over;
+  if (!isObj(base)) return over;
+  const out = { ...base };
+  for (const k of Object.keys(over || {})) {
+    if (k === 'ramps' && Array.isArray(base.ramps) && Array.isArray(over.ramps)) {
+      out.ramps = base.ramps.map((r) => { const o = over.ramps.find((x) => x.id === r.id); return o ? { ...r, ...o } : r; });
+      for (const o of over.ramps) if (!base.ramps.find((r) => r.id === o.id)) out.ramps.push(o);
+    } else out[k] = deepMerge(base[k], over[k]);
+  }
+  return out;
+}
+function paramsFromConfig(cfg) {
+  // config는 { primitive: {..override..} } 또는 파라미터 override 객체 자체를 받는다.
+  const override = cfg && cfg.primitive ? cfg.primitive : cfg;
+  return deepMerge(DEFAULT_PARAMS, override || {});
+}
+
 /* =================================== CLI =================================== */
 if (require.main !== module) return;
 const root = path.join(__dirname, '..');
-const outPath = path.join(root, 'tokens/tokens.primitive.json');
-const generated = generate();
+const argOf = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : null; };
+const configPath = argOf('--config');
+const outArg = argOf('--out');
+const outPath = outArg ? path.resolve(process.cwd(), outArg) : path.join(root, 'tokens/tokens.primitive.json');
+const params = configPath ? paramsFromConfig(JSON.parse(fs.readFileSync(path.resolve(process.cwd(), configPath), 'utf8'))) : DEFAULT_PARAMS;
+const generated = generate(params);
 const json = JSON.stringify(generated, null, 2) + '\n';
 
 if (process.argv.includes('--check')) {

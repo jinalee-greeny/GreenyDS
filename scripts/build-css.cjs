@@ -13,7 +13,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const SRC = path.join(ROOT, 'tokens', 'tokens.primitive.json');
+// 기본은 SSOT primitive. env로 커스텀 primitive·출력 디렉터리 지정 가능(config 재생성용).
+const SRC = process.env.PRIMITIVE_PATH ? path.resolve(process.cwd(), process.env.PRIMITIVE_PATH) : path.join(ROOT, 'tokens', 'tokens.primitive.json');
 
 const kebab = (s) =>
   String(s).replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/([A-Z])([A-Z][a-z])/g, '$1-$2').toLowerCase();
@@ -63,8 +64,9 @@ function build() {
   return { css, flat, count: pairs.length };
 }
 
-const CSS_OUT = path.join(ROOT, 'build', 'css', 'primitives.css');
-const JSON_OUT = path.join(ROOT, 'build', 'json', 'primitives.flat.json');
+const OUT_BASE = process.env.BUILD_DIR ? path.resolve(process.cwd(), process.env.BUILD_DIR) : path.join(ROOT, 'build');
+const CSS_OUT = path.join(OUT_BASE, 'css', 'primitives.css');
+const JSON_OUT = path.join(OUT_BASE, 'json', 'primitives.flat.json');
 
 const { css, flat, count } = build();
 

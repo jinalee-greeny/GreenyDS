@@ -322,9 +322,11 @@ function oklch2rgb(L,C,H){const a=C*Math.cos(H),b=C*Math.sin(H);
   const l_=L+0.3963377774*a+0.2158037573*b,m_=L-0.1055613458*a-0.0638541728*b,s_=L-0.0894841775*a-1.2914855480*b;
   const l=l_**3,m=m_**3,s=s_**3;
   return [4.0767416621*l-3.3077115913*m+0.2309699292*s,-1.2684380046*l+2.6097574011*m-0.3413193965*s,-0.0041960863*l-0.7034186147*m+1.7076147010*s];}
-const inGamut=rgb=>rgb.every(c=>c>=-0.0002&&c<=1.0002);
-function oklch2hex(L,C,H){let c=C;for(let i=0;i<60&&!inGamut(oklch2rgb(L,c,H));i++)c*=0.96;
-  const rgb=oklch2rgb(L,c,H).map(v=>Math.round(Math.max(0,Math.min(1,lin2srgb(v)))*255));
+// gen-tokens.cjs와 동일한 감마 클램프(이진 탐색)·라운딩 — 브라우저=Node 바이트 일치(드리프트 0)
+const inGamut=(L,C,H)=>{const rgb=oklch2rgb(L,C,H);const e=0.0005;return rgb.every(c=>c>=-e&&c<=1+e);};
+function clampChroma(L,C,H){if(inGamut(L,C,H))return C;let lo=0,hi=C;for(let i=0;i<22;i++){const m=(lo+hi)/2;if(inGamut(L,m,H))lo=m;else hi=m;}return lo;}
+function oklch2hex(L,C,H){const c=clampChroma(L,C,H);
+  const rgb=oklch2rgb(L,c,H).map(v=>{v=Math.max(0,Math.min(1,v));const s=v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055;return Math.round(Math.max(0,Math.min(1,s))*255);});
   return '#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join('');}
 function genRamp(seedHex){const o=hex2oklch(seedHex),seedC=Math.hypot(o.a,o.b),H=Math.atan2(o.b,o.a);
   const ramp={};STEPS.forEach((s,i)=>ramp[s]=oklch2hex(L_ANCHOR[i],seedC*TAPER[i],H));return ramp;}
