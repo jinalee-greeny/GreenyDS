@@ -2,7 +2,8 @@
 #
 # 무엇: push/PR마다 파라미터→primitive→semantic→component 전 체인을 재현·검증하고 빌드한다.
 # 왜:   각 레이어의 자동 검증(✗ 하드 게이트)을 사람 손 없이 항상 실행(로드맵 B1).
-#       interim 빌더는 Style Dictionary와 diff=0 확인(상호운용 런 #4) 후 제거됨 — 공식 SD가 유일 빌더.
+#       빌드(build/css·json)는 외부 의존 없는 자립 node 빌더(scripts/build-css.cjs)로 생성 —
+#       네트워크·패키지 설치 없이 CI에서 항상 재현 가능(상호운용 런 #4 값 diff=0 형식 유지).
 name: build-tokens
 on:
   push:
@@ -18,9 +19,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Install Style Dictionary
-        run: npm install style-dictionary@^4
 
       # 파라미터→primitive 재현 검증: 생성기(gen-tokens.cjs)와 SSOT 드리프트 방지
       - name: Check generator reproduces SSOT
@@ -42,9 +40,13 @@ jobs:
       - name: Perturbation matrix (engine adaptation gate)
         run: node scripts/perturb.cjs
 
-      # 공식 빌드 (Style Dictionary) → build/
-      - name: Build (Style Dictionary, official)
-        run: npx style-dictionary build --config config/sd.config.mjs
+      # 빌드 산출물(build/css·json)이 원천 토큰과 드리프트 없는지 검증
+      - name: Check build output matches tokens (no drift)
+        run: node scripts/build-css.cjs --check
+
+      # 공식 빌드 (자립 node 빌더) → build/css/primitives.css, build/json/primitives.flat.json
+      - name: Build CSS + flat JSON (self-contained)
+        run: node scripts/build-css.cjs
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

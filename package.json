@@ -1,5 +1,5 @@
 {
-  "name": "preset-tokens",
+  "name": "greeny-ds",
   "private": true,
   "type": "module",
   "version": "0.1.0",
@@ -7,6 +7,10 @@
     "gen": "node scripts/gen-tokens.cjs",
     "gen:check": "node scripts/gen-tokens.cjs --check",
     "validate": "node scripts/validate-tokens.cjs",
-    "build": "style-dictionary build --config config/sd.config.mjs"
+    "semantic": "node scripts/gen-semantic.cjs tokens/tokens.semantic.json",
+    "component": "node scripts/gen-component.cjs",
+    "perturb": "node scripts/perturb.cjs",
+    "build": "node scripts/build-css.cjs",
+    "build:check": "node scripts/build-css.cjs --check"
   }
 }
