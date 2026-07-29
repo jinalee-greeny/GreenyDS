@@ -50,6 +50,11 @@ jobs:
       - name: Build CSS + flat JSON (self-contained)
         run: node scripts/build-css.cjs
 
+      # 배포본 가이드(public/guide.html)가 정본(docs/service-concept-guide.html)과
+      # 어긋나지 않는지 검증 — 정본만 고치고 재생성을 잊으면 여기서 실패한다(사본 표류 방지).
+      - name: Check published guide matches source of truth (no drift)
+        run: node scripts/build-guide.cjs --check
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:

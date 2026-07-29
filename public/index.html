@@ -25,8 +25,8 @@
   .gh{display:flex;align-items:center;gap:8px;margin-bottom:11px}
   .gn{font-family:var(--mono);font-size:9.5px;color:#fff;border-radius:5px;padding:1px 6px;font-weight:700}
   .p1{background:#6f747d}.p2{background:#296edd}.p3{background:#c0392b}.p4{background:#048a55}
-  .gt{font-size:12.5px;font-weight:700}
-  .ghint{font-size:10.5px;color:var(--faint);margin-left:auto}
+  .gt{font-size:12.5px;font-weight:700;margin-right:auto}
+  .ghint{font-size:10.5px;color:var(--faint)}
 
   .seedrow{display:flex;gap:8px;align-items:center}
   input[type=color]{width:40px;height:34px;border:1px solid var(--line);border-radius:8px;padding:2px;cursor:pointer;background:none}
@@ -121,12 +121,31 @@
   .saverow{display:flex;gap:6px;margin-bottom:10px}
   .saverow input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12px}
   @keyframes mdemo{0%{left:3px}100%{left:calc(100% - 25px)}}
+  /* ── 개념 가이드 연결 ── */
+  .ghelp{flex:none;width:17px;height:17px;border-radius:50%;border:1px solid var(--line);background:#fff;
+    color:var(--faint);font-size:10.5px;font-weight:700;line-height:1;cursor:pointer;padding:0;
+    display:inline-flex;align-items:center;justify-content:center}
+  .ghelp:hover{border-color:var(--brand);color:var(--brand);background:var(--brand050)}
+  .gdim{position:fixed;inset:0;background:rgba(20,22,26,.42);opacity:0;pointer-events:none;
+    transition:opacity .2s ease;z-index:60}
+  .gdrawer{position:fixed;top:0;right:0;bottom:0;width:min(920px,94vw);background:#fff;z-index:61;
+    display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.18);
+    transform:translateX(101%);transition:transform .24s cubic-bezier(.22,.61,.36,1)}
+  body.gopen .gdim{opacity:1;pointer-events:auto}
+  body.gopen .gdrawer{transform:translateX(0)}
+  .gdhead{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;
+    border-bottom:1px solid var(--line);background:#fff}
+  .gdhead .gdt{font-size:12.5px;font-weight:700}
+  .gdhead .gdsub{font-size:10.5px;color:var(--faint)}
+  .gdhead .gdx{margin-left:auto}
+  .gdrawer iframe{flex:1;width:100%;border:0;display:block}
 </style>
 </head>
 <body>
 <div class="top">
   <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.5 — 그림자·모션 상세</span>
   <div class="sp">
+    <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
     <button class="tbtn pri" id="exportBtn">토큰 내보내기 →</button>
   </div>
@@ -135,18 +154,18 @@
   <!-- CONTROL PANEL -->
   <div class="panel">
     <div class="grp">
-      <div class="gh"><span class="gn p4">④</span><span class="gt">브랜드</span><span class="ghint">도구가 안 채움</span></div>
+      <div class="gh"><span class="gn p4">④</span><span class="gt">브랜드</span><span class="ghint">도구가 안 채움</span><button class="ghelp" data-guide="#ref-color" title="개념 가이드: 브랜드색이 램프로 퍼지는 방식" aria-label="개념 가이드에서 보기">?</button></div>
       <div class="seedrow"><input type="color" id="seed" value="#8974f0"><input type="text" class="hex" id="seedHex" value="#8974f0"></div>
       <div class="emp">✓ 시드색은 사용자 지정 — 브랜드 정체성</div>
       <label class="loadbtn" style="margin-top:8px">🖼 이미지에서 시드 추출 <span style="color:var(--faint);font-weight:400">로고·키비주얼</span><input type="file" id="seedImg" accept="image/*" hidden></label>
     </div>
     <div class="grp">
-      <div class="gh"><span class="gn p1">①</span><span class="gt">자동 스케일</span><span class="ghint">읽기 전용</span></div>
+      <div class="gh"><span class="gn p1">①</span><span class="gt">자동 스케일</span><span class="ghint">읽기 전용</span><button class="ghelp" data-guide="#s-layers" title="개념 가이드: Primitive 계층 — 엔진이 만드는 원재료" aria-label="개념 가이드에서 보기">?</button></div>
       <div class="ramp" id="ramp"></div>
       <div class="roN">OKLCH 11단계 · 자동 생성</div>
     </div>
     <div class="grp">
-      <div class="gh"><span class="gn p3">③</span><span class="gt">갈림길</span></div>
+      <div class="gh"><span class="gn p3">③</span><span class="gt">갈림길</span><button class="ghelp" data-guide="#s6" title="개념 가이드: 다크 모드가 생기는 방식" aria-label="개념 가이드에서 보기">?</button></div>
       <div class="fkhint">↓ 도구가 기본을 안 정합니다 — 골라주세요</div>
       <div class="lbl2">다크모드</div>
       <div class="forks" id="fkDark" style="margin-bottom:12px">
@@ -160,7 +179,7 @@
       </div>
     </div>
     <div class="grp">
-      <div class="gh"><span class="gn p2">②</span><span class="gt">기본값 조정</span><span class="ghint">채워둠·조정 가능</span></div>
+      <div class="gh"><span class="gn p2">②</span><span class="gt">기본값 조정</span><span class="ghint">채워둠·조정 가능</span><button class="ghelp" data-guide="#s7" title="개념 가이드: 대비 기준(AAA/AA)이 값 생성 조건이 되는 이유" aria-label="개념 가이드에서 보기">?</button></div>
       <div class="lbl2">본문 글자 대비</div>
       <div class="segrow" id="segAA">
         <button class="seg" data-v="AAA">AAA·안전</button><button class="seg" data-v="AA">AA·유연</button>
@@ -170,7 +189,7 @@
 
     <!-- ===== v0.4 간격 · 모서리 상세 ===== -->
     <div class="grp">
-      <div class="gh"><span class="gn p2">②</span><span class="gt">간격 · 모서리 (구조)</span><span class="ghint">4px 그리드</span></div>
+      <div class="gh"><span class="gn p2">②</span><span class="gt">간격 · 모서리 (구조)</span><span class="ghint">4px 그리드</span><button class="ghelp" data-guide="#ref-space" title="개념 가이드: spatial · 여백 스케일" aria-label="개념 가이드에서 보기">?</button></div>
 
       <div class="lbl2">기준 간격 (그리드 base) <span style="font-weight:400;color:var(--faint);font-size:10px">— space 스케일 생성</span></div>
       <div class="f2"><span class="l">base</span><input type="range" id="densR" min="4" max="12" step="2" value="8"><input type="text" class="num" id="densN" value="8"><span class="u">px</span></div>
@@ -199,14 +218,14 @@
       <div class="why">💡 간격은 base×배수로 space 스케일을 만들고, 컴포넌트는 역할(inset/stack/inline/section-gap)로 그 스케일을 물어감. 밀도 프리셋은 역할 매핑을 한 단계씩 민다.</div>
     </div>
     <div class="grp">
-      <div class="gh"><span class="gn p2">②</span><span class="gt">상태색</span><span class="ghint">기본 채움·조정 가능</span></div>
+      <div class="gh"><span class="gn p2">②</span><span class="gt">상태색</span><span class="ghint">기본 채움·조정 가능</span><button class="ghelp" data-guide="#s10" title="개념 가이드: Semantic 사전 — 색 역할 목록" aria-label="개념 가이드에서 보기">?</button></div>
       <div id="statusRows"></div>
       <div class="why">💡 기본값은 접근성 검증된 표준 신호색. 바꿔도 글자 단계는 대비에 맞게 자동 재선택됩니다.</div>
     </div>
 
     <!-- ===== v0.3 타이포 상세 ===== -->
     <div class="grp">
-      <div class="gh"><span class="gn p4">④</span><span class="gt">글자 (타이포)</span><span class="ghint">폰트=④ 사용자</span></div>
+      <div class="gh"><span class="gn p4">④</span><span class="gt">글자 (타이포)</span><span class="ghint">폰트=④ 사용자</span><button class="ghelp" data-guide="#ref-type" title="개념 가이드: typo · 글자 스케일" aria-label="개념 가이드에서 보기">?</button></div>
 
       <div class="slotbox">
         <div class="lbl2" style="margin-top:0">제목용 서체 <span style="font-weight:400;color:var(--faint);font-size:10px">— Display·Heading·Title</span></div>
@@ -259,7 +278,7 @@
 
     <!-- ===== v0.5 그림자 · 모션 상세 ===== -->
     <div class="grp">
-      <div class="gh"><span class="gn p2">②</span><span class="gt">그림자 · 모션 (구조)</span><span class="ghint">dp · easing</span></div>
+      <div class="gh"><span class="gn p2">②</span><span class="gt">그림자 · 모션 (구조)</span><span class="ghint">dp · easing</span><button class="ghelp" data-guide="#ref-shape" title="개념 가이드: visual · 모서리·그림자 / motion" aria-label="개념 가이드에서 보기">?</button></div>
 
       <div class="lbl2">그림자 강도 <span style="font-weight:400;color:var(--faint);font-size:10px">— 전역 배율</span></div>
       <div class="f2"><span class="l">강도</span><input type="range" id="elevR" min="0" max="100" value="50"><input type="text" class="num" id="elevN" value="50"><span class="u"></span></div>
@@ -290,7 +309,7 @@
       <div class="why">💡 그림자=elevation dp 사다리(다중 레이어) · 모션=duration 6단+easing. 미리보기 <b>Elevation</b>·<b>Motion</b> 셀에서 확인.</div>
     </div>
     <div class="grp">
-      <div class="gh"><span class="gt">프리셋 갤러리</span><span class="ghint">같은 엔진·다른 무드</span></div>
+      <div class="gh"><span class="gt">프리셋 갤러리</span><span class="ghint">같은 엔진·다른 무드</span><button class="ghelp" data-guide="#s2" title="개념 가이드: 값이 아니라 값을 만드는 엔진" aria-label="개념 가이드에서 보기">?</button></div>
       <div class="saverow"><input type="text" id="presetName" placeholder="현재 테마를 프리셋으로 저장 — 이름"><button class="loadbtn" id="presetSave" style="flex:none">저장</button></div>
       <div class="gallery" id="gallery"></div>
       <div class="improw"><input type="text" id="themeIn" placeholder="테마 문자열 붙여넣기 (theme:…)"><button class="loadbtn" id="themeApply" style="flex:none">적용</button></div>
@@ -801,6 +820,42 @@ $("copyBtn").onclick=()=>{const s=shareString();navigator.clipboard&&navigator.c
 $("shareStr").onclick=$("copyBtn").onclick;
 $("exportBtn").onclick=()=>{toast($("exportBtn").dataset.ok==="1"?"✓ 검증 통과 — DTCG·CSS·Figma 내보내기 (B1 파이프라인 연결 예정)":"⚠ 검증 미통과 — 대비를 먼저 맞춰주세요");};
 initStatusRows();initSpacingRows();renderGallery();render();
+</script>
+<!-- ── 개념 가이드 슬라이드오버 (public/guide.html · scripts/build-guide.cjs 생성물) ── -->
+<div class="gdim" id="gDim"></div>
+<aside class="gdrawer" id="gDrawer" role="dialog" aria-modal="true" aria-label="Core System 개념 가이드" aria-hidden="true">
+  <div class="gdhead">
+    <span class="gdt">Core System 개념 가이드</span>
+    <span class="gdsub">정본 1부 · 갱신되면 여기도 함께 최신</span>
+    <button class="tbtn gdx" id="gClose">닫기 ✕</button>
+  </div>
+  <iframe id="gFrame" title="Core System 개념 가이드"></iframe>
+</aside>
+<script>
+(function(){
+  var dim=document.getElementById('gDim'), dr=document.getElementById('gDrawer'), fr=document.getElementById('gFrame');
+  function open(hash){
+    hash = hash || '';
+    if(fr.dataset.loaded!=='1' || fr.dataset.hash!==hash){
+      fr.src='guide.html'+hash; fr.dataset.loaded='1'; fr.dataset.hash=hash;
+    }
+    document.body.classList.add('gopen');
+    dr.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+  function close(){
+    document.body.classList.remove('gopen');
+    dr.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-guide]');
+    if(t){ e.preventDefault(); open(t.getAttribute('data-guide')); }
+  });
+  document.getElementById('gClose').addEventListener('click',close);
+  dim.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&document.body.classList.contains('gopen')) close(); });
+})();
 </script>
 </body>
 </html>

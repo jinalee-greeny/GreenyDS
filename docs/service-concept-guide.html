@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core System 개념 가이드 — 처음 오신 분부터 실무자까지</title>
+<style>
+  :root{
+    --bg:#f6f7f9;--fg:#1c1e21;--muted:#6b7280;--faint:#9aa1ab;
+    --card:#fff;--line:#e6e8ec;--line2:#eef0f3;
+    --brand:#725cd3;--brand-050:#f5f4ff;--brand-100:#eae8ff;--brand-deep:#4c3aa0;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --ok:#048a55;--okBg:#e4f7ee;--wait:#9e6600;--waitBg:#fdf1dc;--go:#296edd;--goBg:#e7f0fd;
+    --danger:#cb323b;--dangerBg:#fdecea;
+    --p1:#725cd3;--p2:#296edd;--p3:#048a55;--p4:#5a6472;--p5:#c07a10;--p6:#8a5fbf;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Pretendard','Noto Sans KR',sans-serif;
+    background:var(--bg);color:var(--fg);font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 26px 100px}
+  .mono{font-family:var(--mono)}
+  .kicker{font-size:12px;color:var(--muted);letter-spacing:.02em;margin-bottom:6px}
+  h1{font-size:28px;margin:0 0 10px;letter-spacing:-.01em}
+  .lede{color:var(--muted);font-size:14.5px;margin:0;max-width:740px}
+
+  .identity{margin-top:20px;background:linear-gradient(180deg,#f7f5ff,#fff);border:1px solid #e5e0fb;
+    border-radius:16px;padding:22px 26px}
+  .identity .big{font-size:17.5px;font-weight:600;line-height:1.6;margin:0}
+  .identity .big b{color:var(--brand)}
+  .identity .sub{font-size:13px;color:var(--muted);margin:12px 0 0}
+
+  /* 3-line summary */
+  .tl3{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .tl3 .h{font-size:12px;font-weight:700;color:var(--brand-deep);letter-spacing:.05em;margin-bottom:10px}
+  .tl3 ol{margin:0;padding-left:22px}
+  .tl3 li{font-size:14px;margin-bottom:8px;line-height:1.6}
+  .tl3 li:last-child{margin-bottom:0}
+  .tl3 li b{color:var(--brand-deep)}
+
+  /* reading map */
+  .readmap{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .readmap .h{font-size:12px;font-weight:700;color:var(--brand-deep);letter-spacing:.05em;margin-bottom:4px}
+  .readmap .hs{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  .readmap table{width:100%;border-collapse:collapse;font-size:12.8px}
+  .readmap th{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:#fafbfc;text-align:left;padding:7px 10px;border-bottom:1px solid var(--line2)}
+  .readmap td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+  .readmap tr:last-child td{border-bottom:none}
+  .readmap .pn{font-weight:800;white-space:nowrap}
+  .readmap a{color:var(--brand-deep);text-decoration:none;font-weight:600}
+
+  /* part band */
+  .part{margin-top:72px;scroll-margin-top:16px}
+  .part-band{display:flex;align-items:center;gap:16px;background:#1c1e21;border-radius:15px;padding:20px 24px;color:#fff;border-left:7px solid var(--brand)}
+  .part-band .pno{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.14em;color:#c9bdf7;background:rgba(255,255,255,.08);border-radius:7px;padding:5px 11px;white-space:nowrap}
+  .part-band .pt{font-size:18px;font-weight:800;letter-spacing:-.01em}
+  .part-band .pd{font-size:12.5px;color:#b8bec8;margin-top:3px}
+  .part.c1 .part-band{border-left-color:var(--p1)} .part.c1 .part-band .pno{color:#c9bdf7}
+  .part.c2 .part-band{border-left-color:var(--p2)} .part.c2 .part-band .pno{color:#9dc2ff}
+  .part.c3 .part-band{border-left-color:var(--p3)} .part.c3 .part-band .pno{color:#8ed6a8}
+  .part.c4 .part-band{border-left-color:#98a2b3} .part.c4 .part-band .pno{color:#c4ccd8}
+  .part.c5 .part-band{border-left-color:#e0a83c} .part.c5 .part-band .pno{color:#f0c674}
+  .part.c6 .part-band{border-left-color:#a98ae0} .part.c6 .part-band .pno{color:#d3c2f5}
+
+  section{margin-top:44px;scroll-margin-top:16px}
+  .sec-hd{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;padding-bottom:10px;border-bottom:2px solid var(--line)}
+  .sec-hd .n{font-family:var(--mono);font-size:12px;color:#fff;background:var(--brand);border-radius:6px;padding:3px 9px;font-weight:700;flex:none}
+  .sec-hd h2{font-size:19px;margin:0}
+  .sec-hd .lv{font-size:10px;font-weight:800;letter-spacing:.06em;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .lv.basic{background:var(--okBg);color:var(--ok)}
+  .lv.core{background:var(--goBg);color:var(--go)}
+  .lv.ref{background:#eef2f7;color:#5a6472}
+  .lv.work{background:var(--waitBg);color:var(--wait)}
+  .sec-hd .cap{font-size:12px;color:var(--muted);margin-left:auto;text-align:right}
+  .tldr{font-size:13px;color:#4a4f57;background:#fbfbfc;border:1px solid var(--line2);border-left:3px solid var(--brand);border-radius:8px;padding:10px 14px;margin:12px 0 16px}
+  .tldr b{color:var(--brand-deep)}
+  .sec-intro{color:#3a3f47;font-size:14px;max-width:780px;margin:10px 0 18px}
+  .sec-intro b{color:var(--fg)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+  .card h3{font-size:14px;margin:0 0 6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .sub{color:var(--muted);font-size:12.8px;margin:0 0 14px}
+  .card p{font-size:13.5px}
+  .cnt{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto;font-weight:400}
+  .tag{font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 7px;background:var(--brand-050);color:var(--brand)}
+  .tag.neu{background:#eef2f7;color:#556}
+  .tag.new{background:var(--dangerBg);color:var(--danger)}
+
+  /* easy-speak callout */
+  .easy{display:flex;gap:13px;background:#f2fbf6;border:1px solid #cdeeda;border-radius:12px;padding:13px 17px;margin:13px 0;font-size:13px;line-height:1.65;color:#1f3a2c}
+  .easy .ic{flex:none;font-size:16px}
+  .easy b{color:#0b5a38}
+  .why{display:flex;gap:13px;background:#f5f4ff;border:1px solid #e0dcfb;border-radius:12px;padding:13px 17px;margin:13px 0;font-size:13px;line-height:1.65;color:#33305a}
+  .why .ic{flex:none;font-weight:800;color:var(--brand);font-size:12px;background:#eae8ff;border-radius:6px;padding:2px 8px;height:fit-content}
+  .why b{color:var(--brand-deep)}
+
+  .analogy{display:flex;gap:16px;background:#fffdf5;border:1px solid #f0e6c8;border-radius:13px;padding:16px 20px;margin:14px 0}
+  .analogy .ic{font-size:22px;flex:none}
+  .analogy .tx{font-size:13px;color:#4a4636;line-height:1.7}
+  .analogy .tx b{color:#2c2a20}
+
+  /* bad/good compare */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  @media(max-width:700px){.compare{grid-template-columns:1fr}}
+  .cmp{border-radius:12px;padding:15px 18px;font-size:13px;line-height:1.65}
+  .cmp .ch{font-size:11.5px;font-weight:800;margin-bottom:7px;letter-spacing:.03em}
+  .cmp.bad{background:var(--dangerBg);border:1px solid #f3c4bd}
+  .cmp.bad .ch{color:var(--danger)}
+  .cmp.good{background:var(--okBg);border:1px solid #bfe8d4}
+  .cmp.good .ch{color:var(--ok)}
+  .cmp .mono{font-size:11.5px}
+
+  /* 3-layer stack */
+  .stack{display:flex;flex-direction:column;align-items:stretch}
+  .layer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .layer .idx{font-family:var(--mono);font-size:11px;color:#fff;background:var(--brand);border-radius:8px;width:34px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;margin-top:2px}
+  .layer.l2 .idx{background:#5b8def}
+  .layer.l3 .idx{background:#2ea36b}
+  .layer .body{flex:1}
+  .layer .ttl{font-weight:800;font-size:15.5px}
+  .layer .ttl small{font-weight:600;color:var(--muted);font-size:12.5px;margin-left:8px}
+  .layer .desc{color:#3a3f47;font-size:13px;margin-top:5px;line-height:1.65}
+  .layer .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+  .layer .naming{font-family:var(--mono);font-size:11px;color:var(--brand-deep);background:#f5f3ff;border:1px solid #e8e3fb;border-radius:6px;padding:3px 8px}
+  .layer .who{font-size:11px;color:#556;background:#eef2f7;border-radius:6px;padding:3px 8px}
+  .arrow{align-self:flex-start;color:var(--faint);font-size:12px;margin:7px 0;padding-left:50px}
+  .arrow b{color:var(--brand)}
+
+  /* pipeline strip */
+  .pipe{display:flex;align-items:stretch;flex-wrap:wrap;margin-top:6px}
+  .pstep{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;position:relative}
+  .pstep + .pstep{margin-left:26px}
+  .pstep + .pstep::before{content:"→";position:absolute;left:-21px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:15px}
+  .pstep .ps{font-family:var(--mono);font-size:9.5px;color:var(--faint);font-weight:700;letter-spacing:.06em}
+  .pstep .pt{font-size:12.8px;font-weight:800;margin-top:2px}
+  .pstep .pd{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+  .pstep.src{border-color:#c9bdf7;background:#f7f5ff}
+  .pstep.gate{border-color:#bfe8d4;background:#f2fbf6}
+  @media(max-width:820px){.pstep{min-width:0;flex-basis:calc(50% - 26px);margin-bottom:10px}}
+
+  /* chain trace */
+  .chain{margin:16px 0}
+  .clink{display:flex;gap:14px;align-items:stretch}
+  .clink .rail{width:34px;flex:none;display:flex;flex-direction:column;align-items:center}
+  .clink .dot{width:12px;height:12px;border-radius:50%;border:3px solid var(--brand);background:#fff;flex:none;margin-top:18px}
+  .clink.l2 .dot{border-color:#5b8def}
+  .clink.l3 .dot{border-color:#2ea36b}
+  .clink .rail .bar{width:2px;flex:1;background:var(--line)}
+  .clink .cbody{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:12px}
+  .clink .lay{font-size:10px;font-weight:800;letter-spacing:.07em;color:var(--brand);margin-bottom:4px}
+  .clink.l2 .lay{color:#3f6fd0}
+  .clink.l3 .lay{color:#0b7a4d}
+  .clink .tok{font-family:var(--mono);font-size:12.5px;font-weight:700}
+  .clink .exp{font-size:12.5px;color:#4a4f57;margin-top:5px;line-height:1.6}
+  .clink .exp b{color:var(--fg)}
+
+  /* tables */
+  table{border-collapse:collapse;width:100%;font-size:12.8px;margin-top:4px}
+  th,td{padding:9px 12px;border-bottom:1px solid var(--line2);text-align:left;vertical-align:top}
+  th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#fafbfc}
+  td .mono,.tmono{font-family:var(--mono);font-size:11.5px}
+  .yes{color:var(--ok);font-weight:700}.no{color:var(--faint)}
+  .hard{color:var(--danger);font-weight:700}.soft{color:var(--wait);font-weight:700}
+
+  .note{border-radius:12px;padding:14px 18px;font-size:13px;margin-top:14px}
+  .note.info{background:#f5f4ff;border:1px solid #e0dcfb}
+  .note.warn{background:#fdf7ec;border:1px solid #f2e1c0}
+  .note b{font-weight:700}
+  .note .mono{font-size:11.5px}
+
+  /* ramps / scales (reference visuals) */
+  .ramp{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .ramp .name{width:110px;flex:none;font-size:12.5px;font-weight:600;display:flex;flex-direction:column;gap:4px}
+  .ramp .swatches{display:flex;flex:1;border-radius:9px;overflow:hidden;border:1px solid var(--line2)}
+  .sw{flex:1;height:44px;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 3px}
+  .sw .st{font-family:var(--mono);font-size:8.5px;font-weight:700;opacity:.85}
+  .sw .hx{font-family:var(--mono);font-size:7px;opacity:.7;letter-spacing:-.03em}
+  .typerow{display:flex;align-items:baseline;gap:16px;padding:6px 0;border-bottom:1px solid var(--line2)}
+  .typerow:last-child{border-bottom:none}
+  .typerow .rl{width:60px;flex:none;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+  .typerow .sz{width:104px;flex:none;font-size:11px;color:var(--faint);font-family:var(--mono)}
+  .typerow .sample{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .sprow{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .sprow .lbl{width:190px;flex:none;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .sprow .bar{height:15px;background:var(--brand);border-radius:3px;opacity:.85}
+  .radgrid{display:flex;gap:15px;flex-wrap:wrap;align-items:flex-end}
+  .radgrid .ri{text-align:center}
+  .radgrid .box{width:54px;height:54px;background:var(--brand-050);border:2px solid var(--brand)}
+  .radgrid .rl{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+  .elevgrid{display:flex;gap:16px;flex-wrap:wrap}
+  .elevgrid .ei{text-align:center}
+  .elevgrid .box{width:76px;height:52px;background:#fff;border-radius:10px;border:1px solid var(--line2)}
+  .elevgrid .el{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px}
+
+  .grp{margin-bottom:15px}
+  .grp .gh{font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .grp .gh .pill{font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px}
+  .pill.bg{background:#eef2f7;color:#3a4a5e}.pill.fg{background:#f3eefe;color:#5b46af}.pill.stroke{background:#eafaf1;color:#046b45}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:4px 9px;background:#fbfbfc;font-family:var(--mono)}
+  .chip.hot{border-color:#d9d2fb;background:#f5f3ff;color:var(--brand-deep)}
+
+  .gram{background:#1c1e21;border-radius:12px;padding:18px 20px;margin-bottom:14px;overflow-x:auto}
+  .gram .line{font-family:var(--mono);font-size:13px;color:#e6e8ec;white-space:nowrap}
+  .gram .seg{border-radius:5px;padding:2px 6px;font-weight:700}
+  .gram .s-comp{background:#3a3550;color:#c9bdf7}
+  .gram .s-var{background:#4a3d2a;color:#f0c674}
+  .gram .s-prop{background:#2a3d4a;color:#8ec7e0}
+  .gram .s-state{background:#2a4a35;color:#8ed6a8}
+  .gram .glabel{font-family:var(--mono);font-size:10px;color:#9aa1ab;margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+  .gram .glabel span{padding:2px 6px;border-radius:4px}
+  .example{font-family:var(--mono);font-size:11.5px;background:#fafbfc;border:1px solid var(--line2);border-radius:8px;
+    padding:9px 12px;margin-bottom:7px;line-height:1.7}
+  .example .r{color:var(--muted)}
+  .example .r b{color:var(--brand);font-weight:700}
+
+  .compgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:720px){.compgrid{grid-template-columns:repeat(2,1fr)}}
+  .comp{border:1px solid var(--line);border-radius:11px;padding:12px;background:#fbfbfc}
+  .comp .cn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .comp .cw{font-family:var(--mono);font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em}
+  .comp .cd{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.45}
+
+  .gate{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line2)}
+  .gate:last-child{border-bottom:none}
+  .gate .gi{font-family:var(--mono);font-size:11px;font-weight:700;flex:none;width:56px}
+  .gate .gt{font-size:12.8px}
+  .gate .gt b{font-weight:700}
+
+  .role{border-radius:15px;border:1px solid var(--line);background:var(--card);padding:20px 22px;margin-bottom:16px;border-top:4px solid var(--line)}
+  .role.plan{border-top-color:#e0a83c}
+  .role.design{border-top-color:var(--brand)}
+  .role.dev{border-top-color:var(--go)}
+  .role .rh{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+  .role .rh .rp{font-size:11px;font-weight:700;border-radius:999px;padding:4px 12px}
+  .role.plan .rh .rp{background:var(--waitBg);color:var(--wait)}
+  .role.design .rh .rp{background:var(--brand-050);color:var(--brand)}
+  .role.dev .rh .rp{background:var(--goBg);color:var(--go)}
+  .role .rh h3{font-size:15px;margin:0}
+  .role .rsub{font-size:12.5px;color:var(--muted);margin:2px 0 14px}
+  .role ul{margin:8px 0 0;padding-left:18px}
+  .role li{font-size:13px;margin-bottom:10px;line-height:1.65}
+  .dodont{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  @media(max-width:680px){.dodont{grid-template-columns:1fr}}
+  .dd{border-radius:10px;padding:12px 15px;font-size:12.5px;line-height:1.65}
+  .dd.do{background:var(--okBg);border:1px solid #bfe8d4}
+  .dd.dont{background:var(--dangerBg);border:1px solid #f3c4bd}
+  .dd .dh{font-weight:700;font-size:11.5px;margin-bottom:5px}
+  .dd.do .dh{color:var(--ok)}
+  .dd.dont .dh{color:var(--danger)}
+  .dd .mono{font-size:11px}
+
+  .faq{border-bottom:1px solid var(--line2);padding:13px 2px}
+  .faq:last-child{border-bottom:none}
+  .faq .q{font-size:13.5px;font-weight:700;margin-bottom:6px}
+  .faq .q::before{content:"Q. ";color:var(--brand)}
+  .faq .a{font-size:13px;color:#3a3f47;line-height:1.7}
+  .faq .a::before{content:"A. ";color:var(--faint);font-weight:700}
+
+  .glos-h{font-size:12px;font-weight:800;color:var(--brand-deep);letter-spacing:.05em;margin:18px 0 6px}
+  .glos-h:first-child{margin-top:0}
+  .glos{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+  @media(max-width:720px){.glos{grid-template-columns:1fr}}
+  .gl{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:12.8px}
+  .gl .gw{flex:none;width:132px;font-weight:700}
+  .gl .gw .mono{font-size:11.5px}
+  .gl .gd{color:#3a3f47;line-height:1.6}
+
+  .foot{margin-top:48px;color:var(--faint);font-size:11.5px;text-align:center;line-height:1.7}
+
+  /* ── 좌측 내비게이션 (메뉴 스타일) ── */
+  .shell{display:flex;max-width:1380px;margin:0 auto;align-items:flex-start}
+  .sidenav{width:266px;flex:none;position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:22px 13px 40px 15px;scrollbar-width:thin;background:#fff;border-right:1px solid var(--line);box-sizing:border-box}
+  .sidenav .nbrand{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#3a3f47;letter-spacing:.06em;margin:0 6px 16px;padding-bottom:14px;border-bottom:1px solid var(--line2)}
+  .sidenav .nbrand::before{content:"";width:11px;height:11px;border-radius:3.5px;background:var(--brand);flex:none}
+  .ngroup{margin-bottom:15px}
+  .ngroup>a.nph{display:flex;align-items:center;gap:7px;padding:4px 9px;margin-bottom:4px;text-decoration:none;font-size:10px;font-weight:800;letter-spacing:.09em;color:var(--faint);text-transform:uppercase}
+  .ngroup>a.nph:hover{color:#3a3f47}
+  .ndot{width:7px;height:7px;border-radius:2.5px;flex:none}
+  .nsl{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#4a4f57;text-decoration:none;padding:6px 9px;margin:1px 0;border-radius:8px;line-height:1.4;position:relative}
+  .nsl .no{font-family:var(--mono);font-size:9.5px;font-weight:700;color:#6b7280;background:#eef0f4;border-radius:5px;min-width:21px;text-align:center;padding:2.5px 0;flex:none}
+  .nsl:hover{background:#f0f1f5;color:var(--fg)}
+  .nsl.active{background:var(--brand-050);color:var(--brand-deep);font-weight:700}
+  .nsl.active::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:2px;background:var(--brand)}
+  .nsl.active .no{background:var(--brand);color:#fff}
+  .nsl.sub{margin-left:27px;font-size:11.7px;color:var(--muted);padding:4.5px 9px;border-left:2px solid var(--line2);border-radius:0 7px 7px 0}
+  .nsl.sub:hover{border-left-color:#c9cdd4;background:#f0f1f5}
+  .wrap{flex:1;min-width:0}
+  .fab{position:fixed;right:18px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.14);font-size:16px;cursor:pointer;z-index:80;display:none;align-items:center;justify-content:center;color:#3a3f47;padding:0}
+  .fab-top{bottom:18px}
+  .fab-menu{bottom:70px}
+  .fab.show{display:flex}
+  .jump{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+  .jump a{font-size:11.5px;font-weight:600;color:var(--brand-deep);background:#f5f3ff;border:1px solid #e0dcfb;border-radius:999px;padding:4px 11px;text-decoration:none}
+  .jump a:hover{background:#eae8ff}
+  .card,.role{scroll-margin-top:16px}
+  @media(max-width:1139px){
+    .sidenav{position:fixed;left:0;top:0;bottom:0;max-height:none;background:#fff;z-index:90;box-shadow:8px 0 30px rgba(0,0,0,.16);transform:translateX(-105%);transition:transform .22s ease;width:274px}
+    .sidenav.open{transform:none}
+    .fab-menu{display:flex}
+  }
+
+  /* ══════ 화이트 미니멀 톤 (테마 오버라이드) ══════ */
+  :root{--bg:#fff;--line:#e9eaee;--line2:#f0f1f4;
+    --brand:#1c1e21;--brand-050:#f4f5f7;--brand-100:#ececf0;--brand-deep:#1c1e21}
+  body{background:#fff}
+  .kicker{color:#9aa1ab}
+  .identity{background:#fff;border:1px solid #ececf0}
+  .identity .big b{color:#1c1e21;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+  .tl3,.readmap,.card{border-color:#ececf0}
+  .tl3 .h,.readmap .h{color:#1c1e21}
+  .readmap a{color:#1c1e21;text-decoration:underline;text-underline-offset:2px}
+  th{background:#fbfbfc}
+  /* 파트 배너: 다크 블록 → 타이포그래피 헤더 */
+  .part-band,.part.c1 .part-band,.part.c2 .part-band,.part.c3 .part-band,.part.c4 .part-band,.part.c5 .part-band,.part.c6 .part-band{
+    background:#fff;color:#1c1e21;border:none;border-top:2px solid #1c1e21;border-radius:0;padding:24px 2px 0}
+  .part.c1 .part-band .pno,.part.c2 .part-band .pno,.part.c3 .part-band .pno,.part.c4 .part-band .pno,.part.c5 .part-band .pno,.part.c6 .part-band .pno{
+    color:#6b7280;background:#f4f5f7}
+  .part-band .pt{color:#1c1e21}
+  .part-band .pd{color:#8a919c}
+  /* 섹션 헤더·배지 */
+  .lv.basic,.lv.core,.lv.ref,.lv.work{background:#fff;color:#6b7280;border:1px solid #e4e6ea}
+  .tldr{background:#fafafb;border-color:#f0f1f4;border-left-color:#1c1e21}
+  /* 콜아웃 통일: 컬러 배경 → 뉴트럴 + 헤어라인 */
+  .analogy,.easy,.why,.note.info,.note.warn{background:#fafafb;border-color:#ececf0}
+  .analogy .tx,.easy,.why{color:#3a3f47}
+  .analogy .tx b,.easy b,.why b{color:#1c1e21}
+  .why .ic{background:#1c1e21;color:#fff}
+  /* 태그·칩 */
+  .tag,.tag.neu,.tag.new{background:#f4f5f7;color:#4a4f57}
+  .pill.bg,.pill.fg,.pill.stroke{background:#f4f5f7;color:#4a4f57}
+  .chip{background:#fff;border-color:#e8e9ed}
+  .chip.hot{background:#fafafb;border-color:#c9cdd4;color:#1c1e21;font-weight:700}
+  .jump a{background:#fff;border-color:#e4e6ea;color:#3a3f47}
+  .jump a:hover{background:#f4f5f7}
+  /* 파이프라인·계층·체인 */
+  .pstep.src,.pstep.gate{background:#fff;border-color:#d9dbe0}
+  .layer .idx{background:#1c1e21}
+  .layer.l2 .idx{background:#5a6472}
+  .layer.l3 .idx{background:#98a2b3}
+  .layer .naming{background:#fafafb;border-color:#ececf0;color:#4a4f57}
+  .clink .dot{border-color:#1c1e21}
+  .clink.l2 .dot{border-color:#5a6472}
+  .clink.l3 .dot{border-color:#98a2b3}
+  .clink .lay,.clink.l2 .lay,.clink.l3 .lay{color:#8a919c}
+  /* 비교·DO/DON'T: 컬러 배경 제거, 라벨 색만 유지 */
+  .cmp.bad,.cmp.good,.dd.do,.dd.dont{background:#fff;border-color:#ececf0}
+  /* 코드 블록: 다크 → 라이트 */
+  .gram{background:#fafafb;border:1px solid #ececf0}
+  .gram .line{color:#1c1e21}
+  .gram .s-comp,.gram .s-var,.gram .s-prop,.gram .s-state{background:#ececf0;color:#1c1e21}
+  .gram .glabel{color:#8a919c}
+  .example{background:#fafafb;border-color:#ececf0}
+  .example .r b{color:#1c1e21}
+  .comp{background:#fff;border-color:#ececf0}
+  /* 직무 카드 */
+  .role{border-color:#ececf0}
+  .role.plan,.role.design,.role.dev{border-top:2px solid #1c1e21}
+  .role.plan .rh .rp,.role.design .rh .rp,.role.dev .rh .rp{background:#f4f5f7;color:#3a3f47}
+  /* 좌측 메뉴 */
+  .sidenav{border-right-color:#eeeff2}
+  .ndot{background:#c9cdd4 !important}
+  .nsl .no{background:#f0f1f4}
+  .radgrid .box{background:#fafafb;border-color:#1c1e21}
+  .foot{color:#b0b6be}
+
+</style>
+</head>
+<body>
+<button class="fab fab-menu" id="fabMenu" aria-label="목차 열기">☰</button>
+<button class="fab fab-top" id="fabTop" aria-label="맨 위로">↑</button>
+<div class="shell">
+<nav class="sidenav" id="sidenav">
+  <div class="nbrand">Core System · 개념 가이드</div>
+  <div class="ngroup"><a class="nph" href="#part1"><span class="ndot" style="background:var(--p1)"></span>Part 1 · 토큰 규칙</a>
+    <a class="nsl" href="#s-layers" data-sec="s-layers"><span class="no">1</span>3계층 한눈에</a>
+    <a class="nsl" href="#s4" data-sec="s4"><span class="no">2</span>이름 읽는 법 · 표기법</a>
+    <a class="nsl" href="#rules" data-sec="rules"><span class="no">3</span>토큰 규칙 상세</a>
+    <a class="nsl sub" href="#rules-2">문법 · 어휘 사전</a>
+    <a class="nsl sub" href="#rules-4">작명 8원칙 · 참조 규칙</a>
+  </div>
+  <div class="ngroup"><a class="nph" href="#part2"><span class="ndot" style="background:var(--p2)"></span>Part 2 · 토큰 사전</a>
+    <a class="nsl" href="#s9" data-sec="s9"><span class="no">4</span>Primitive — 원재료</a>
+    <a class="nsl sub" href="#ref-color">색 램프</a>
+    <a class="nsl sub" href="#ref-type">글자 · 여백</a>
+    <a class="nsl sub" href="#ref-units">단위 정책</a>
+    <a class="nsl" href="#s10" data-sec="s10"><span class="no">5</span>Semantic — 역할</a>
+    <a class="nsl" href="#s11" data-sec="s11"><span class="no">6</span>Component — 조립</a>
+    <a class="nsl" href="#s12" data-sec="s12"><span class="no">7</span>자동 검사 목록</a>
+  </div>
+  <div class="ngroup"><a class="nph" href="#part3"><span class="ndot" style="background:var(--p3)"></span>Part 3 · 직무별 사용법</a>
+    <a class="nsl" href="#s13" data-sec="s13"><span class="no">8</span>직무별 가이드</a>
+    <a class="nsl sub" href="#role-plan">기획 — 정책을 결정</a>
+    <a class="nsl sub" href="#role-design">디자인 — 역할을 조작</a>
+    <a class="nsl sub" href="#role-dev">개발 — 토큰을 소비</a>
+  </div>
+  <div class="ngroup"><a class="nph" href="#part4"><span class="ndot" style="background:#98a2b3"></span>Part 4 · 기초 개념</a>
+    <a class="nsl" href="#s1" data-sec="s1"><span class="no">9</span>토큰이 왜 필요한가</a>
+    <a class="nsl" href="#s2" data-sec="s2"><span class="no">10</span>이 시스템은 무엇이 다른가</a>
+    <a class="nsl" href="#s3" data-sec="s3"><span class="no">11</span>왜 계층을 나누나</a>
+  </div>
+  <div class="ngroup"><a class="nph" href="#part5"><span class="ndot" style="background:#e0a83c"></span>Part 5 · 작동 원리</a>
+    <a class="nsl" href="#s5" data-sec="s5"><span class="no">12</span>버튼 하나 추적하기</a>
+    <a class="nsl" href="#s6" data-sec="s6"><span class="no">13</span>다크 모드가 생기는 법</a>
+    <a class="nsl" href="#s7" data-sec="s7"><span class="no">14</span>접근성 자동 보장</a>
+    <a class="nsl" href="#s8" data-sec="s8"><span class="no">15</span>없는 색이 필요할 때</a>
+  </div>
+  <div class="ngroup"><a class="nph" href="#part6"><span class="ndot" style="background:#a98ae0"></span>Part 6 · 부록</a>
+    <a class="nsl" href="#faq" data-sec="faq"><span class="no">16</span>FAQ</a>
+    <a class="nsl" href="#glossary" data-sec="glossary"><span class="no">17</span>용어집</a>
+    <a class="nsl" href="#deeper" data-sec="deeper"><span class="no">18</span>더 깊이 보려면</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="kicker mono">01. Core System · 디자인 시스템</div>
+  <h1>Core System 개념 가이드</h1>
+  <p class="lede">이 시스템을 사용하는 <b>기획·디자인·개발 모든 분들</b>을 위한 문서입니다. 실무에서 가장 자주 필요한 <b>토큰 규칙과 사전을 앞</b>에 두고, <b>개념과 배경은 뒤</b>에 두었습니다. 디자인 토큰이 처음이신 분도 파악할 수 있도록 기초 설명을 모두 갖췄으며, 각 파트는 독립적으로 읽힙니다.</p>
+
+  <div class="tl3">
+    <div class="h">먼저, 3줄 요약</div>
+    <ol>
+      <li>이 시스템은 색상표·수치표 같은 <b>"완성된 값의 목록"이 아니라</b>, 브랜드 입력을 넣으면 전체 스타일 값을 규칙대로 계산해 주는 <b>"값을 만들어내는 엔진"</b>입니다.</li>
+      <li>값들은 <b>3계층</b>으로 조직됩니다 — 원재료(Primitive) → 용도별 역할(Semantic) → 컴포넌트 조립(Component). 위 계층은 아래 계층을 <b>가리키기만</b> 하고, 값을 새로 만들지 않습니다.</li>
+      <li>접근성(글자 대비, 터치 크기 등) 검사는 사람이 나중에 하는 게 아니라 <b>값이 만들어지는 순간 자동으로</b> 이루어집니다. 기준 미달이면 값이 아예 생성되지 않습니다.</li>
+    </ol>
+  </div>
+
+  <div class="readmap">
+    <div class="h">이 문서의 지도 — 어디부터 읽을까요?</div>
+    <div class="hs"><b>규칙과 사전이 앞</b>에, <b>개념과 배경이 뒤</b>에 옵니다. 이미 토큰을 써 보신 분은 PART 1부터 순서대로, <b>디자인 토큰이 처음이신 분은 PART 4 → 1 → 2 순서</b>로 읽으면 가장 빠릅니다.</div>
+    <table>
+      <thead><tr><th style="width:110px">파트</th><th>내용</th><th style="width:210px">이런 분께</th><th style="width:70px">분량</th></tr></thead>
+      <tbody>
+        <tr><td class="pn"><a href="#part1">PART 1</a></td><td>토큰 규칙 — 이름 읽는 법·표기법, 문법·어휘·참조 규칙</td><td>토큰을 쓰는 모든 분 (핵심)</td><td>~10분</td></tr>
+        <tr><td class="pn"><a href="#part2">PART 2</a></td><td>토큰 사전 — 원재료·역할·컴포넌트 전체 목록, 검사 기준</td><td>실무 중 찾아보기용</td><td>사전식</td></tr>
+        <tr><td class="pn"><a href="#part3">PART 3</a></td><td>직무별 사용법 — 기획·디자인·개발 DO / DON'T</td><td>내 직무 부분만</td><td>~4분</td></tr>
+        <tr><td class="pn"><a href="#part4">PART 4</a></td><td>기초 개념 — 토큰이 왜 필요한가, 이 시스템은 뭐가 다른가</td><td>처음이거나 근거가 궁금할 때</td><td>~7분</td></tr>
+        <tr><td class="pn"><a href="#part5">PART 5</a></td><td>작동 원리 — 시나리오 4개로 이해하기</td><td>더 깊이 알고 싶을 때</td><td>~8분</td></tr>
+        <tr><td class="pn"><a href="#part6">PART 6</a></td><td>부록 — FAQ · 용어집 · 더 깊이 볼 문서</td><td>막힐 때마다</td><td>사전식</td></tr>
+      </tbody>
+    </table>
+    <div class="hs" style="margin:12px 0 0">💡 읽다가 처음 보는 말이 나오면 <a href="#glossary" style="color:var(--brand-deep);font-weight:700">용어집(PART 6)</a>에 있습니다. 기초 용어(hex, rem, WCAG…)부터 정리되어 있어요.</div>
+  </div>
+
+  <!-- ═══════════════ PART 1 ═══════════════ -->
+  <div class="part c1" id="part1">
+    <div class="part-band">
+      <span class="pno">PART 1</span>
+      <div><div class="pt">토큰 규칙 — 이름과 문법</div><div class="pd">토큰 이름을 읽고 짓는 규칙. 이 문서에서 가장 자주 펼쳐 보게 될 부분입니다</div></div>
+    </div>
+
+    <section id="s-layers">
+      <div class="sec-hd"><span class="n">1</span><h2>3계층 한눈에 — 토큰이 사는 세 층</h2><span class="lv core">핵심</span><span class="cap">규칙을 읽기 전에 필요한 최소 지도</span></div>
+      <div class="tldr"><b>요약:</b> 모든 토큰은 세 계층 중 하나에 속합니다 — <b>원재료(Primitive) → 역할(Semantic) → 조립(Component)</b>. 위 계층은 아래를 <b>가리키기만</b> 하고 값을 새로 만들지 않습니다. 이 구조가 이후 모든 규칙의 전제입니다.</div>
+      <div class="stack">
+        <div class="layer">
+          <div class="idx">1</div>
+          <div class="body">
+            <div class="ttl">Primitive<small>원재료 — "값 그 자체"</small></div>
+            <div class="desc">색 램프, 글자 크기 단계, 여백 단계, 모서리, 그림자, 모션 속도 같은 <b>순수한 값의 눈금들</b>입니다. 용도를 모르고, 용도를 담은 이름도 갖지 않습니다. 값은 사람이 적는 게 아니라 <b>엔진이 브랜드 입력에서 계산</b>합니다.</div>
+            <div class="meta"><span class="naming">이름 예: brand.600 · space.4 · radius.2 · xl</span><span class="who">고치려면 → 설정 도구(컨피규레이터)에서 입력값 조정</span></div>
+          </div>
+        </div>
+        <div class="arrow">↓ Semantic이 Primitive를 <b>가리킴</b> ("본문 글자색 → coolGray의 몇 번째")</div>
+        <div class="layer l2">
+          <div class="idx">2</div>
+          <div class="body">
+            <div class="ttl">Semantic<small>역할 — "어디에 쓰는 값인가"</small></div>
+            <div class="desc">"본문 글자색(fg.primary)", "주 액션 배경(bg.action.primary)", "카드 안쪽 여백(inset.md)"처럼 <b>용도가 곧 이름</b>인 계층입니다. 값을 직접 갖지 않고 Primitive를 가리키며, "글자 대비는 기준 이상"같은 <b>선택 규칙</b>이 함께 정의됩니다. 라이트/다크 모드는 이 계층에서 갈라집니다.</div>
+            <div class="meta"><span class="naming">이름 예: fg.primary · bg.surface.base · inset.md · heading</span><span class="who">고치려면 → 토큰 편집 도구(Tokens Studio 등)에서 역할 연결 수정</span></div>
+          </div>
+        </div>
+        <div class="arrow">↓ Component가 Semantic을 <b>가리킴</b> ("버튼 hover 배경 → 주 액션 배경의 hover")</div>
+        <div class="layer l3">
+          <div class="idx">3</div>
+          <div class="body">
+            <div class="ttl">Component<small>조립 — "컴포넌트에 어떻게 연결되나"</small></div>
+            <div class="desc">버튼·인풋·카드 등 컴포넌트 하나하나가 어떤 역할 토큰을 쓰는지 정리한 <b>조립 정보</b>입니다. 색이나 크기를 새로 정하는 일은 없고, <b>오직 Semantic을 가리키기만</b> 합니다. 디자이너가 Figma에서 컴포넌트를 쓸 때, 개발자가 코드에서 스타일을 연결할 때 <b>실제로 소비하는 최종 계층</b>입니다.</div>
+            <div class="meta"><span class="naming">이름 예: button.primary.bg.hover</span><span class="who">고치려면 → 필요한 역할이 없을 때만, 역할 추가를 요청(승격 절차)</span></div>
+          </div>
+        </div>
+      </div>
+          <div class="card">
+        <h3>또 하나의 축 — 5 패밀리<span class="tag neu">분류층</span></h3>
+        <p class="sub">계층(세로축)이 "값이냐 역할이냐 조립이냐"를 나눈다면, <b>패밀리(가로축)</b>는 "무엇에 관한 값이냐"를 나눕니다. 토큰 하나는 <b>계층 하나 × 패밀리 하나</b>에 속합니다.</p>
+        <table>
+          <thead><tr><th style="width:110px">패밀리</th><th style="width:300px">포함</th><th>성격</th></tr></thead>
+          <tbody>
+            <tr><td><b>color</b></td><td class="tmono">색 램프 · alpha</td><td>색과 투명도</td></tr>
+            <tr><td><b>typo</b></td><td class="tmono">font.size · font.family · font.weight · lineHeight · letterSpacing</td><td>글자</td></tr>
+            <tr><td><b>spatial</b></td><td class="tmono">spacing(간격) · size(컨트롤·아이콘 치수)</td><td>레이아웃 — 얼마의 공간·얼마의 크기</td></tr>
+            <tr><td><b>visual</b></td><td class="tmono">radius(모서리) · borderWidth(테두리 두께) · elevation(그림자)</td><td>표면이 보이는 방식</td></tr>
+            <tr><td><b>motion</b></td><td class="tmono">duration · easing</td><td>시간과 가속</td></tr>
+          </tbody>
+        </table>
+        <div class="why"><span class="ic">왜?</span><div>모서리·테두리 두께는 치수값이지만 <b>spatial이 아니라 visual</b>입니다. 가르는 기준이 "숫자냐 아니냐"가 아니라 <b>"레이아웃을 정하는가, 표면 표현을 정하는가"</b>이기 때문입니다. 같은 이유로 alpha는 투명도라서 color에 속합니다.</div></div>
+        <div class="easy"><span class="ic">💡</span><div><b>패밀리는 이름에 들어가지 않습니다.</b> 패밀리는 Figma의 <b>컬렉션</b>, 원본 JSON의 <b>최상위 그룹</b>, 문서의 <b>목차</b>를 조직하는 층입니다. 이름에까지 붙이면(<span class="mono">--spatial-space-3</span>) 방금 줄인 이름이 도로 길어지므로, 코드에서는 <span class="mono">--space-3</span>처럼 짧게 유지합니다.</div></div>
+      </div>
+
+      <div class="note info" style="margin-top:4px">계층을 나누는 <b>이유와 배경</b>이 궁금하시면 뒤쪽 <a href="#s3" style="color:var(--brand-deep);font-weight:700">기초 개념 · 왜 계층을 나누나</a>에서 다룹니다. 지금은 "세 층이 있고, 위가 아래를 가리킨다"만 알면 충분합니다.</div>
+    </section>
+
+    <section id="s4">
+      <div class="sec-hd"><span class="n">2</span><h2>이름 읽는 법 — 외우지 말고 구조로 읽기</h2><span class="lv core">핵심</span><span class="cap">이름만 보면 계층·용도가 보입니다</span></div>
+      <div class="tldr"><b>요약:</b> 토큰 이름은 외우는 게 아닙니다. <b>3가지 패턴</b>만 알면 처음 보는 이름도 읽을 수 있습니다 — 숫자로 끝나면 원재료, 용도 단어면 역할, 컴포넌트 이름으로 시작하면 조립.</div>
+
+      <div class="card">
+        <h3>패턴 1 · 색이름/축약어 + 숫자 = Primitive (원재료)</h3>
+        <p class="sub">숫자는 값이 아니라 <b>순서 번호</b>입니다. "몇 px냐"가 아니라 "몇 번째 단계냐"를 말합니다.</p>
+        <table>
+          <thead><tr><th style="width:200px">이름</th><th>읽는 법</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono">brand.600</td><td>브랜드 색 램프의 <b>600번 단계</b>. 색은 50(가장 밝음)→950(가장 어두움)의 11단계. 600은 중간보다 약간 어두운 톤.</td></tr>
+            <tr><td class="tmono">space.4</td><td>여백 눈금의 <b>4번째 단계</b>(기본 설정에서 16px). px는 참고 정보일 뿐, 이름의 본체는 순서.</td></tr>
+            <tr><td class="tmono">radius.2 · elevation.3</td><td>모서리 둥글기 2번째, 그림자 깊이 3번째. 같은 원리.</td></tr>
+            <tr><td class="tmono">xl · 2xl (글자 크기)</td><td>옷 사이즈처럼 읽는 글자 크기 단계(xs~6xl 11단계). 업계에서 널리 쓰는 관례라 그대로 따랐습니다.</td></tr>
+          </tbody>
+        </table>
+        <div class="why"><span class="ic">왜?</span><div>이름에 값을 넣지 않는 이유: <span class="mono">space.16px</span>이라고 이름 지으면, 여백 밀도를 조정해 값이 20px이 되는 순간 이름이 거짓이 됩니다. <b>순서 번호는 값이 어떻게 바뀌어도 유효</b>합니다. 그래서 스케일 전체를 조정해도(엔진의 특기) 이름과 연결이 전혀 깨지지 않습니다.</div></div>
+      </div>
+
+      <div class="card">
+        <h3>패턴 2 · 용도 단어 = Semantic (역할)</h3>
+        <p class="sub">이름이 곧 사용처입니다. 자주 쓰는 접두어 3개만 익히면 대부분 읽힙니다: <b>bg</b>(background, 배경) · <b>fg</b>(foreground, 글자/아이콘) · <b>stroke</b>(선/테두리).</p>
+        <table>
+          <thead><tr><th style="width:230px">이름</th><th>읽는 법</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono">fg.primary</td><td>글자색 중 <b>기본(가장 잘 보여야 하는)</b> 색. 본문에 씁니다.</td></tr>
+            <tr><td class="tmono">fg.secondary / fg.subtle</td><td>보조 글자색 / 은은한 글자색. 뒤로 갈수록 위계가 낮은 텍스트용.</td></tr>
+            <tr><td class="tmono">bg.surface.base</td><td>카드·패널 등 <b>표면</b> 배경. bg.page(페이지 바닥)보다 한 층 위.</td></tr>
+            <tr><td class="tmono">bg.action.primary.hover</td><td>주 액션(대표 버튼) 배경의 <b>마우스 올림(hover) 상태</b>. 상태는 뒤에 점으로 붙습니다.</td></tr>
+            <tr><td class="tmono">inset.md / stack.md / inline.md</td><td>여백 3종 — inset은 <b>안쪽</b> 여백(패딩), stack은 <b>세로로 쌓인</b> 요소 사이, inline은 <b>가로로 나란한</b> 요소 사이.</td></tr>
+            <tr><td class="tmono">heading / body / caption</td><td>글자 스타일 역할 — 제목 / 본문 / 작은 설명. 크기·굵기·행간이 세트로 묶여 있습니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>패턴 3 · 컴포넌트 이름으로 시작 = Component (조립)</h3>
+        <p class="sub">점(.)으로 이어진 경로가 <b>큰 것 → 작은 것 순서</b>로 읽힙니다: 어느 컴포넌트의 → 어느 종류의 → 어느 부위가 → 어느 상태일 때.</p>
+        <div class="gram">
+          <div class="line">
+            <span class="seg s-comp">button</span><span class="seg s-var">.primary</span><span class="seg s-prop">.bg</span><span class="seg s-state">.hover</span>
+          </div>
+          <div class="glabel">
+            <span class="s-comp">컴포넌트 (버튼)</span><span class="s-var">종류 (주 버튼)</span><span class="s-prop">부위 (배경)</span><span class="s-state">상태 (마우스 올림)</span>
+          </div>
+        </div>
+        <p style="margin:0 0 8px">→ "주 버튼에 마우스를 올렸을 때의 배경색". 처음 보는 이름이라도 점을 따라 읽으면 뜻이 나옵니다. 부위 단어(bg·fg·stroke·radius…)는 Semantic과 같은 어휘를 재사용하므로 새로 외울 것이 없습니다.</p>
+      </div>
+
+      <div class="card">
+        <h3>두 표면 — 같은 토큰이 Figma와 코드에서 다르게 보입니다<span class="tag neu">확정 규칙</span></h3>
+        <p class="sub">이 문서는 토큰을 <span class="mono">bg.action.primary.hover</span>처럼 점(.)으로 적습니다. 실제로 쓰는 곳은 두 군데고, 표기가 서로 다릅니다 — <b>Figma에서는 폴더로, 코드에서는 CSS 변수로.</b> 규칙은 이 두 줄이 전부입니다.</p>
+        <table>
+          <thead><tr><th style="width:250px">토큰 (문서 표기)</th><th style="width:250px">Figma 변수</th><th>코드 CSS 변수</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono">typo · font / size / xs</td><td class="tmono">font / size / xs</td><td class="tmono">--font-size-xs</td></tr>
+            <tr><td class="tmono">visual · radius / 4</td><td class="tmono">radius / 4</td><td class="tmono">--radius-4</td></tr>
+            <tr><td class="tmono">visual · elevation / 1</td><td class="tmono">elevation / 1 <span style="color:var(--faint)">(모드 light/dark)</span></td><td class="tmono">--elevation-1</td></tr>
+            <tr><td class="tmono">spatial · space / 3</td><td class="tmono">space / 3</td><td class="tmono">--space-3</td></tr>
+            <tr><td class="tmono">color · brand / 500</td><td class="tmono">brand / 500</td><td class="tmono">--color-brand-500</td></tr>
+            <tr><td class="tmono">semantic · bg / action / primary / default</td><td class="tmono">bg / action / primary / default</td><td class="tmono">--bg-action-primary-default</td></tr>
+            <tr><td class="tmono">typo · lineHeight / tight</td><td class="tmono">lineHeight / tight</td><td class="tmono">--line-height-tight</td></tr>
+          </tbody>
+        </table>
+        <div class="why"><span class="ic">왜?</span><div><b>Figma에서 하이픈을 없애는 이유:</b> Figma는 <span class="mono">/</span>를 접이식 폴더로 보여줍니다. 계층을 폴더가 담으면 디자이너는 <b>마지막의 짧은 이름만 훑어</b> 고르면 되고, 긴 하이픈 이름을 눈으로 해석할 필요가 없어집니다. <b>코드에서 kebab을 유지하는 이유:</b> CSS 변수는 kebab이 업계 표준이고 가독성도 좋습니다. 두 표면의 관례가 다르므로 이름을 하나로 통일하지 않고, <b>변환을 빌드가 담당</b>합니다.</div></div>
+        <div class="easy"><span class="ic">💡</span><div><b>실무 규칙:</b> 표기 변환을 손으로 하지 마세요. 문서·소통에서는 점 표기를 쓰고, Figma에서는 폴더를 타고 들어가 고르고, 코드에서는 빌드가 만들어 준 변수명을 그대로 씁니다.</div></div>
+      </div>
+
+      <div class="card">
+        <h3>연습 — 이 이름들, 이제 읽히나요?</h3>
+        <table>
+          <thead><tr><th style="width:280px">이름</th><th style="width:110px">계층</th><th>뜻</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono">coolGray.100</td><td><span class="tag neu">Primitive</span></td><td>차가운 회색 램프의 100번(아주 밝은) 단계</td></tr>
+            <tr><td class="tmono">stroke.focus</td><td><span class="tag">Semantic</span></td><td>키보드 포커스 표시용 테두리 색</td></tr>
+            <tr><td class="tmono">modal.scrim</td><td><span class="tag neu">Component</span></td><td>모달 뒤 어두운 반투명 막(scrim)의 색 — '배경 막' 역할을 가리킴</td></tr>
+            <tr><td class="tmono">sectionGap</td><td><span class="tag">Semantic</span></td><td>페이지 섹션 사이의 큰 여백 (화면 크기에 따라 자동으로 달라지는 유일한 여백)</td></tr>
+            <tr><td class="tmono">input.stroke.invalid</td><td><span class="tag neu">Component</span></td><td>입력창이 오류 상태일 때의 테두리 색</td></tr>
+          </tbody>
+        </table>
+        <div class="note info" style="margin-top:12px"><b>여기까지가 읽는 법의 전부입니다.</b> 직접 이름을 지어야 하거나, 어떤 이름이 규칙에 맞는지 판단해야 할 때는 정식 규칙 전문 — 문법·어휘 사전·작명 8원칙·참조 규칙 — 이 <a href="#rules" style="color:var(--brand-deep);font-weight:700">바로 다음 섹션(3 · 토큰 규칙 상세)</a>에 있습니다.</div>
+      </div>
+    </section>
+
+    <section id="rules">
+      <div class="sec-hd"><span class="n">3</span><h2>토큰 규칙 상세 — 작명 · 어휘 · 참조 · 추가 절차</h2><span class="lv ref">참고</span><span class="cap">이름을 짓거나, 이름이 규칙에 맞는지 판단할 때</span></div>
+      <div class="tldr"><b>요약:</b> 이름은 <b>정해진 문법 + 정해진 어휘</b>의 조합입니다. 자유 작명이 아니라서 처음엔 갑갑해 보이지만, 그 덕분에 <b>누가 지어도 같은 이름이 나오고, 이름만 보고 뜻을 확정할 수 있습니다.</b> 이 섹션은 그 규칙의 전문(全文)입니다.</div>
+
+      <div class="jump"><a href="#rules-1">13-1 이름의 해부</a><a href="#rules-2">13-2 문법</a><a href="#rules-3">13-3 어휘 사전</a><a href="#rules-4">13-4 작명 8원칙</a><a href="#rules-5">13-5 참조 규칙</a><a href="#rules-6">13-6 상태 산식 · 13-7 체크리스트</a></div>
+
+      <div class="card" id="rules-1">
+        <h3>13-1 · 이름의 해부 — 기호 두 개면 충분합니다</h3>
+        <p class="sub">토큰 이름을 이루는 방법은 <b>점(.)으로 계층을 내려가는 것</b>과 <b>camelCase로 두 단어를 붙이는 것</b> 두 가지뿐입니다.</p>
+        <div class="gram">
+          <div class="line">
+            <span class="seg s-prop">bg</span>.<span class="seg s-var">action</span>.<span class="seg s-var">primary</span>.<span class="seg s-state">hover</span>
+          </div>
+          <div class="glabel">
+            <span class="s-prop">카테고리 — 무엇의 값인가 (배경)</span><span class="s-var">역할 — 폴더로 내려가는 계층 (액션 › 주)</span><span class="s-state">상태 — 항상 이름의 맨 끝 (마우스 올림)</span>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th style="width:120px">기호</th><th>역할</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono"><b>점 ( . )</b></td><td><b>위계를 내려갑니다.</b> 점을 하나 지날 때마다 "무엇의 → 무엇" 관계가 한 단계 깊어집니다.</td><td class="tmono">button.primary.bg.hover</td></tr>
+            <tr><td class="tmono"><b>camelCase</b></td><td><b>두 단어가 한 개념일 때 붙여 씁니다.</b> 하이픈 대신 대문자로 단어 경계를 표시합니다 — <span class="mono">lineHeight</span>는 "line의 height"가 아니라 <b>행간</b>이라는 한 개념입니다.</td><td class="tmono">lineHeight · borderWidth · onBrand · sectionGap · coolGray</td></tr>
+          </tbody>
+        </table>
+        <div class="easy"><span class="ic">💡</span><div><b>정리하면:</b> 이름의 계층은 <b>폴더(<span class="mono">/</span>)</b>가 담고, 두 단어가 한 개념인 이름은 <b>camelCase</b>로 붙여 씁니다. 그래서 토큰 이름 어디에도 하이픈(-)이 없습니다 — 하이픈은 코드(CSS 변수)에서만 구분자로 나타납니다.</div></div>
+        <table style="margin-top:12px">
+          <thead><tr><th style="width:200px">이런 이름은</th><th style="width:260px">이렇게 쓰여 있습니다</th><th>읽는 법</th></tr></thead>
+          <tbody>
+            <tr><td>글자 관련 값</td><td class="tmono">font / size / xs · font / weight / …</td><td>font 폴더 아래 종류별로 묶여 있습니다</td></tr>
+            <tr><td>버튼 계열 배경</td><td class="tmono">bg / action / primary / hover</td><td>폴더를 따라 내려가며 "주 액션 배경의 hover"로 읽습니다</td></tr>
+            <tr><td>표면 배경</td><td class="tmono">bg / surface / base · raised · overlay</td><td>기본 · 떠 있는 · 모달 표면이 한 폴더에</td></tr>
+            <tr><td>행간 · 자간</td><td class="tmono">lineHeight · letterSpacing</td><td>두 단어가 한 개념 — camelCase 한 단어</td></tr>
+            <tr><td>테두리 굵기</td><td class="tmono">borderWidth · strokeWidth</td><td>같은 방식</td></tr>
+            <tr><td>색 배경 위 글자</td><td class="tmono">onBrand · onAction</td><td>"~위에 올라가는"이라는 한 개념</td></tr>
+            <tr><td>회색 램프 · 섹션 여백</td><td class="tmono">coolGray · warmGray · sectionGap</td><td>한 개념의 이름</td></tr>
+          </tbody>
+        </table>
+        <div class="note info" style="margin-top:12px"><b>코드(CSS)에서는 다르게 보입니다.</b> 같은 토큰이 CSS 변수로 나갈 때는 관례대로 하이픈 구분이 됩니다 — <span class="mono">lineHeight / tight</span> → <span class="mono">--line-height-tight</span>, <span class="mono">coolGray / 100</span> → <span class="mono">--color-cool-gray-100</span>. 변환은 빌드가 자동으로 하므로 손으로 옮겨 적지 않습니다.</div>
+      </div>
+
+      <div class="card" id="rules-2">
+        <h3>13-2 · 계층별 정식 문법</h3>
+        <p class="sub">각 계층에서 허용되는 이름의 뼈대입니다. <span class="mono">{ }</span>는 "이 중 하나", <span class="mono">[ ]</span>는 "있어도 되고 없어도 됨"을 뜻합니다.</p>
+        <table>
+          <thead><tr><th style="width:110px">계층</th><th style="width:340px">문법</th><th>예 · 규칙</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>Primitive</b><br>색</td>
+              <td class="tmono">{램프이름}.{50…950}<br>alpha.{black|white|brand}.{단계}</td>
+              <td class="tmono" style="font-family:inherit;font-size:12.8px">brand.600 · coolGray.950 — 램프이름은 <b>색의 정체</b>(brand, red…)이고 용도(danger 등)는 금지. 숫자는 11단계 고정.</td>
+            </tr>
+            <tr>
+              <td><b>Primitive</b><br>수치</td>
+              <td class="tmono">space-{0…12} · radius-{0…6|full|circle}<br>elevation-{0…5} · font.size.{xs…6xl}<br>borderWidth.{0|1|2|4}<br>size.{control|icon}.{sm|md|lg}<br>motion.duration.{instant|fast|base|slow|slower}<br>motion.easing.{linear|standard|decelerate|accelerate}</td>
+              <td style="font-size:12.8px">번호는 <b>순서</b>이지 값이 아님. 단계 추가는 가능하지만(확장) 중간 끼워넣기로 기존 번호의 의미를 바꾸는 것은 금지 — 기존 참조가 전부 다른 값을 가리키게 되므로.</td>
+            </tr>
+            <tr>
+              <td><b>Semantic</b></td>
+              <td class="tmono">{카테고리}.{역할}[.{상태}]<br>{그룹}.{역할}.{sm|md|lg}</td>
+              <td style="font-size:12.8px"><span class="tmono">bg.action.primary.hover</span> · <span class="tmono">inset.md</span> — 카테고리는 정해진 목록(아래 13-3)에서만. 상태는 항상 맨 끝, 상태를 가질 수 있는 역할도 정해져 있음(액션·링크).</td>
+            </tr>
+            <tr>
+              <td><b>Component</b></td>
+              <td class="tmono">{컴포넌트}[.{변형|부위}].{속성}[.{상태}]</td>
+              <td style="font-size:12.8px"><span class="tmono">button.primary.bg.hover</span> — <b>변형은 의미 변형만</b>(primary/secondary/ghost). 크기(sm/md/lg)는 변형이 아니라 속성의 축입니다. 속성 어휘는 Semantic 카테고리를 재사용 — 새 단어를 만들지 않습니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="rules-3">
+        <h3>13-3 · 통제 어휘 사전 — 정해진 단어만 씁니다</h3>
+        <p class="sub">이름에 들어갈 수 있는 단어는 아래 목록으로 통제됩니다. 목록에 없는 단어가 필요하면 그것이 곧 <b>승격 요청 사유</b>입니다(단어 추가도 시스템 결정입니다).</p>
+        <table>
+          <thead><tr><th style="width:150px">묶음</th><th style="width:330px">어휘</th><th>규칙</th></tr></thead>
+          <tbody>
+            <tr><td><b>카테고리</b> (색)</td><td class="tmono">bg · fg · stroke</td><td>배경 / 글자·아이콘 / 선·테두리. 색 역할은 반드시 셋 중 하나로 시작.</td></tr>
+            <tr><td><b>카테고리</b> (비색상)</td><td class="tmono">inset · stack · inline · sectionGap<br>display · heading · title · body · label · caption<br>control · container · overlay(radius)<br>resting · raised · overlay · spotlight(그림자)</td><td>여백 4종 · 글자 6역할 · 모서리 3티어 · 그림자 4역할. 각 묶음 안에서만 조합.</td></tr>
+            <tr><td><b>상태</b></td><td class="tmono">hover · active · focus · disabled · invalid</td><td>항상 이름의 <b>맨 끝</b>. 상태를 가질 수 있는 곳은 <b>상호작용 역할(액션·링크)과 입력 컴포넌트</b>뿐. <span class="tmono">selected</span>는 컴포넌트마다 값이 달라질 수 있어 공용 어휘로 두지 않기로 확정됨 — 컴포넌트별로 정의.</td></tr>
+            <tr><td><b>강도</b></td><td class="tmono">subtle · (무표기) · strong</td><td>약함 &lt; 기본 &lt; 강함. 기본은 단어를 붙이지 않습니다(fg.primary가 곧 기본 강도). 3단계를 넘는 강도 세분화 금지.</td></tr>
+            <tr><td><b>크기</b></td><td class="tmono">sm · md · lg</td><td>역할의 크기 변주는 t-shirt 3단만. 스케일 번호(space.4)와 한 이름에 혼용 금지 — 크기 어휘는 Semantic, 번호는 Primitive의 것.</td></tr>
+            <tr><td><b>접두</b></td><td class="tmono">on…</td><td>"색 있는 배경 <b>위에</b> 올라가는 것" — onBrand(브랜드색 위 글자), onAction(버튼 위 글자). 위·아래 관계를 이름에 새기는 유일한 접두.</td></tr>
+            <tr><td><b>위계</b> (글자색)</td><td class="tmono">primary · secondary · subtle · disabled</td><td>정보 위계 순서. 이 순서를 건너뛰는 새 중간 단계(예: "semi-secondary") 금지.</td></tr>
+            <tr><td><b>축약</b> (허용)</td><td class="tmono">fg · bg · info<br>xs · sm · md · lg · xl · 2xl~6xl<br>x · y (축)<br>typo (패밀리 이름 전용)</td><td><b>정해진 목록</b> — 여기 없는 축약은 쓸 수 없습니다. <span class="mono">typo</span>는 패밀리(컬렉션) 이름에만 쓰고 토큰 이름에는 등장하지 않습니다.</td></tr>
+            <tr><td><b>케이싱</b></td><td class="tmono">lineHeight · borderWidth<br>2xl · 500 · 3</td><td>축약은 전부 소문자 · 두 단어 한 개념은 첫 글자 소문자 camelCase(lineHeight) · 숫자로 시작하는 이름 허용(2xl·500) · <b>대문자 시작·복수형 금지</b>.</td></tr>
+            <tr><td><b>축약</b> (금지)</td><td class="tmono">btn · pri · sec · txt · bdr · clr · sz · wt · ff · fs · lh · ls · pad · mgn · err …</td><td>임의 축약 일체 금지. 새 축약이 필요하면 <b>승격 절차로 위 허용 목록에 등재된 뒤에만</b> 사용. 대문자·복수형도 금지.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="rules-4">
+        <h3>13-4 · 작명 8원칙 — 새 이름을 지어야 할 때</h3>
+        <table>
+          <thead><tr><th style="width:250px">원칙</th><th>좋은 예 ✓</th><th>나쁜 예 ✗ · 왜</th></tr></thead>
+          <tbody>
+            <tr><td><b>1 · 용도로 짓는다, 생김새로 짓지 않는다</b></td><td class="tmono">fg.danger</td><td class="tmono">fg.red <span style="font-family:inherit;color:var(--muted)">— 브랜드에 따라 danger가 빨강이 아닐 수도. 생김새는 변하고 용도는 남는다.</span></td></tr>
+            <tr><td><b>2 · 이름에 값을 넣지 않는다</b></td><td class="tmono">space.4</td><td class="tmono">space.16px <span style="font-family:inherit;color:var(--muted)">— 밀도 조정으로 값이 바뀌면 이름이 거짓이 된다.</span></td></tr>
+            <tr><td><b>3 · 모드를 이름에 넣지 않는다</b></td><td class="tmono">bg.surface.base</td><td class="tmono">bg.surface.base-dark <span style="font-family:inherit;color:var(--muted)">— 라이트/다크는 엔진이 전개한다. 이름에 새기면 모드가 2배로 불어난다.</span></td></tr>
+            <tr><td><b>4 · 컴포넌트 이름을 Semantic에 넣지 않는다</b></td><td class="tmono">bg.action.primary</td><td class="tmono">bg.button <span style="font-family:inherit;color:var(--muted)">— 버튼 말고도 쓰이는 순간 이름이 좁아서 못 쓰게 된다. 컴포넌트 귀속은 Component 계층의 몫.</span></td></tr>
+            <tr><td><b>5 · 전부 소문자, 축약은 공인된 것만</b></td><td class="tmono">bg · fg · sm · md · lg</td><td class="tmono">Bg · BTN · pri <span style="font-family:inherit;color:var(--muted)">— 대문자는 표기 변환(카멜 등)에서 정보가 깨지고, 사적 축약은 해독 불가.</span></td></tr>
+            <tr><td><b>6 · 단수형으로 쓴다</b></td><td class="tmono">stroke.default</td><td class="tmono">strokes.defaults <span style="font-family:inherit;color:var(--muted)">— 단·복수 혼재는 오타의 온상.</span></td></tr>
+            <tr><td><b>7 · 이름에 넣지 않는 것 4가지</b></td><td style="font-size:12.8px"><span class="tmono">space.3</span> · <span class="tmono">elevation.1</span></td><td style="font-size:12.8px"><b>패밀리</b>(spatial…) · <b>계층</b>(component…) · <b>단위</b>(rem/px) · <b>모드</b>(light/dark)는 전부 이름 밖입니다. 이들은 컬렉션·파일·모드 같은 <b>산출 축</b>이 표현합니다. <span class="mono">elevation-light-elevation-1</span>(27자)이 <span class="mono">--elevation-1</span>(12자)이 되는 이유.</td></tr>
+            <tr><td><b>8 · 새 단어는 최후의 수단</b></td><td style="font-size:12.8px">기존 어휘 조합으로 먼저 시도</td><td style="font-size:12.8px">즉석 신조어 — 어휘 사전(13-3)에 없는 단어가 필요하면 승격 요청으로. 단어 하나도 시스템 자산입니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="rules-5">
+        <h3>13-5 · 참조 규칙 — 연결은 한 방향으로만 흐릅니다</h3>
+        <p class="sub" style="margin-bottom:10px"><span class="mono">Component → Semantic → Primitive</span> — 위에서 아래로만. 이 방향이 지켜져야 "브랜드 입력을 바꾸면 전부 다시 계산된다"가 성립합니다.</p>
+        <table>
+          <tbody>
+            <tr><td style="width:210px"><b>① 아래로만 참조</b></td><td>역방향(Primitive가 Semantic을 참조)과 수평 참조는 금지. 예외적으로 상태 변형(hover 등)은 <b>같은 역할의 기본값에서 산식으로 파생</b>되는데, 이는 참조가 아니라 계산 규칙입니다(13-6).</td></tr>
+            <tr><td><b>② 계층 건너뛰기 금지</b></td><td>Component가 Primitive를 직접 참조할 수 없습니다(<span class="tmono">button.bg → brand.600 ✗</span>). 반드시 Semantic을 거칩니다. 건너뛰면 "역할 교체"라는 중간층의 유연성이 사라지기 때문 — 자동 검사가 차단합니다.</td></tr>
+            <tr><td><b>③ 순환 금지</b></td><td>A→B→A처럼 참조가 되돌아오면 값을 계산할 수 없습니다. 생성 단계에서 자동 검출됩니다.</td></tr>
+            <tr><td><b>④ 허용 예외는 딱 2종</b></td><td><b>계산값</b>(computed — 공식이 함께 기록된 자동 계산, 예: 중첩 모서리 = 바깥 − 여백)과 <b>특수값</b>(pill·circle). 이 둘 외의 "참조 아닌 값"은 전부 위반입니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="rules-6" style="display:flex;gap:32px;flex-wrap:wrap">
+        <div style="flex:1.2;min-width:300px">
+          <h3>13-6 · 상태 값은 손으로 정하지 않습니다</h3>
+          <p class="sub">hover가 얼마나 어두워지는지는 디자이너가 그때그때 정하는 게 아니라 <b>산식</b>입니다.</p>
+          <table>
+            <tbody>
+              <tr><td style="width:110px" class="tmono">hover</td><td>기본값에서 램프 <b>1단계</b> 이동 (라이트: 어둡게 / 다크: 밝게)</td></tr>
+              <tr><td class="tmono">active</td><td>기본값에서 <b>2단계</b> 이동 (같은 방향)</td></tr>
+              <tr><td class="tmono">disabled</td><td>공용 비활성 색 <b>하나</b>로 통일 (역할별로 만들지 않음)</td></tr>
+              <tr><td class="tmono">focus</td><td>색 이동이 아니라 <b>별도의 포커스 테두리</b>(stroke.focus + 굵기·간격)로 표현</td></tr>
+            </tbody>
+          </table>
+          <div class="why" style="margin-bottom:0"><span class="ic">왜?</span><div>산식이면 <b>모든 컴포넌트의 상태 감각이 동일</b>해지고, 브랜드가 바뀌어도 상태가 자동으로 따라옵니다. 단, 버튼처럼 <b>위에 얹힌 글자와의 대비</b>를 지키는 색은 모드와 무관하게 항상 어두워지는 쪽으로 이동합니다 — 이동 후에도 글자 대비 검사를 다시 통과해야 하는 것은 동일합니다.</div></div>
+        </div>
+        <div style="flex:1;min-width:280px" id="rules-7">
+          <h3>13-7 · 새 토큰이 필요할 때 — 5단계 체크</h3>
+          <p class="sub">순서대로 자문하고, 5번까지 왔다면 승격 요청입니다.</p>
+          <table>
+            <tbody>
+              <tr><td style="width:36px" class="tmono"><b>1</b></td><td><b>기존 역할로 되나?</b> 목록(<a href="#s10" style="color:var(--brand-deep);font-weight:700">5 · Semantic 사전</a>)에서 용도가 같은 역할을 먼저 찾습니다. 90%는 여기서 끝납니다.</td></tr>
+              <tr><td class="tmono"><b>2</b></td><td><b>어느 계층인가?</b> 순수한 값이면 Primitive(→ 설정 도구), 용도면 Semantic, 컴포넌트 연결이면 Component.</td></tr>
+              <tr><td class="tmono"><b>3</b></td><td><b>기존 어휘로 이름이 조합되나?</b> 어휘 사전(13-3) + 문법(13-2) 안에서 지어지는지 확인.</td></tr>
+              <tr><td class="tmono"><b>4</b></td><td><b>참조가 아래로만 향하나?</b> 값을 새로 만들지 않고 아래 계층을 가리키는지(13-5).</td></tr>
+              <tr><td class="tmono"><b>5</b></td><td><b>승격 요청.</b> 용도·쓰일 곳·기존 역할로 안 되는 이유를 적어 요청하면, 반복 수요 확인 후 정식 추가됩니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <div class="part c2" id="part2">
+    <div class="part-band">
+      <span class="pno">PART 2</span>
+      <div><div class="pt">토큰 사전 — 무엇이 어디에 쓰이나</div><div class="pd">원재료·역할·컴포넌트 전체 목록과 자동 검사 기준. 실무 중 찾아보는 사전</div></div>
+    </div>
+
+    <section id="s9">
+      <div class="sec-hd"><span class="n">4</span><h2>Primitive 사전 — 원재료 (5 패밀리)</h2><span class="lv ref">참고</span><span class="cap">모든 값은 엔진이 생성 · 아래는 기본 설정의 예시</span></div>
+      <div class="tldr"><b>주의:</b> 아래 실제 값(hex, px)은 <b>기본 설정의 생성 결과 예시</b>입니다. 브랜드 설정이 다르면 값도 달라집니다. 외울 것은 값이 아니라 <b>구조(단계 수와 이름 규칙)</b>입니다.</div>
+
+      <div class="jump"><a href="#ref-color">color</a><a href="#ref-type">typo</a><a href="#ref-space">spatial · 여백</a><a href="#ref-shape">visual · 모서리/그림자</a><a href="#ref-msz">motion · 굵기 · 크기</a><a href="#ref-units">단위 정책</a></div>
+
+      <div class="card" id="ref-color">
+        <h3>color · 색<span class="tag">50–950 · 11단계</span><span class="cnt">7개 램프 + 반투명(알파)</span></h3>
+        <p class="sub">램프(ramp) = 한 색의 밝기 단계 세트. 브랜드색 1개 + 회색 2종(따뜻한/차가운) + 신호용 4색(빨강·주황·초록·파랑)이 기본 구성입니다. 신호용 4색도 이 단계에서는 그냥 "빨강"일 뿐 — "오류색"이라는 의미는 Semantic이 붙입니다.</p>
+        <div id="ramps"></div>
+        <div class="note info" style="margin-top:12px"><b>알아두면 좋은 것:</b> 램프는 사람이 찍은 색이 아니라 <b>지각 균등 색 공간(OKLCH)</b>에서 계산됩니다 — 단계 간 밝기 차이가 눈으로 균등하게 느껴지도록요. 화면에 표현 불가능한 색이 나오지 않도록 자동 보정되며, 회색 2종은 브랜드 톤에 맞춰 미세하게 착색된 회색입니다(차가운 회색이 기본).</div>
+      </div>
+
+      <div class="card" id="ref-type">
+        <h3>typo · 글자<span class="tag">xs…6xl · 11단계</span></h3>
+        <p class="sub">기준 크기(base) × 비율로 단계가 계산되고, 필요한 단계만 미세 조정됩니다. 크기·행간·자간·굵기·글꼴이 <b>한 세트</b>로 관리되며, 모바일/태블릿/데스크톱은 기준값만 다르고 같은 곡선을 공유합니다.</p>
+        <div id="type"></div>
+        <div class="note info" style="margin-top:12px">행간은 본문 기준 <b>1.6 이상</b>(가독성 접근성 기준), 큰 제목일수록 점점 좁아집니다. 실제 글꼴(폰트 파일)은 서비스가 지정하는 슬롯 방식입니다.</div>
+      </div>
+
+      <div class="card" id="ref-space">
+        <h3>spatial · 여백<span class="tag neu">space.0…12 · 13단계</span></h3>
+        <p class="sub">모든 값이 <b>4px의 배수</b>, 가능하면 8px의 배수가 되도록 생성됩니다(요소들이 격자에 맞아 떨어져 화면이 안정되어 보이는 이유). 4·12px처럼 8의 배수가 아닌 것은 "하프스텝(보조 단계)"이라 부릅니다.</p>
+        <div id="spacing"></div>
+      </div>
+
+      <div class="card" id="ref-shape" style="display:flex;gap:36px;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px">
+          <h3>visual · 모서리<span class="tag neu">radius.0…6</span></h3>
+          <p class="sub">4px 간격의 둥글기 단계 + 특수값 2개: <b>full</b>(알약 모양) · <b>circle</b>(원). 카드 안에 카드가 들어갈 때 안쪽 둥글기는 공식(<b>바깥 둥글기 − 안쪽 여백</b>)으로 자동 계산되어, 안팎 곡률이 어긋나 보이는 문제를 막습니다.</p>
+          <div class="radgrid" id="radius"></div>
+        </div>
+        <div style="flex:1;min-width:260px">
+          <h3>visual · 그림자<span class="tag neu">elevation.0…5</span></h3>
+          <p class="sub">떠 있는 높이 6단계(0=평면). 그림자는 두 겹 합성입니다 — 물체 바로 밑의 <b>진한 접촉 그림자</b> + 넓게 퍼지는 <b>은은한 확산 그림자</b>. 실제 물체의 그림자와 같은 원리라 자연스럽게 보입니다.</p>
+          <div class="elevgrid" id="elev"></div>
+        </div>
+      </div>
+
+      <div class="card" id="ref-msz">
+        <h3>motion · 모션 &nbsp;/&nbsp; visual · 테두리 굵기 &nbsp;/&nbsp; spatial · 컨트롤 크기</h3>
+        <table>
+          <thead><tr><th style="width:130px">레이어</th><th>구성</th><th>기준</th></tr></thead>
+          <tbody>
+            <tr><td><b>motion</b></td><td class="tmono">속도: instant(0) · fast(120) · base(200) · slow(320) · slower(480) ms<br>가속 곡선: linear · standard · decelerate · accelerate</td><td>속도는 ms 단위로 단계가 커질수록 반드시 길어짐. 곡선은 표준 cubic-bezier 표기.</td></tr>
+            <tr><td><b>borderWidth</b></td><td class="tmono">0 / 1 / 2 / 4 px</td><td><b>px 고정</b> — 1px 얇은 선은 배율 확대로 흐릿해지면 안 되는 정밀 치수라서.</td></tr>
+            <tr><td><b>size</b></td><td class="tmono">컨트롤 높이: sm 36 · md 44 · lg 52<br>아이콘: sm 16 · md 20 · lg 24</td><td>버튼·인풋 등 <b>닫힌 컨트롤의 높이</b>를 결정. 기본(md)은 44px 이상이 생성 조건(터치 기준). 카드처럼 내용에 따라 늘어나는 요소에는 높이 토큰을 쓰지 않습니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="ref-units">
+        <h3>단위 정책 — 단위가 제각각인 이유</h3>
+        <p class="sub"><b>기준: 단위 통일이 아니라 "이 값이 어떻게 스케일돼야 하는가"</b>입니다. 사용자가 브라우저 글자 크기를 키웠을 때 함께 커져야 하는 값(rem)과, 절대 흐려지면 안 되는 값(px)이 다르기 때문입니다.</p>
+        <table>
+          <thead><tr><th>대상</th><th>단위</th><th>왜</th></tr></thead>
+          <tbody>
+            <tr><td>여백 · 모서리 · 글자 크기</td><td class="tmono">rem · px 병기</td><td>웹은 rem(글자 확대 대응), 네이티브 앱은 px — 플랫폼에 맞는 쪽을 사용</td></tr>
+            <tr><td>그림자</td><td class="tmono">rem</td><td>글자를 키우면 그림자도 비례해 커져야 자연스러움</td></tr>
+            <tr><td>자간</td><td class="tmono">em</td><td>글자 크기에 비례하는 값이라서</td></tr>
+            <tr><td>행간</td><td class="tmono">단위 없음</td><td>상속이 안전한 표준 방식 · 본문 1.6 이상 보장</td></tr>
+            <tr><td>테두리 굵기</td><td class="tmono">px 고정</td><td>1px 선의 선명함 유지</td></tr>
+            <tr><td>모션 속도 / 곡선</td><td class="tmono">ms / cubic-bezier</td><td>시간·곡선의 표준 표기</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="s10">
+      <div class="sec-hd"><span class="n">5</span><h2>Semantic 사전 — 역할 전체 목록</h2><span class="lv ref">참고</span><span class="cap">화면 작업에서 실제로 고르게 되는 이름들</span></div>
+      <div class="tldr"><b>읽는 팁:</b> 전부 외울 필요 없습니다. <b>굵게 표시된 자주 쓰는 역할</b> 위주로 눈에 익혀 두고, 나머지는 필요할 때 찾아보세요. 괄호 숫자(≥7 등)는 보장되는 최소 대비입니다.</div>
+
+      <div class="card">
+        <h3>색 역할 — bg(배경) / fg(글자) / stroke(선)</h3>
+        <div id="semcolor"></div>
+        <div class="note info" style="margin-top:10px"><b>상태(hover·active·disabled)가 붙는 역할은 정해져 있습니다</b> — 사용자가 조작하는 대상인 <b>액션(action)과 링크(link) 계열뿐</b>입니다. 배경·표면 같은 정적인 역할에는 상태가 없습니다. 모든 역할에 상태를 붙이면 토큰이 수백 개로 불어나기 때문에 의도적으로 제한한 것입니다.</div>
+      </div>
+
+      <div class="card">
+        <h3>색 외 역할 — 글자·여백·모서리·그림자·모션</h3>
+        <table id="semrest"></table>
+        <div class="note info" style="margin-top:12px"><b>화면 크기(반응형) 대응도 이 계층의 일입니다.</b> 글자 6역할은 모바일/태블릿/데스크톱에서 각각 다른 단계로 자동 연결되고(caption은 어느 화면에서도 12px 밑으로 내려가지 않음), 여백 중에는 sectionGap만 화면 크기를 따라갑니다.</div>
+      </div>
+    </section>
+
+    <section id="s11">
+      <div class="sec-hd"><span class="n">6</span><h2>Component 사전 — 표준 8종과 연결 규칙</h2><span class="lv ref">참고</span><span class="cap">디자인·개발이 실제로 소비하는 최종 계층</span></div>
+      <div class="tldr"><b>요약:</b> 컴포넌트 토큰의 규칙은 단 하나 — <b>Semantic 역할을 가리키기만 한다.</b> 색·크기를 새로 정의하는 컴포넌트 토큰은 존재할 수 없습니다(자동 검사가 차단).</div>
+      <div class="note warn"><b>현재 제공 범위 안내.</b> 3계층 구조는 그대로지만, <b>지금 제공되는 토큰은 Primitive(원재료)와 Semantic(역할) 두 계층</b>입니다. 컴포넌트 계층은 추후 제공 예정이라, 지금 화면 작업에서 고를 이름은 <a href="#s10" style="color:#7a4d00;font-weight:700">5 · Semantic 사전</a>에 있습니다. 이 섹션은 구조를 이해하고 앞으로를 대비하는 용도로 읽으세요.</div>
+
+      <div class="card">
+        <h3>표준 8종</h3>
+        <p class="sub">가장 사용 빈도가 높고 상호작용 패턴을 대표하는 8종 — 액션(Button), 입력(Input·Select·Switch), 컨테이너(Card), 탐색(Tabs), 오버레이(Modal), 알림(Toast). 이후 컴포넌트는 이 8종의 패턴을 재사용해 늘려갑니다.</p>
+        <div class="compgrid" id="comps"></div>
+      </div>
+
+      <div class="card">
+        <h3>연결 규칙 3가지</h3>
+        <table>
+          <tbody>
+            <tr><td style="width:190px"><b>① 역할만 가리킨다</b></td><td>컴포넌트 토큰의 값은 Semantic 역할의 이름뿐입니다. 생값(hex·px)이나 Primitive 직접 참조는 자동 검사가 실패 처리합니다. 예외는 두 가지뿐 — 공식이 명시된 <b>계산값</b>(예: 중첩 모서리 = 바깥 − 여백)과 <b>특수값</b>(알약·원).</td></tr>
+            <tr><td><b>② 라이트/다크를 모른다</b></td><td>컴포넌트 정의에는 라이트/다크 구분이 없습니다. 모드 해석은 엔진이 Semantic 단계에서 끝내고, 컴포넌트 정의 <b>1벌</b>에서 모드별 산출물이 자동으로 나옵니다. 정의가 하나라서 두 모드가 어긋날 수 없습니다.</td></tr>
+            <tr><td><b>③ 부족하면 승격 요청</b></td><td>필요한 역할이 없으면 컴포넌트 안에서 만들지 않고 역할 추가를 요청합니다(<a href="#s8" style="color:var(--brand-deep);font-weight:700">15 · 없는 색이 필요할 때</a>). 이것이 시스템이 오염되지 않는 유일한 통로입니다.</td></tr>
+          </tbody>
+        </table>
+        <div class="example" style="margin-top:12px">
+          <span class="r">button.primary.bg.hover &nbsp;→ &nbsp;<b>{bg.action.primary.hover}</b> &nbsp;← 역할을 가리킴 ✓</span><br>
+          <span class="r">switch.knob.motion &nbsp;→ &nbsp;<b>{motion.control}</b> &nbsp;← 역할을 가리킴 ✓</span><br>
+          <span class="r">select.item.radius &nbsp;→ &nbsp;<b>계산값: max(0, 바깥 radius − 안쪽 여백)</b> &nbsp;← 공식 명시 예외 ✓</span><br>
+          <span class="r">card.bg &nbsp;→ &nbsp;#ffffff &nbsp;← 생값. 자동 검사 실패 ✗</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>제공 형태 — 쓰는 도구에 맞게 변환되어 옵니다<span class="tag neu">Figma 우선</span></h3>
+        <p class="sub">토큰을 받기 위해 <b>JSON 파일을 열어 볼 필요가 없습니다.</b> 원본은 하나지만, 쓰는 도구에 맞는 형태로 변환되어 제공됩니다.</p>
+        <table>
+          <thead><tr><th style="width:150px">쓰는 곳</th><th style="width:260px">받는 것</th><th>쓰는 방법</th></tr></thead>
+          <tbody>
+            <tr><td><b>Figma</b><br><span class="tag">우선</span></td><td>원재료·역할 = <b>Variables 컬렉션</b><br>(패밀리별 컬렉션 · 라이트/다크 모드)</td><td>폴더를 타고 들어가 <b>마지막 이름만 고르면</b> 됩니다. JSON을 볼 일이 없습니다.</td></tr>
+            <tr><td><b>코드</b></td><td>원재료·역할 = <b>CSS 변수</b>(kebab)</td><td><span class="mono">--bg-action-primary-default</span>처럼 그대로 참조.</td></tr>
+            <tr><td><b>프레임워크</b></td><td>역할 → shadcn·Tailwind 등 <b>테마 매핑</b></td><td>테마를 얹으면 끝.</td></tr>
+          </tbody>
+        </table>
+        <div class="note info" style="margin-top:12px"><b>컴포넌트 계층이 추가되면</b> 같은 방식으로 제공됩니다 — Figma에서는 컴포넌트 변형에 연결되고, 코드에서는 컴포넌트 CSS로, 프레임워크에서는 테마로.</div>
+        <div class="easy"><span class="ic">💡</span><div>세 산출은 <b>모두 같은 원본에서 파생</b>되므로 서로 어긋날 수 없습니다. 디자인 파일의 값과 코드의 값이 다른 상황이 구조적으로 생기지 않습니다.</div></div>
+      </div>
+    </section>
+
+    <section id="s12">
+      <div class="sec-hd"><span class="n">7</span><h2>자동 검사 목록 — 무엇이 언제 걸러지나</h2><span class="lv ref">참고</span><span class="cap">✗ 필수(생성 실패) / △ 권고(예외 허용 + 기록)</span></div>
+      <div class="tldr"><b>요약:</b> 아래 검사들이 <b>값이 생성될 때마다</b> 자동 실행됩니다. 여러분이 토큰만 쓴다면 이 항목들은 이미 통과된 상태입니다.</div>
+      <div class="card">
+        <div class="gate"><span class="gi hard">✗ 대비</span><span class="gt"><b>글자·선 대비</b> — 쓰일 수 있는 배경 중 가장 불리한 배경 기준으로 목표 대비(기본 AAA 7:1, 서비스 선택으로 AA 4.5:1) 이상. 미달이면 생성 실패.</span></div>
+        <div class="gate"><span class="gi hard">✗ 터치</span><span class="gt"><b>터치 크기</b> — 기본 컨트롤 높이 44px 이상(WCAG 터치 타깃).</span></div>
+        <div class="gate"><span class="gi hard">✗ 격자</span><span class="gt"><b>격자·순서·중복</b> — 여백·모서리가 4px/8px 격자에 정렬되는지, 단계가 순서대로 커지는지, 같은 값이 중복 생성되지 않았는지.</span></div>
+        <div class="gate"><span class="gi hard">✗ 중첩</span><span class="gt"><b>중첩 모서리</b> — 안쪽 둥글기가 공식(바깥 − 여백)과 일치하는지 재계산 대조.</span></div>
+        <div class="gate"><span class="gi hard">✗ 모션</span><span class="gt"><b>모션 유효성</b> — 속도가 단계 순서대로 커지는지, 가속 곡선 수치가 유효 범위인지.</span></div>
+        <div class="gate"><span class="gi hard">✗ 연결</span><span class="gt"><b>연결 무결성</b> — 컴포넌트 토큰이 역할만 가리키는지, 생값·직접 참조가 숨어 있지 않은지.</span></div>
+        <div class="gate"><span class="gi soft">△ 권고</span><span class="gt"><b>다크 가독성 보완, 격자 예외</b> 등 — 의도적 절충(예: 8px 격자보다 44px 터치 기준을 우선)은 실패가 아니라 기록으로 남깁니다.</span></div>
+        <div class="note info"><b>검사는 화면 렌더링까지 갑니다.</b> 숫자만 맞는지 보는 게 아니라, 실제 브라우저로 그려 본 뒤 <b>최종 적용된 값을 실측 대조</b>합니다. 과거 "눈으로 세 번 검토를 통과한" 간격 버그가 실측에서야 잡힌 경험 이후, "눈이 아니라 수치로"가 검증 원칙이 되었습니다.</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part c3" id="part3">
+    <div class="part-band">
+      <span class="pno">PART 3</span>
+      <div><div class="pt">직무별 사용법</div><div class="pd">기획·디자인·개발이 각자 결정하는 것 · 만지는 것 · 참조하는 것</div></div>
+    </div>
+
+    <section id="s13">
+      <div class="sec-hd"><span class="n">8</span><h2>직무별 가이드</h2><span class="lv work">실무</span><span class="cap">내 직무 부분만 읽으셔도 됩니다</span></div>
+
+      <div class="role plan" id="role-plan">
+        <div class="rh"><span class="rp">기획 PLANNING</span><h3>기획은 "정책"을 결정합니다 — 값은 결정 대상이 아닙니다</h3></div>
+        <p class="rsub">기획이 색상값·수치를 정할 일은 없습니다. 대신 시스템이 대신 정해줄 수 없는 방향 결정이 기획의 몫입니다.</p>
+        <ul>
+          <li><b>기획이 정하는 것:</b> 브랜드 대표색(디자인과 함께), 다크 모드 지원 여부, 대비 등급(AA/AAA — 기본은 더 안전한 AAA), 회색 톤(따뜻한/차가운), 전체적인 밀도·모서리 성향. 이것들이 엔진의 <b>입력</b>이고, 나머지 값 전부는 <b>출력</b>입니다.</li>
+          <li><b>요구사항 문서에서 빼도 되는 것:</b> "글자 대비 확보", "버튼 터치 영역 확보", "다크 모드 가독성" — 전부 생성 조건이라 결과물에 이미 들어 있습니다. 문서에는 그 위의 정책(다크 지원 여부, AA/AAA)만 쓰면 됩니다.</li>
+          <li><b>피드백은 역할 이름으로:</b> "버튼 눌렀을 때 색이 약해요"는 <span class="mono">주 액션 배경의 active 상태</span>에 대한 피드백입니다. 역할로 말하면 어디를 조정할지 즉시 특정되고, 수정 결과가 모든 화면에 일괄 반영됩니다.</li>
+        </ul>
+        <div class="dodont">
+          <div class="dd do"><div class="dh">DO</div>"다크 모드 지원, 본문 대비 AAA 유지"처럼 <b>정책 단위로</b> 결정하고 기록한다.</div>
+          <div class="dd dont"><div class="dh">DON'T</div>기획서에 <span class="mono">#296edd</span> 같은 <b>특정 값을 못 박지 않는다</b> — 값은 엔진의 출력이지 입력이 아니다.</div>
+        </div>
+      </div>
+
+      <div class="role design" id="role-design">
+        <div class="rh"><span class="rp">디자인 DESIGN</span><h3>디자인은 "역할"을 다룹니다 — 값이 아니라 역할과 입력값을 조작합니다</h3></div>
+        <p class="rsub">계층마다 고치는 방법이 다릅니다. 이 경로를 지키는 것이 시스템을 지키는 핵심입니다.</p>
+        <ul>
+          <li><b>화면 작업의 언어는 역할 이름:</b> 여백은 <span class="mono">inset / stack / inline</span>, 글자는 <span class="mono">heading / body / caption</span> 등 6역할, 색은 <span class="mono">bg / fg / stroke</span>. "카드 패딩은 <span class="mono">inset.lg</span>"처럼 지정하면, 나중에 밀도 정책이 바뀌어도 화면이 자동으로 따라옵니다.</li>
+          <li><b>원재료(Primitive) 값이 마음에 안 들면 → 입력값을 조정:</b> "브랜드 600이 좀 탁해요"의 해법은 600 값 수정이 아니라, 설정 도구에서 <b>대표색·채도 곡선을 조정</b>하는 것입니다. 그러면 램프 전체가 다시 계산되고 대비 검사도 자동으로 다시 통과됩니다. 값 하나를 직접 고치면 그 값만 엔진 밖의 고아가 됩니다.</li>
+          <li><b>역할 연결(Semantic)은 토큰 편집 도구에서:</b> "보조 글자색을 한 단계 진하게" 같은 역할-원재료 연결 변경은 Tokens Studio 등 GUI에서 합니다. 원본은 저장소의 표준 JSON 하나이므로 Figma와 코드가 항상 같이 움직입니다.</li>
+          <li><b>Figma에서는 JSON을 볼 일이 없습니다.</b> 원재료·역할이 <b>Variables 컬렉션</b>으로 들어옵니다(컬렉션 = 5 패밀리, 라이트/다크는 모드). 이름에 하이픈이 없고 계층이 <b>폴더</b>로 접혀 있어, 폴더를 타고 들어가 <b>마지막 이름만 고르면</b> 됩니다 — Figma가 첫 번째 지원 대상입니다. 컴포넌트 계층이 제공되기 전까지는 <b>역할 토큰으로 컴포넌트를 직접 구성</b>합니다.</li>
+          <li><b>스포이드 금지:</b> 화면에서 색을 찍어 그대로 칠하는 순간, 그 값은 브랜드 변경·다크 모드·대비 검사 전부에서 제외됩니다.</li>
+        </ul>
+        <div class="dodont">
+          <div class="dd do"><div class="dh">DO</div>글자색이 필요하면 <span class="mono">fg.primary / secondary / subtle</span> 중 <b>용도에 맞는 역할을 고른다</b>. 어떤 배경 위에서도 대비가 이미 보장돼 있다.</div>
+          <div class="dd dont"><div class="dh">DON'T</div>필요한 역할이 없다고 즉석에서 색을 만들지 않는다 — <b>승격 요청</b>(<a href="#s8" style="color:var(--brand-deep);font-weight:700">15번 섹션</a>)이 올바른 길이다.</div>
+        </div>
+      </div>
+
+      <div class="role dev" id="role-dev">
+        <div class="rh"><span class="rp">개발 DEVELOPMENT</span><h3>개발은 토큰을 "소비"합니다 — 계산하지 말고 참조하세요</h3></div>
+        <p class="rsub">개발에 전달되는 것은 검사를 통과한 최종 산출물(표준 JSON → 플랫폼별 변수)입니다. 규칙은 세 가지입니다.</p>
+        <ul>
+          <li><b>지금은 역할(Semantic) 토큰을 컴포넌트에 직접 연결:</b> 컴포넌트 계층은 아직 제공되지 않으므로, <span class="mono">--bg-action-primary-hover</span>처럼 역할 CSS 변수를 컴포넌트 상태에 직접 바인딩합니다. hover 색을 코드에서 <span class="mono">darken(10%)</span>으로 만들면 검증 밖의 색이 생깁니다 — 상태별 색은 전부 역할 토큰으로 이미 제공됩니다.</li>
+          <li><b>라이트/다크 분기 로직을 직접 짜지 않기:</b> 산출물이 모드별 세트로 옵니다. 코드는 테마 전환(클래스/속성 교체)만 하면 됩니다.</li>
+          <li><b>단위를 신뢰하기:</b> 테두리는 px(선명함), 모션은 ms, 여백·글자는 rem/px 중 플랫폼에 맞는 쪽. 임의로 단위를 바꾸거나 반올림하지 않습니다.</li>
+          <li><b>원재료 <span class="mono">size.*</span>는 CSS로 나오지 않습니다.</b> 컨트롤·아이콘 치수는 <b>역할 쪽 <span class="mono">size.control / size.icon</span></b>을 쓰세요. 원재료와 역할이 같은 경로를 쓰는 유일한 지점이라, 이름 충돌을 막기 위해 원재료 쪽은 CSS 산출에서 제외됩니다(Figma 컬렉션에는 그대로 있습니다).</li>
+          <li><b>받는 것은 원재료·역할 CSS 변수입니다.</b> 역할 변수(<span class="mono">--bg-action-primary-default</span> 등)로 컴포넌트를 직접 스타일링합니다. 컴포넌트 CSS와 프레임워크 테마는 컴포넌트 계층과 함께 추후 제공됩니다.</li>
+          <li><b>표기법도 산출물을 신뢰하기:</b> CSS는 케밥, JS는 카멜 등 플랫폼별 이름은 빌드가 자동 변환해서 제공합니다(<a href="#s4" style="color:var(--brand-deep);font-weight:700">2 · 표기법</a> 참조). 이름을 손으로 옮겨 적거나 표기를 즉석 변환하지 않습니다. 팀 표준 표기가 다르면 개별 코드가 아니라 <b>빌드 변환 규칙</b>을 조정합니다.</li>
+        </ul>
+        <div class="dodont">
+          <div class="dd do"><div class="dh">DO</div>상태 스타일은 <span class="mono">…hover / …active / …disabled</span> 토큰을 그대로 연결한다. 상태 토큰이 있는 곳은 <b>액션·링크 계열뿐</b>이라는 것도 규칙이다.</div>
+          <div class="dd dont"><div class="dh">DON'T</div>토큰에 없는 값을 코드에서 즉석 생성하지 않는다(색 계산·임의 px·임의 ms). 필요하면 <b>승격 요청</b>으로.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part c4" id="part4">
+    <div class="part-band">
+      <span class="pno">PART 4</span>
+      <div><div class="pt">기초 개념 — 배경과 이유</div><div class="pd">토큰이 왜 필요한지, 이 시스템은 무엇이 다른지. 처음이거나 근거가 궁금할 때</div></div>
+    </div>
+
+    <section id="s1">
+      <div class="sec-hd"><span class="n">9</span><h2>디자인 토큰이 왜 필요한가요?</h2><span class="lv basic">기초</span><span class="cap">토큰을 이미 아신다면 2번으로</span></div>
+      <div class="tldr"><b>요약:</b> 값을 여기저기 직접 적으면(하드코딩) 나중에 바꿀 수 없게 됩니다. 값에 <b>이름을 붙여 한 곳에서 관리</b>하는 것이 토큰입니다.</div>
+
+      <div class="card">
+        <p style="margin-top:0">이런 상황을 상상해 보세요. 어느 서비스의 화면 40곳에 회색 <span class="mono">#767676</span>이 쓰여 있습니다. 버튼 테두리에도, 설명 글자에도, 구분선에도요. 어느 날 "회색이 너무 흐리다"는 피드백이 와서 색을 바꾸기로 했습니다. 이제 40곳을 <b>하나하나 찾아서</b> 고쳐야 합니다. 두 곳을 놓쳤고, 화면마다 회색이 미묘하게 달라졌습니다.</p>
+        <p>문제의 원인은 색이 아니라 <b>값을 직접 적어 넣은 방식</b>입니다. 이를 <b>하드코딩</b>이라고 부릅니다.</p>
+        <div class="compare">
+          <div class="cmp bad"><div class="ch">✗ 하드코딩 — 값을 직접 적음</div>"설명 글자는 <span class="mono">#767676</span>으로 해주세요"<br>→ 40곳에 같은 값이 복사됨. 바꾸려면 40곳을 수정. 놓치면 어긋남.</div>
+          <div class="cmp good"><div class="ch">✓ 토큰 — 값에 이름을 붙임</div>"설명 글자는 <span class="mono">보조 글자색</span>을 쓰세요"<br>→ 값은 한 곳에만 존재. 그 한 곳을 바꾸면 40곳이 동시에 바뀜.</div>
+        </div>
+        <p style="margin-bottom:0"><b>디자인 토큰</b>이란 이렇게 색·크기·여백·그림자 같은 스타일 값에 <b>이름을 붙여 한 곳에서 관리하는 약속</b>입니다. 디자인 도구(Figma)와 코드가 같은 이름을 쓰기 때문에, 디자이너와 개발자가 "그 회색"이 아니라 "보조 글자색"이라는 <b>공통 언어</b>로 대화할 수 있게 됩니다.</p>
+      </div>
+    </section>
+
+    <section id="s2">
+      <div class="sec-hd"><span class="n">10</span><h2>이 시스템은 무엇이 다른가요?</h2><span class="lv basic">기초</span><span class="cap">"값의 목록"이 아니라 "값을 만드는 엔진"</span></div>
+      <div class="tldr"><b>요약:</b> 보통의 디자인 시스템은 토큰 <b>값이 미리 정해져</b> 있습니다. 이 시스템은 값이 아니라 <b>값을 계산해내는 규칙(엔진)</b>이 본체입니다. 브랜드 입력만 바꾸면 전체 값이 새로 계산됩니다.</div>
+
+      <div class="card">
+        <p style="margin-top:0">잘 알려진 디자인 시스템(구글 Material, IBM Carbon 등)의 문서를 열면 "Primary 색은 <span class="mono">#6200EE</span>"처럼 <b>확정된 값</b>이 적혀 있습니다. 그 값들은 그 회사 브랜드에 맞춰 사람이 정한 것입니다.</p>
+        <p>이 시스템은 다릅니다. <b>여러 서비스가 각자의 브랜드로 사용하는 것을 전제</b>로 만들어졌기 때문에, 특정 값을 미리 정해 둘 수 없습니다. 대신 이렇게 작동합니다:</p>
+        <div class="analogy">
+          <div class="ic">🎨</div>
+          <div class="tx"><b>비유 — 완성된 물감 세트가 아니라, 조색 기계.</b> 완성된 물감 세트는 색 하나를 바꾸려면 세트를 새로 사야 합니다. 조색 기계는 <b>레시피(계산 규칙)</b>가 내장돼 있어서, 원료(브랜드 대표색)만 바꿔 넣으면 <b>전체 팔레트가 같은 품질 기준으로 다시 나옵니다.</b> 이 시스템에 브랜드 대표색 하나를 입력하면 — 밝은 톤부터 어두운 톤까지 색 77개, 글자·배경·버튼의 역할 색, 컴포넌트 스타일까지 전부 자동으로 계산됩니다.</div>
+        </div>
+        <div class="why"><span class="ic">왜?</span><div>값을 미리 정해 두면 브랜드마다 사람이 값 전체를 다시 만들어야 하고, 만들 때마다 접근성 검토도 사람이 반복해야 합니다. <b>규칙을 정해 두면</b> 어떤 브랜드가 와도 기계가 같은 품질로 값을 만들어내고, 검사까지 자동으로 통과시킵니다. 실제로 서로 다른 브랜드 색 5종(보라·주황·초록·파랑·빨강)으로 전체를 재생성하는 스트레스 테스트에서 <b>자동 검사 1,146건이 전부 통과</b>했습니다.</div></div>
+      </div>
+
+      <div class="card">
+        <h3>전체 흐름 한 장 — 입력부터 산출물까지</h3>
+        <p class="sub">이 시스템의 처음과 끝입니다. 이 그림 하나만 기억하셔도 됩니다.</p>
+        <div class="pipe">
+          <div class="pstep src"><div class="ps">STEP 1 · 입력</div><div class="pt">브랜드 입력</div><div class="pd">대표색, 기준 글자 크기, 여백 밀도 등 — 서비스가 정하는 몇 가지</div></div>
+          <div class="pstep"><div class="ps">STEP 2 · 생성</div><div class="pt">원재료 스케일 생성</div><div class="pd">색 램프·글자 크기 단계·여백 단계 등 원천 값을 계산</div></div>
+          <div class="pstep"><div class="ps">STEP 3 · 배정</div><div class="pt">역할 배정</div><div class="pd">"본문 글자색", "카드 배경"처럼 용도에 값을 연결</div></div>
+          <div class="pstep"><div class="ps">STEP 4 · 조립</div><div class="pt">컴포넌트 조립</div><div class="pd">버튼·인풋 등 8종 컴포넌트에 역할을 연결</div></div>
+          <div class="pstep gate"><div class="ps">STEP 5 · 검사</div><div class="pt">자동 검증</div><div class="pd">대비·터치 크기·정렬 검사. 통과 못 하면 여기서 멈춤</div></div>
+        </div>
+        <div class="note info" style="margin-top:14px"><b>산출물:</b> 검사를 통과한 결과는 표준 토큰 파일(JSON)로 저장되고, 여기서 <b>코드용 변수와 Figma용 변수가 함께 파생</b>됩니다. 디자인과 개발이 서로 다른 원본을 보는 일이 생기지 않도록, 원본은 항상 하나입니다(이를 <b>SSOT</b>, 단일 원천이라 부릅니다).</div>
+      </div>
+
+      <div class="card">
+        <h3>그래서 지켜야 할 대원칙이 하나 생깁니다 — "값을 직접 적지 않는다"</h3>
+        <p style="margin:0 0 10px">엔진이 모든 값을 관리하려면, <b>엔진 밖에서 몰래 만들어진 값이 없어야</b> 합니다. 그래서 이 시스템의 제1규칙은 하드코딩 금지입니다. 화면·컴포넌트·문서 어디에서든 <span class="mono">#725cd3</span>, <span class="mono">13px</span> 같은 생값 대신 <b>토큰 이름</b>을 씁니다.</p>
+        <div class="why"><span class="ic">왜?</span><div>직접 적은 값 하나는 ① 브랜드가 바뀌어도 <b>혼자 안 바뀌고</b> ② 다크 모드로 전환될 때 <b>혼자 남겨지고</b> ③ 접근성 자동 검사에서 <b>빠집니다.</b> 지금 당장은 똑같아 보여도, 시스템이 변할 때마다 그 자리만 낡아가는 값이 됩니다. 자동 검사가 이런 값을 찾아내 실패 처리하도록 되어 있습니다.</div></div>
+      </div>
+    </section>
+
+    <section id="s3">
+      <div class="sec-hd"><span class="n">11</span><h2>왜 계층을 나누나요?</h2><span class="lv core">핵심</span><span class="cap">"값" 과 "용도" 를 분리하기 위해</span></div>
+      <div class="tldr"><b>요약:</b> "어떤 값인가"와 "어디에 쓰는가"를 분리해 두면, 값이 통째로 바뀌어도(브랜드 변경) 용도와 화면은 그대로 유지됩니다.</div>
+
+      <div class="card">
+        <p style="margin-top:0">토큰을 한 층으로만 관리하면 이런 문제가 생깁니다. "버튼 색 = 파랑600"이라고 정해 두었는데 브랜드가 초록으로 바뀌면? "파랑600"이라는 이름 자체가 거짓말이 됩니다. 이름에 <b>값의 정체(파랑)</b>와 <b>용도(버튼)</b>가 섞여 있었기 때문입니다.</p>
+        <p>그래서 이 시스템은 세 계층으로 분리합니다:</p>
+        <div class="analogy">
+          <div class="ic">🏭</div>
+          <div class="tx"><b>비유 — 재료 창고 · 용도 선반 · 조립 설명서.</b><br>
+          <b>① Primitive(원재료)</b>는 재료 창고입니다. 재료에는 용도가 없고 <b>번호표만</b> 붙어 있습니다 — "브랜드색 6번째 밝기", "여백 4번". <br>
+          <b>② Semantic(역할)</b>은 용도별 선반입니다 — "본문 글자색", "카드 안쪽 여백"처럼 <b>어디에 쓰는지가 곧 이름</b>이고, 선반 위에는 창고의 어떤 재료를 쓸지 <b>연결 정보만</b> 놓여 있습니다.<br>
+          <b>③ Component(조립)</b>는 조립 설명서입니다 — "버튼의 hover 배경은 '주 액션 배경' 선반에서 가져와라"라고 <b>경로만</b> 지시합니다.<br>
+          창고의 재료를 전부 갈아 끼워도(브랜드 변경) 선반 이름과 조립 설명서는 <b>단 한 글자도 바뀌지 않습니다.</b> 그것이 계층을 나누는 이유의 전부입니다.</div>
+        </div>
+        <div class="note info"><b>세 계층이 각각 무엇인지</b>는 앞의 <a href="#s-layers" style="color:var(--brand-deep);font-weight:700">1 · 3계층 한눈에</a>에 표로 정리되어 있습니다. 이 섹션은 "왜 굳이 나누는가"에 대한 답입니다.</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part c5" id="part5">
+    <div class="part-band">
+      <span class="pno">PART 5</span>
+      <div><div class="pt">작동 원리 — 시나리오 4개</div><div class="pd">실제로 일어나는 일을 따라가 보면 규칙들이 왜 있는지 이해됩니다</div></div>
+    </div>
+
+    <section id="s5">
+      <div class="sec-hd"><span class="n">12</span><h2>시나리오 A · 버튼 하나를 추적해 보기</h2><span class="lv core">핵심</span><span class="cap">3계층이 실제로 연결되는 모습</span></div>
+      <div class="tldr"><b>요약:</b> 화면의 버튼 색 하나를 거꾸로 따라가면 조립 → 역할 → 원재료 → 브랜드 입력까지 <b>한 줄로 이어집니다.</b> 이 사슬이 이 시스템의 전부입니다.</div>
+      <div class="card">
+        <p style="margin-top:0">화면에 보라색 버튼이 있고, 마우스를 올리면 조금 어두워집니다. 그 "조금 어두운 보라"는 어디서 왔을까요?</p>
+        <div class="chain">
+          <div class="clink l3">
+            <div class="rail"><div class="dot"></div><div class="bar"></div></div>
+            <div class="cbody"><div class="lay">COMPONENT · 조립</div><div class="tok">button.primary.bg.hover</div><div class="exp">버튼은 값을 모릅니다. "<b>주 액션 배경의 hover</b>를 가져다 써라"라는 연결 정보만 갖고 있습니다.</div></div>
+          </div>
+          <div class="clink l2">
+            <div class="rail"><div class="dot"></div><div class="bar"></div></div>
+            <div class="cbody"><div class="lay">SEMANTIC · 역할</div><div class="tok">bg.action.primary.hover</div><div class="exp">역할 계층에는 <b>규칙</b>이 있습니다: "주 액션 배경은 그 위의 흰 글자와 대비 4.5:1 이상이 되는 브랜드 램프 단계를 고르고, hover는 거기서 <b>한 단계 더 어둡게</b>." 이 규칙이 계산된 결과가 아래를 가리킵니다.</div></div>
+          </div>
+          <div class="clink">
+            <div class="rail"><div class="dot"></div><div class="bar"></div></div>
+            <div class="cbody"><div class="lay">PRIMITIVE · 원재료</div><div class="tok">brand.700</div><div class="exp">브랜드 램프의 700번 단계. 이 램프 자체도 사람이 만든 게 아니라 —</div></div>
+          </div>
+          <div class="clink">
+            <div class="rail"><div class="dot" style="border-color:#c9cdd4"></div></div>
+            <div class="cbody" style="border-color:#ececf0;background:#fafafb"><div class="lay" style="color:#8a919c">입력 · 브랜드 파라미터</div><div class="tok">브랜드 대표색 1개</div><div class="exp">서비스가 입력한 대표색에서 밝기 11단계 램프 전체가 <b>자동 계산</b>된 것입니다.</div></div>
+          </div>
+        </div>
+        <div class="easy"><span class="ic">💡</span><div><b>이 사슬이 주는 것:</b> 브랜드 대표색을 바꾸면 사슬 전체가 다시 계산되지만, <b>사슬의 연결(이름)은 하나도 안 바뀝니다.</b> 그래서 디자인 파일도, 코드도 고칠 게 없습니다. 반대로 누군가 중간에 생값(<span class="mono">#5b46af</span>)을 끼워 넣으면 그 지점에서 사슬이 끊기고, 그 값만 영원히 "그날의 보라"로 남습니다.</div></div>
+      </div>
+    </section>
+
+    <section id="s6">
+      <div class="sec-hd"><span class="n">13</span><h2>시나리오 B · 다크 모드는 어떻게 생기나</h2><span class="lv core">핵심</span><span class="cap">색을 뒤집는 게 아니라, 같은 규칙을 다시 푸는 것</span></div>
+      <div class="tldr"><b>요약:</b> 다크 모드용 색상표를 사람이 따로 만들지 않습니다. "글자는 배경과 대비 기준 이상"이라는 <b>같은 규칙을 어두운 배경 기준으로 다시 계산</b>할 뿐입니다.</div>
+      <div class="card">
+        <p style="margin-top:0">흔한 오해: "다크 모드 = 색 반전". 반전하면 대비가 무너지고 브랜드색이 이상해집니다. 이 시스템의 방식은 이렇습니다:</p>
+        <table>
+          <tbody>
+            <tr><td style="width:170px"><b>바닥과 표면</b></td><td>라이트에서 페이지가 흰색·카드가 밝은 회색이었다면, 다크에서는 페이지가 <b>가장 어두운 회색(950)</b>, 카드가 <b>한 단계 밝은 회색(900)</b>이 됩니다. 층의 관계는 유지하고 밝기 방향만 바뀝니다.</td></tr>
+            <tr><td><b>글자색</b></td><td>"본문은 대비 기준 이상"이라는 규칙은 그대로 두고, <b>어두운 표면을 기준으로 다시 계산</b>합니다. 결과적으로 밝은 회색 글자가 자동 선택됩니다. 사람이 고르지 않습니다.</td></tr>
+            <tr><td><b>버튼(브랜드색)</b></td><td>주 버튼 배경은 다크 모드에서도 <b>거의 그대로</b>입니다. 지켜야 할 대비 상대가 배경이 아니라 <b>버튼 위의 흰 글자</b>이기 때문입니다. "무엇과의 대비를 지키는 색인가"에 따라 다크에서 바뀌는 색과 안 바뀌는 색이 갈립니다.</td></tr>
+            <tr><td><b>떠 있는 요소</b></td><td>어두운 화면에선 그림자가 잘 안 보입니다. 그래서 다크에서는 <b>표면을 살짝 밝게 + 얇은 테두리 + 진한 그림자</b>를 함께 써서 "떠 있음"을 표현합니다.</td></tr>
+          </tbody>
+        </table>
+        <div class="why"><span class="ic">왜?</span><div>다크 색상표를 손으로 관리하면 라이트에서 색 하나 바뀔 때마다 다크도 사람이 따라 고쳐야 하고, 결국 어긋납니다. <b>규칙을 두 배경에 각각 적용해 계산</b>하면 두 모드는 절대 어긋나지 않습니다. 다크 모드를 지원할지 말지 자체는 서비스가 선택하는 옵션입니다.</div></div>
+      </div>
+    </section>
+
+    <section id="s7">
+      <div class="sec-hd"><span class="n">14</span><h2>시나리오 C · 접근성이 자동으로 지켜지는 방법</h2><span class="lv core">핵심</span><span class="cap">검사에서 떨어지면 값이 아예 안 나옵니다</span></div>
+      <div class="tldr"><b>요약:</b> 글자 대비, 터치 크기 같은 접근성 기준은 <b>값이 생성되는 조건</b>입니다. 완성 후 검수하는 게 아니라, 기준 미달인 값은 태어나지를 못합니다.</div>
+      <div class="card">
+        <p style="margin-top:0"><b>먼저 "대비"란:</b> 글자색과 배경색의 밝기 차이를 수치로 나타낸 것입니다(1:1 = 같은 색, 21:1 = 흰 바탕에 검정). 국제 웹 접근성 기준 <b>WCAG</b>는 본문 기준으로 <b>AA 등급 = 4.5:1 이상, AAA 등급 = 7:1 이상</b>을 요구합니다. 저시력 사용자도 읽을 수 있는 최소선입니다.</p>
+        <p>이 시스템에서 접근성은 이렇게 작동합니다:</p>
+        <table>
+          <tbody>
+            <tr><td style="width:190px"><b>대비 — 자동 선택</b></td><td>"본문 글자색"을 만들 때 엔진은 램프를 위에서부터 훑으며 <b>목표 대비(기본 AAA)를 넘는 첫 단계를 자동 선택</b>합니다. 글자색은 여러 배경(페이지·카드·팝업) 위에 쓰이므로, 그중 <b>가장 불리한 배경 기준</b>으로 통과해야 합니다.</td></tr>
+            <tr><td><b>대비 — 하드 실패</b></td><td>어떤 단계로도 목표 대비를 못 넘으면(예: 지나치게 밝은 브랜드색) 엔진이 <b>생성 자체를 실패</b>시키고 이유를 알려줍니다. "일단 만들고 나중에 고치자"가 불가능한 구조입니다.</td></tr>
+            <tr><td><b>터치 크기</b></td><td>버튼 등 조작 요소의 기본 높이는 <b>44px 이상</b>이어야 생성됩니다(WCAG 터치 타깃 기준). 여백을 아무리 좁혀도 이 선은 뚫리지 않습니다.</td></tr>
+            <tr><td><b>등급이 두 가지</b></td><td><span class="hard">✗ 필수</span>는 어기면 생성 실패, <span class="soft">△ 권고</span>는 의도적 예외를 허용하되 기록을 남깁니다. "모든 걸 막으면 디자인이 경직되고, 다 열면 품질이 무너진다"의 절충입니다.</td></tr>
+          </tbody>
+        </table>
+        <div class="easy"><span class="ic">💡</span><div><b>실무에서 이것이 뜻하는 것:</b> 토큰을 쓰는 한, 여러분이 만든 화면의 글자 대비·터치 크기는 <b>이미 기준을 통과한 상태</b>입니다. 접근성 걱정은 토큰 밖의 것들(이미지 위 텍스트, 직접 그린 그래픽)에만 쓰시면 됩니다. 기준 등급(AA/AAA)을 어느 쪽으로 할지는 서비스가 선택하며, 기본값은 더 안전한 AAA입니다.</div></div>
+      </div>
+    </section>
+
+    <section id="s8">
+      <div class="sec-hd"><span class="n">15</span><h2>시나리오 D · 필요한 색·상태가 목록에 없을 때</h2><span class="lv core">핵심</span><span class="cap">그 자리에서 만들지 않고, 올려서 만듭니다</span></div>
+      <div class="tldr"><b>요약:</b> 작업 중 "이 역할이 없네?" 싶으면 직접 값을 만들지 말고 <b>역할 추가를 요청(승격)</b>합니다. 반복해서 필요해지는 것만 정식 역할이 됩니다.</div>
+      <div class="card">
+        <p style="margin-top:0">예를 들어 탭 컴포넌트를 만드는데 "선택됨(selected)" 상태의 색이 목록에 없다고 해봅시다. 두 가지 길이 있습니다:</p>
+        <div class="compare">
+          <div class="cmp bad"><div class="ch">✗ 그 자리에서 만들기</div>탭 컴포넌트 안에 selected 색을 직접 정의한다.<br>→ 당장은 빠르지만, 다음 사람이 셀렉트 박스를 만들 때 <b>또</b> 자기만의 selected를 만든다. 화면마다 미묘하게 다른 selected가 쌓이고, 아무도 전체를 모르게 된다.</div>
+          <div class="cmp good"><div class="ch">✓ 승격 요청하기</div>"selected 역할이 필요하다"고 시스템 관리 채널에 올린다.<br>→ 여러 컴포넌트에서 반복 확인되면 검토 대상이 되고, <b>값이 실제로 같은 패턴으로 수렴할 때만 정식 Semantic 역할로 승격</b>됩니다. 실제로 selected는 세 컴포넌트에서 나왔지만, 세 번째(세그먼트 컨트롤)가 앞의 둘과 다른 값(카드형으로 떠 보이는 강조)으로 설계돼 있어 "아직 하나의 역할로 묶을 만큼 패턴이 수렴하지 않았다"는 결론으로 승격 없이 컴포넌트별 정의를 유지하기로 확정됐습니다.</div>
+        </div>
+        <div class="why"><span class="ic">왜?</span><div>이 절차가 없으면 시스템은 "한 화면용 임시 값"들로 서서히 오염됩니다. 승격 절차는 번거로움이 아니라 <b>시스템이 낡지 않게 하는 유일한 통로</b>입니다. 요청 자체는 부담 없이 하셔도 됩니다 — 패턴이 수렴하지 않으면 컴포넌트별 정의로 남고, 수렴하면 모두의 자산이 됩니다. selected 사례처럼 <b>반려도 유효한 결론</b>입니다 — 검토 없이 방치되는 것보다 낫습니다.</div></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part c6" id="part6">
+    <div class="part-band">
+      <span class="pno">PART 6</span>
+      <div><div class="pt">부록 — FAQ · 용어집 · 더 깊이</div><div class="pd">막힐 때마다 돌아오는 곳</div></div>
+    </div>
+
+    <section id="faq">
+      <div class="sec-hd"><span class="n">16</span><h2>FAQ — 자주 나오는 질문</h2><span class="lv ref">참고</span></div>
+      <div class="card">
+        <div class="faq"><div class="q">토큰 이름을 다 외워야 하나요?</div><div class="a">아니요. <b>이름은 외우는 게 아니라 읽는 것</b>입니다(<a href="#s4" style="color:var(--brand-deep);font-weight:700">2 · 이름 읽는 법</a>). 패턴 3개 — 숫자로 끝나면 원재료, 용도 단어면 역할, 컴포넌트 이름으로 시작하면 조립 — 만 기억하면 처음 보는 이름도 해석됩니다. 실무에서 자주 만지는 역할은 20개 남짓이라 쓰다 보면 자연히 익습니다.</div></div>
+        <div class="faq"><div class="q">CSS나 코드에서는 점(.) 이름을 그대로 못 쓰는데요?</div><div class="a">맞습니다 — 점 표기는 <b>원본(DTCG JSON)의 계층 표기</b>이고, 각 플랫폼에는 그 관례에 맞는 표기(CSS 케밥, JS 카멜, Android 스네이크, Figma 슬래시)로 <b>자동 변환된 산출물</b>이 제공됩니다. 단어와 순서는 동일하고 구분 기호만 다르므로 서로 추적이 됩니다. 상세는 <a href="#s4" style="color:var(--brand-deep);font-weight:700">2 · 이름 읽는 법</a>의 표기법 카드를 보세요.</div></div>
+        <div class="faq"><div class="q">이 문서의 색상값·px를 외우거나 문서에 옮겨 적어도 되나요?</div><div class="a">옮겨 적지 마세요. 문서의 값들은 <b>기본 설정의 생성 예시</b>일 뿐이고, 브랜드 설정이 바뀌면 달라집니다. 소통과 문서에는 항상 <b>이름</b>(space.4, fg.primary)을 쓰세요. 그래야 값이 바뀌어도 문서가 낡지 않습니다.</div></div>
+        <div class="faq"><div class="q">Primitive 값이 이상해 보이면 직접 고치면 안 되나요?</div><div class="a">안 됩니다 — 고쳐지지도 않습니다. Primitive는 "저장된 값"이 아니라 "계산된 값"이라, 직접 고쳐도 다음 재생성 때 덮어써집니다. 올바른 경로는 그 값을 만들어낸 <b>입력값(대표색·기준 크기·비율)을 설정 도구에서 조정</b>하는 것입니다. 그러면 전체가 일관되게 다시 계산됩니다.</div></div>
+        <div class="faq"><div class="q">왜 hex 값을 직접 쓰면 안 되나요?</div><div class="a">직접 적은 값은 세 가지에서 제외됩니다 — ① 브랜드 변경 시 함께 안 바뀜 ② 다크 모드 재해석에서 빠짐 ③ 대비 자동 검사에서 빠짐. "지금은 맞아 보여도 시스템이 변할 때마다 틀려지는 값"이 됩니다. 자동 검사가 이런 값을 찾아 실패 처리합니다.</div></div>
+        <div class="faq"><div class="q">다크 모드 색상표는 어디 있나요?</div><div class="a">별도의 색상표가 없습니다. 다크 모드는 <b>같은 규칙을 어두운 배경 기준으로 다시 계산한 결과</b>라서(<a href="#s6" style="color:var(--brand-deep);font-weight:700">13 · 다크 모드</a>), 라이트를 고치면 다크도 자동으로 맞춰집니다. 그래서 두 모드가 어긋날 수 없습니다.</div></div>
+        <div class="faq"><div class="q">접근성 검토는 이제 안 해도 되나요?</div><div class="a">토큰이 커버하는 범위(글자 대비, 터치 크기, 행간)는 자동 보장됩니다. 사람의 검토가 여전히 필요한 곳은 <b>토큰 밖</b>입니다 — 이미지 위에 얹은 텍스트, 직접 그린 그래픽·차트, 콘텐츠 자체의 이해 용이성 등.</div></div>
+        <div class="faq"><div class="q">Figma에서는 어떻게 쓰나요?</div><div class="a">역할(Semantic)과 컴포넌트 토큰이 Figma 변수로 동기화됩니다. 색을 고를 때 팔레트에서 찍지 말고 <b>변수 목록에서 역할 이름으로 선택</b>하는 것이 전부입니다. 원본은 코드와 같은 저장소라, 디자인과 개발이 보는 값이 항상 같습니다.</div></div>
+        <div class="faq"><div class="q">기준(대비 등급, 밀도 등)이 우리 서비스와 안 맞으면요?</div><div class="a">기준 자체가 조정 가능한 <b>입력</b>입니다 — 대비 등급(AA/AAA), 밀도, 모서리 성향, 회색 톤, 다크 지원 여부는 서비스가 선택합니다. 단, 어떤 선택을 해도 그 선택 기준으로의 자동 검사는 동일하게 작동합니다. "기준을 낮추는 것"과 "기준을 어기는 것"은 다릅니다.</div></div>
+      </div>
+    </section>
+
+    <section id="glossary">
+      <div class="sec-hd"><span class="n">17</span><h2>용어집</h2><span class="lv ref">참고</span><span class="cap">기초 용어부터 시스템 고유 용어까지</span></div>
+      <div class="card">
+        <div class="glos-h">기초 용어 — 웹/디자인 일반</div>
+        <div class="glos">
+          <div class="gl"><div class="gw">디자인 토큰</div><div class="gd">색·크기·여백 같은 스타일 값에 이름을 붙여 한 곳에서 관리하는 약속. 이 문서의 주인공.</div></div>
+          <div class="gl"><div class="gw">하드코딩</div><div class="gd">값을 이름 없이 직접 적어 넣는 것(#767676, 13px). 이 시스템의 제1 금지 사항.</div></div>
+          <div class="gl"><div class="gw"><span class="mono">hex</span></div><div class="gd">#RRGGBB 형식의 색 표기법. 예: #725cd3.</div></div>
+          <div class="gl"><div class="gw"><span class="mono">px / rem / em</span></div><div class="gd">px=고정 픽셀. rem=사용자의 기본 글자 크기에 비례(글자 확대 대응). em=현재 글자 크기에 비례.</div></div>
+          <div class="gl"><div class="gw">대비 (contrast)</div><div class="gd">글자와 배경의 밝기 차이 비율. 1:1(같음)~21:1(흰 바탕 검정). 높을수록 잘 읽힘.</div></div>
+          <div class="gl"><div class="gw">WCAG · AA · AAA</div><div class="gd">국제 웹 접근성 기준. 본문 대비 AA=4.5:1, AAA=7:1 이상. 이 시스템 기본값은 AAA.</div></div>
+          <div class="gl"><div class="gw">터치 타깃</div><div class="gd">손가락으로 누를 수 있는 최소 영역. 기준 44px — 이 시스템에선 생성 조건.</div></div>
+          <div class="gl"><div class="gw">브레이크포인트</div><div class="gd">화면 크기에 따라 레이아웃·글자 크기가 바뀌는 기준점(모바일/태블릿/데스크톱).</div></div>
+          <div class="gl"><div class="gw">hover / active / disabled</div><div class="gd">상호작용 상태 — 마우스 올림 / 누르는 중 / 비활성. 상태 토큰이 붙는 곳은 액션·링크뿐.</div></div>
+          <div class="gl"><div class="gw"><span class="mono">JSON</span></div><div class="gd">사람이 읽을 수 있는 표준 데이터 파일 형식. 토큰의 원본 저장 형식.</div></div>
+          <div class="gl"><div class="gw">표기법 (케이스)</div><div class="gd">단어를 잇는 방식 — kebab-case(하이픈), camelCase(중간 대문자), PascalCase(첫 글자도 대문자), snake_case(밑줄). 원본은 점(.) 계층 표기, 플랫폼별로 자동 변환.</div></div>
+        </div>
+        <div class="glos-h">시스템 고유 용어</div>
+        <div class="glos">
+          <div class="gl"><div class="gw">엔진 / 생성기</div><div class="gd">브랜드 입력에서 전체 토큰을 계산해내는 프로그램. 이 시스템의 본체.</div></div>
+          <div class="gl"><div class="gw">Primitive</div><div class="gd">1층 · 원재료. 용도 없는 순수 값의 눈금(색 램프, 여백 단계 등). 엔진이 생성.</div></div>
+          <div class="gl"><div class="gw">Semantic</div><div class="gd">2층 · 역할. "어디에 쓰는가"가 이름인 계층(fg.primary 등). 사람이 만지는 시작점.</div></div>
+          <div class="gl"><div class="gw">Component</div><div class="gd">3층 · 조립. 컴포넌트가 어떤 역할을 쓰는지의 연결 정보. 실무에서 소비하는 최종 계층.</div></div>
+          <div class="gl"><div class="gw">램프 (ramp)</div><div class="gd">한 색의 밝기 11단계 세트(50~950). 브랜드색 1 + 회색 2 + 신호색 4가 기본.</div></div>
+          <div class="gl"><div class="gw">서수 id</div><div class="gd">값과 분리된 순서 번호 이름(space.4, radius.2). 값이 바뀌어도 이름은 유효.</div></div>
+          <div class="gl"><div class="gw">별칭 (alias)</div><div class="gd">값을 담지 않고 다른 토큰을 가리키는 참조. 위 계층은 별칭으로만 아래를 씁니다.</div></div>
+          <div class="gl"><div class="gw">SSOT (단일 원천)</div><div class="gd">모든 산출물(코드·Figma·문서)이 파생되는 하나의 원본. 원본이 하나라 어긋남이 없음.</div></div>
+          <div class="gl"><div class="gw">OKLCH</div><div class="gd">사람 눈 기준으로 밝기·채도·색조를 다루는 색 공간. 램프 계산의 기반.</div></div>
+          <div class="gl"><div class="gw">시드색 (seed)</div><div class="gd">서비스가 입력하는 브랜드 대표색 1개. 여기서 램프 전체가 계산됨.</div></div>
+          <div class="gl"><div class="gw">하프스텝</div><div class="gd">8px 격자 사이의 4px 보조 단계(4px, 12px). 격자 밖이 아니라 보조 눈금.</div></div>
+          <div class="gl"><div class="gw">하드 게이트 / 권고</div><div class="gd">✗ 필수 검사=어기면 생성 실패. △ 권고=의도적 예외 허용 + 기록.</div></div>
+          <div class="gl"><div class="gw">승격 (promotion)</div><div class="gd">필요한 역할이 없을 때 정식 역할 추가를 요청하는 절차. 반복 확인되면 승격됨.</div></div>
+          <div class="gl"><div class="gw">계산값 (computed)</div><div class="gd">별칭으로 못 적는 자동 계산 결과(중첩 모서리 등). 반드시 공식과 함께 기록됨.</div></div>
+          <div class="gl"><div class="gw">모드-중립</div><div class="gd">라이트/다크 구분 없이 정의된 상태. 컴포넌트 토큰의 기본 성질.</div></div>
+          <div class="gl"><div class="gw">컨피규레이터</div><div class="gd">브랜드 입력값을 조작하고 결과를 실시간 미리보는 설정 도구. Primitive 조정의 공식 경로.</div></div>
+          <div class="gl"><div class="gw">Tokens Studio</div><div class="gd">Figma에서 토큰(역할 연결)을 편집하는 플러그인. Semantic 이상 편집의 공식 경로.</div></div>
+          <div class="gl"><div class="gw">패밀리 (family)</div><div class="gd">토큰의 두 번째 분류 축 — color·typo·spatial·visual·motion 5종. Figma 컬렉션·JSON 최상위 그룹을 조직하며 이름에는 들어가지 않는다.</div></div>
+          <div class="gl"><div class="gw">Variables (Figma)</div><div class="gd">Figma의 변수 기능. 이 시스템의 원재료·역할이 패밀리별 컬렉션으로 동기화되고, 라이트/다크는 모드로 표현된다.</div></div>
+          <div class="gl"><div class="gw">camelCase</div><div class="gd">두 단어를 붙이고 두 번째 단어 첫 글자를 대문자로 쓰는 표기(lineHeight). Figma 이름에서 하이픈을 없애기 위한 규칙 — 코드에서는 빌드가 kebab으로 되돌린다.</div></div>
+          <div class="gl"><div class="gw">제공 범위 (현재)</div><div class="gd">지금 제공되는 토큰 = Primitive(원재료) + Semantic(역할) 두 계층. 컴포넌트 계층은 추후 제공 예정.</div></div>
+          <div class="gl"><div class="gw">DTCG</div><div class="gd">디자인 토큰 JSON의 업계 표준 형식. 원본 저장 형식이라 도구 간 호환됨.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deeper">
+      <div class="sec-hd"><span class="n">18</span><h2>더 깊이 보려면</h2><span class="lv ref">참고</span><span class="cap">이 문서 너머의 원천 문서들</span></div>
+      <div class="card">
+        <p style="margin-top:0">이 시스템의 모든 규칙에는 <b>기록된 결정 근거</b>가 있습니다 — "왜 이렇게 했는가"를 결정 시점·이유와 함께 남기는 것이 운영 원칙이라서, 이 문서에 요약된 어떤 규칙이든 원 결정 기록까지 추적할 수 있습니다. 규칙에 의문이 들거나 예외가 필요하면 아래 문서로 가거나 시스템 관리 채널에 질문해 주세요.</p>
+        <table>
+          <thead><tr><th style="width:280px">문서</th><th>내용</th><th style="width:130px">이런 때</th></tr></thead>
+          <tbody>
+            <tr><td class="tmono">token-architecture-brief.html</td><td>아키텍처 전체를 압축한 기술 레퍼런스 (이 문서의 상세판)</td><td>구조 깊이 파기</td></tr>
+            <tr><td class="tmono">*-layer-spec.md (레이어별 스펙)</td><td>색·글자·여백·모서리·그림자·역할·컴포넌트 각 레이어의 정밀 명세</td><td>정확한 규칙 확인</td></tr>
+            <tr><td class="tmono">PROJECT-STATE.md</td><td>모든 설계 결정의 이력과 "왜" (결정 #1~#25)</td><td>근거 추적</td></tr>
+            <tr><td class="tmono">tokens/*.json</td><td>실제 토큰 원본 (표준 DTCG 형식)</td><td>값 직접 확인</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot mono">
+    Core System 개념 가이드 v3.3 · 2026-07-29<br>
+    값 예시는 기본 설정 기준이며 브랜드 설정에 따라 달라집니다 · 소통은 언제나 토큰 이름으로
+  </div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const luma=hex=>{const h=hex.replace('#','');const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.2126*r+0.7152*g+0.0722*b)<140;};
+
+/* ramps — 기본 프리셋 생성 결과 예시 (중립 2종은 2026-07 확정 미러값) */
+const STEPS=["50","100","200","300","400","500","600","700","800","900","950"];
+const RAMPS={
+ brand:["#f5f4ff","#eae8ff","#d6d4ff","#bdb7ff","#a294ff","#8974f0","#725cd3","#5b46af","#46338c","#332567","#22184a"],
+ "coolGray":["#f3f6fa","#e9ebef","#d6d9dd","#bec1c5","#a3a6aa","#898c90","#717478","#595c60","#44474a","#323437","#212325"],
+ "warmGray":["#f9f9f9","#f1f0ef","#e2e1e0","#cbcac8","#a3a2a0","#868583","#6b6a68","#535251","#3f3e3d","#2c2b2a","#1b1a1a"],
+ red:["#fff2f1","#ffe4e2","#ffcac6","#ffa5a0","#ff7372","#e94c50","#cb323b","#a81b29","#850d1c","#630a13","#46040a"],
+ amber:["#fff4e7","#ffe7ca","#ffd095","#f8b14f","#e09306","#bd7b00","#9e6600","#7e5100","#623e00","#492c00","#331d00"],
+ green:["#dfffeb","#c7f9da","#a5ecc1","#7bd8a3","#54be86","#2ea36b","#048a55","#006e42","#005532","#003f23","#002b16"],
+ blue:["#f1f6ff","#e0ecff","#c4dbff","#9dc2ff","#6fa5ff","#3f86fb","#296edd","#1655b9","#0b4193","#072f6d","#031f4f"],
+};
+const RTAG={brand:"브랜드 대표색에서 생성","coolGray":"차가운 회색 (기본)","warmGray":"따뜻한 회색 (선택)",red:"신호용 — 보통 '오류'에 배정",amber:"신호용 — 보통 '주의'에 배정",green:"신호용 — 보통 '성공'에 배정",blue:"신호용 — 보통 '안내·링크'에 배정"};
+$("ramps").innerHTML=Object.entries(RAMPS).map(([nm,cols])=>`
+  <div class="ramp">
+    <div class="name">${nm}<span class="${nm.endsWith('gray')?'tag neu':'tag'}" style="align-self:flex-start">${RTAG[nm]}</span></div>
+    <div class="swatches">${cols.map((c,i)=>`<div class="sw" style="background:${c};color:${luma(c)?'#fff':'#1c1e21'}"><span class="st">${STEPS[i]}</span><span class="hx">${c}</span></div>`).join("")}</div>
+  </div>`).join("");
+
+/* type */
+const TYPE=[["6xl",95.5,700],["4xl",61,700],["2xl",39,700],["xl",31.5,700],["lg",25,600],["md",20,600],["base",16,400],["sm",13,500],["xs",10,400]];
+$("type").innerHTML=TYPE.map(([n,px,w])=>`
+  <div class="typerow"><div class="rl">${n}</div><div class="sz">${px}px · ${w}</div>
+  <div class="sample" style="font-size:${Math.min(px,40)}px;font-weight:${w};lineHeight:1.1">디자인 시스템 Aa 가나다</div></div>`).join("");
+
+/* spacing */
+const SP=[["space.0",0],["space.1",4],["space.2",8],["space.3",12],["space.4",16],["space.5",24],["space.6",32],["space.7",40],["space.8",48],["space.9",64],["space.10",80],["space.11",96],["space.12",128]];
+$("spacing").innerHTML=SP.map(([n,px])=>`<div class="sprow"><div class="lbl">${n} · ${px}px${(px===4||px===12)?' · 하프스텝':''}</div><div class="bar" style="width:${px}px"></div></div>`).join("");
+
+/* radius */
+const RAD=[["radius.0",0],["radius.1",4],["radius.2",8],["radius.3",12],["radius.4",16],["radius.5",24],["radius.6",32],["full","999"]];
+$("radius").innerHTML=RAD.map(([n,px])=>`<div class="ri"><div class="box" style="border-radius:${px==='999'?'999px':px+'px'}"></div><div class="rl">${n}</div></div>`).join("");
+
+/* elevation */
+const ELEV=[
+ ["e0","none"],
+ ["e1","0 1px 2px rgba(0,0,0,.16),0 2px 4px rgba(0,0,0,.1)"],
+ ["e2","0 2px 4px rgba(0,0,0,.16),0 4px 9px rgba(0,0,0,.1)"],
+ ["e3","0 3px 7px rgba(0,0,0,.16),0 8px 18px rgba(0,0,0,.1)"],
+ ["e4","0 6px 14px rgba(0,0,0,.16),0 16px 35px rgba(0,0,0,.1)"],
+ ["e5","0 10px 22px rgba(0,0,0,.16),0 24px 53px rgba(0,0,0,.1)"],
+];
+$("elev").innerHTML=ELEV.map(([n,sh])=>`<div class="ei"><div class="box" style="box-shadow:${sh}"></div><div class="el">${n}</div></div>`).join("");
+
+/* semantic color roles — 자주 쓰는 역할은 hot 강조 */
+const SEM=[
+ ["bg","배경","page(페이지 바닥) · surface.base(카드·패널) · surface.raised(떠 있는 표면) · surface.overlay(모달) · subtle(연한 강조 배경) · brand · brandSubtle · danger/warning/success/info-subtle(상태 연한 배경) · action.primary/secondary/ghost(버튼 3계열, 각 +hover·active) · action.disabled · scrim(모달 뒤 막) · controlKnob(스위치 손잡이)","surface,action-primary"],
+ ["fg","글자·아이콘","primary(본문, 대비≥7) · secondary(보조, ≥4.5) · subtle(은은, ≥3) · disabled · placeholder(입력 안내) · onBrand/onAction(색 배경 위 글자) · brand · danger/warning/success/info(상태 글자, ≥4.5) · link(+상태)","primary,secondary,link"],
+ ["stroke","선·테두리","default(기본 테두리) · subtle(연한 구분선) · strong(진한 테두리, ≥3) · focus(키보드 포커스, ≥3) · danger(오류 테두리, ≥3)","default,focus"],
+];
+$("semcolor").innerHTML=SEM.map(([k,ko,roles,hot])=>{
+  const hots=hot.split(",").filter(Boolean);
+  const chips=roles.split(" · ").map(r=>{
+    const isHot=hots.some(h=>r.startsWith(h));
+    return `<span class="chip${isHot?' hot':''}">${r}</span>`;}).join("");
+  return `<div class="grp"><div class="gh"><span class="pill ${k}">${k}</span> ${ko}</div><div class="chips">${chips}</div></div>`;
+}).join("");
+
+/* semantic non-color */
+$("semrest").innerHTML=`<thead><tr><th style="width:110px">그룹</th><th>역할</th><th style="width:190px">화면 크기 대응</th></tr></thead><tbody>
+ <tr><td>글자</td><td class="tmono">display · heading · title · body · label · caption</td><td class="yes">✓ 전 역할 (caption은 12px 바닥 보장)</td></tr>
+ <tr><td>여백</td><td class="tmono">inset(안쪽) · stack(세로 간) · inline(가로 간) · sectionGap(섹션 간)</td><td><span class="yes">✓</span> sectionGap만</td></tr>
+ <tr><td>모서리</td><td class="tmono">control(버튼·인풋) · container(카드) · overlay(모달) · pill · circle</td><td class="no">—</td></tr>
+ <tr><td>그림자</td><td class="tmono">resting(기본) · raised(떠 있음) · overlay(모달) · spotlight(최상단 강조)</td><td class="no">—</td></tr>
+ <tr><td>모션</td><td class="tmono">control(버튼 등 반응) · overlay-enter/exit(모달 등장·퇴장) · emphasis(강조)</td><td class="no">—</td></tr>
+ <tr><td>크기·선 굵기</td><td class="tmono">size.control/icon.{sm|md|lg} · strokeWidth.{default|selected|focus} · focusOffset</td><td class="no">—</td></tr>
+</tbody>`;
+
+/* components */
+const COMPS=[
+ ["Button","버튼","primary/secondary/ghost 3계열 × 상태 × 3크기. 글자 대비 자동 보장."],
+ ["Input","입력창","기본/hover/포커스/오류/비활성 5상태. 안내 문구도 대비 보장."],
+ ["Select","셀렉트","입력창과 같은 뼈대 + 펼침 메뉴. 메뉴 항목 모서리는 공식 계산."],
+ ["Card","카드","내용에 따라 늘어나는 열린 컨테이너 — 고정 높이 금지."],
+ ["Switch","스위치","알약형 트랙 + 손잡이. 손잡이 대비·전환 모션 보장."],
+ ["Tabs","탭","선택 표시선 슬라이드. selected 상태를 공용 역할로 올릴지 검토했던 실제 사례(<a href=\"#s8\" style=\"color:inherit;text-decoration:underline\">15번 섹션</a> 참조)."],
+ ["Modal","모달","뒤 배경 막(scrim) + 떠 있는 표면. 등장·퇴장 모션 포함."],
+ ["Toast","토스트","중립 + 상태 4계열 알림. 강조색 대비 보장."],
+];
+$("comps").innerHTML=COMPS.map(([n,ko,d])=>`<div class="comp"><div class="cn">${n}</div><div class="cw">${ko}</div><div class="cd">${d}</div></div>`).join("");
+
+/* ── 사이드 내비게이션: 스크롤 위치 하이라이트 + 플로팅 버튼 ── */
+const SECS=['s-layers','s4','rules','s9','s10','s11','s12','s13','s1','s2','s3','s5','s6','s7','s8','faq','glossary','deeper'];
+const NAVL={};document.querySelectorAll('.nsl[data-sec]').forEach(a=>NAVL[a.dataset.sec]=a);
+function spy(){
+  let cur=SECS[0];
+  for(const id of SECS){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=150)cur=id;}
+  SECS.forEach(id=>NAVL[id]&&NAVL[id].classList.toggle('active',id===cur));
+  const act=NAVL[cur];
+  if(act&&window.innerWidth>=1140){const nv=document.getElementById('sidenav');const at=act.offsetTop;
+    if(at<nv.scrollTop+60)nv.scrollTop=at-80;
+    else if(at>nv.scrollTop+nv.clientHeight-70)nv.scrollTop=at-nv.clientHeight+110;}
+  document.getElementById('fabTop').classList.toggle('show',window.scrollY>700);
+}
+let spyTick=false;
+document.addEventListener('scroll',()=>{if(!spyTick){spyTick=true;requestAnimationFrame(()=>{spy();spyTick=false;});}},{passive:true});
+spy();
+const sidenav=document.getElementById('sidenav');
+document.getElementById('fabMenu').addEventListener('click',()=>sidenav.classList.toggle('open'));
+sidenav.addEventListener('click',e=>{if(e.target.closest('a')&&window.innerWidth<1140)sidenav.classList.remove('open');});
+document.getElementById('fabTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
