@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * perturb.cjs — A3 최종 게이트: 섭동 매트릭스 (2026-07-21)
+ * perturb.cjs — A3 최종 게이트: 섭동 매트릭스 (2026-07-21 · Wave 3 반영 2026-07-29)
  * 기준+프리셋 5종을 각각 전체 gen 체인(parameter→primitive→semantic→component)에 통과시키고,
- * 8종 컴포넌트의 191검사가 모든 프리셋에서 ✗0인지 확인한다. "값이 아니라 값을 뽑는 엔진"의 증명.
+ * 15종 컴포넌트의 358검사가 모든 프리셋에서 ✗0인지 확인한다(6×358=2,148). "값이 아니라 값을 뽑는 엔진"의 증명.
  * 실행: node pipeline/perturb.cjs → build/perturb-matrix.json + 콘솔 리포트
  */
 const { execFileSync } = require("child_process");

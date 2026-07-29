@@ -1,0 +1,73 @@
+{
+  "component": {
+    "slider": {
+      "$description": "Slider — 트랙(비활성)+fill(진행, action-primary)+thumb(control-knob 재사용, Switch 선례). sm/md/lg 밀도 변형은 1차 범위 밖(단일 크기로 축소 — Toast·Modal·Card 선례와 동일하게 전 컴포넌트가 3단 변형을 갖지는 않음).",
+      "track": {
+        "bg": {
+          "$value": "{semantic.color.bg.action-secondary.default}",
+          "ref": "color.bg.action-secondary.default"
+        },
+        "bg-disabled": {
+          "$value": "{semantic.color.bg.action-disabled}",
+          "ref": "color.bg.action-disabled"
+        },
+        "radius": {
+          "$value": "{semantic.radius.pill}",
+          "ref": "radius.pill"
+        },
+        "height": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.25",
+              "why": "트랙 두께 — 컨트롤 치수 대비 비례 축소, 새 치수 역할 발명 대신 규칙 실체화(§0 예외ⓐ)"
+            }
+          }
+        }
+      },
+      "fill": {
+        "bg": {
+          "$value": "{semantic.color.bg.action-primary.default}",
+          "ref": "color.bg.action-primary.default"
+        },
+        "bg-disabled": {
+          "$value": "{semantic.color.bg.action-disabled}",
+          "ref": "color.bg.action-disabled"
+        }
+      },
+      "thumb": {
+        "bg": {
+          "$value": "{semantic.color.bg.control-knob}",
+          "ref": "color.bg.control-knob"
+        },
+        "stroke": {
+          "$value": "{semantic.color.stroke.subtle}",
+          "ref": "color.stroke.subtle"
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "motion": {
+          "$value": "{semantic.motion.control}",
+          "ref": "motion.control"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

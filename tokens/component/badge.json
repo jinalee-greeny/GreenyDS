@@ -1,0 +1,75 @@
+{
+  "component": {
+    "badge": {
+      "$description": "Badge — 중립 base + 상태 4계열(Toast 패턴 재사용). 비인터랙티브 정적 표시 요소라 Toast처럼 focus·height 토큰 없음(S-3 동형 — 열린 요소에 고정 높이 금지).",
+      "base": {
+        "bg": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        }
+      },
+      "status": {
+        "success": {
+          "bg": {
+            "$value": "{semantic.color.bg.success-subtle}",
+            "ref": "color.bg.success-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.success}",
+            "ref": "color.fg.success"
+          }
+        },
+        "danger": {
+          "bg": {
+            "$value": "{semantic.color.bg.danger-subtle}",
+            "ref": "color.bg.danger-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.danger}",
+            "ref": "color.fg.danger"
+          }
+        },
+        "warning": {
+          "bg": {
+            "$value": "{semantic.color.bg.warning-subtle}",
+            "ref": "color.bg.warning-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.warning}",
+            "ref": "color.fg.warning"
+          }
+        },
+        "info": {
+          "bg": {
+            "$value": "{semantic.color.bg.info-subtle}",
+            "ref": "color.bg.info-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.info}",
+            "ref": "color.fg.info"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.pill}",
+        "ref": "radius.pill"
+      },
+      "padding": {
+        "$value": "{semantic.spacing.inset.sm}",
+        "ref": "spacing.inset.sm"
+      },
+      "icon": {
+        "$value": "{semantic.size.icon.sm}",
+        "ref": "size.icon.sm"
+      },
+      "typography": {
+        "$value": "{semantic.typography.caption}",
+        "ref": "typography.caption"
+      }
+    }
+  }
+}

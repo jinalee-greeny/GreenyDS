@@ -1,0 +1,45 @@
+{
+  "component": {
+    "tooltip": {
+      "$description": "Tooltip — 소형 오버레이 버블(surface-overlay+elevation.overlay 쌍, Modal과 동형이나 radius.control로 축소). 반전(inverted, 라이트에서도 다크 버블) 스타일은 bg.inverse 시맨틱 부재 — 새로 발명하지 않고 1차 범위 밖으로 기록(향후 승격 후보).",
+      "bg": {
+        "$value": "{semantic.color.bg.surface-overlay}",
+        "ref": "color.bg.surface-overlay"
+      },
+      "elevation": {
+        "$value": "{semantic.elevation.overlay}",
+        "ref": "elevation.overlay"
+      },
+      "stroke": {
+        "$value": "{semantic.color.stroke.subtle}",
+        "ref": "color.stroke.subtle"
+      },
+      "radius": {
+        "$value": "{semantic.radius.control}",
+        "ref": "radius.control"
+      },
+      "fg": {
+        "$value": "{semantic.color.fg.primary}",
+        "ref": "color.fg.primary"
+      },
+      "padding": {
+        "$value": "{semantic.spacing.inset.sm}",
+        "ref": "spacing.inset.sm"
+      },
+      "typography": {
+        "$value": "{semantic.typography.caption}",
+        "ref": "typography.caption"
+      },
+      "motion": {
+        "enter": {
+          "$value": "{semantic.motion.overlay-enter}",
+          "ref": "motion.overlay-enter"
+        },
+        "exit": {
+          "$value": "{semantic.motion.overlay-exit}",
+          "ref": "motion.overlay-exit"
+        }
+      }
+    }
+  }
+}

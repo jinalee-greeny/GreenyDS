@@ -1,0 +1,133 @@
+{
+  "component": {
+    "checkbox": {
+      "$description": "Checkbox — unchecked/checked/indeterminate×상태, 박스 sm/md/lg(아이콘 치수 재사용 — Switch 선례). 터치타깃 44px은 히트 영역(패딩) 몫 — 시각 박스 자체는 T-3 비적용(Switch 트랙과 동일 선례).",
+      "box": {
+        "bg": {
+          "unchecked": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "unchecked-disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          },
+          "checked": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "checked-hover": {
+            "$value": "{semantic.color.bg.action-primary.hover}",
+            "ref": "color.bg.action-primary.hover"
+          },
+          "checked-active": {
+            "$value": "{semantic.color.bg.action-primary.active}",
+            "ref": "color.bg.action-primary.active"
+          },
+          "indeterminate": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "stroke": {
+          "default": {
+            "$value": "{semantic.color.stroke.default}",
+            "ref": "color.stroke.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.stroke.strong}",
+            "ref": "color.stroke.strong"
+          },
+          "focus": {
+            "$value": "{semantic.color.stroke.focus}",
+            "ref": "color.stroke.focus"
+          },
+          "invalid": {
+            "$value": "{semantic.color.stroke.danger}",
+            "ref": "color.stroke.danger"
+          },
+          "disabled": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "stroke-width": {
+          "default": {
+            "$value": "{semantic.stroke-width.default}",
+            "ref": "stroke-width.default"
+          },
+          "focus": {
+            "$value": "{semantic.stroke-width.focus}",
+            "ref": "stroke-width.focus"
+          }
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.on-action}",
+          "ref": "color.fg.on-action"
+        },
+        "fg-indeterminate": {
+          "$value": "{semantic.color.fg.on-action}",
+          "ref": "color.fg.on-action"
+        },
+        "size": {
+          "sm": {
+            "$value": "{semantic.size.icon.sm}",
+            "ref": "size.icon.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          },
+          "lg": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          }
+        },
+        "radius": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "scale",
+              "formula": "radius.control × 0.5",
+              "why": "박스가 16~24px로 작아 control(8px) 그대로면 과도하게 둥글다 — 새 radius 역할 발명 대신 규칙 실체화(§0 예외ⓐ)"
+            }
+          }
+        }
+      },
+      "label": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.inline.sm}",
+          "ref": "spacing.inline.sm"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "component": {
+    "banner": {
+      "$description": "Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — stroke는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 stroke.subtle로 통일(Toast와 동일 절제).",
+      "base": {
+        "bg": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "stroke": {
+          "$value": "{semantic.color.stroke.subtle}",
+          "ref": "color.stroke.subtle"
+        }
+      },
+      "status": {
+        "success": {
+          "bg": {
+            "$value": "{semantic.color.bg.success-subtle}",
+            "ref": "color.bg.success-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.success}",
+            "ref": "color.fg.success"
+          },
+          "stroke": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "danger": {
+          "bg": {
+            "$value": "{semantic.color.bg.danger-subtle}",
+            "ref": "color.bg.danger-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.danger}",
+            "ref": "color.fg.danger"
+          },
+          "stroke": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "warning": {
+          "bg": {
+            "$value": "{semantic.color.bg.warning-subtle}",
+            "ref": "color.bg.warning-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.warning}",
+            "ref": "color.fg.warning"
+          },
+          "stroke": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "info": {
+          "bg": {
+            "$value": "{semantic.color.bg.info-subtle}",
+            "ref": "color.bg.info-subtle"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.info}",
+            "ref": "color.fg.info"
+          },
+          "stroke": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.container}",
+        "ref": "radius.container"
+      },
+      "inset": {
+        "$value": "{semantic.spacing.inset.md}",
+        "ref": "spacing.inset.md"
+      },
+      "gap": {
+        "$value": "{semantic.spacing.inline.md}",
+        "ref": "spacing.inline.md"
+      },
+      "icon": {
+        "$value": "{semantic.size.icon.md}",
+        "ref": "size.icon.md"
+      },
+      "dismiss-icon": {
+        "$value": "{semantic.size.icon.sm}",
+        "ref": "size.icon.sm"
+      },
+      "typography": {
+        "title": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "body": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      }
+    }
+  }
+}

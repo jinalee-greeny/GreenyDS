@@ -1,0 +1,153 @@
+{
+  "component": {
+    "radio": {
+      "$description": "Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 stroke.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
+      "control": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "stroke": {
+          "default": {
+            "$value": "{semantic.color.stroke.default}",
+            "ref": "color.stroke.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.stroke.strong}",
+            "ref": "color.stroke.strong"
+          },
+          "focus": {
+            "$value": "{semantic.color.stroke.focus}",
+            "ref": "color.stroke.focus"
+          },
+          "checked": {
+            "$value": "{semantic.color.fg.brand}",
+            "ref": "color.fg.brand"
+          },
+          "disabled": {
+            "$value": "{semantic.color.stroke.subtle}",
+            "ref": "color.stroke.subtle"
+          }
+        },
+        "stroke-width": {
+          "default": {
+            "$value": "{semantic.stroke-width.default}",
+            "ref": "stroke-width.default"
+          },
+          "checked": {
+            "$value": "{semantic.stroke-width.selected}",
+            "ref": "stroke-width.selected"
+          },
+          "focus": {
+            "$value": "{semantic.stroke-width.focus}",
+            "ref": "stroke-width.focus"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "sm": {
+            "$value": "{semantic.size.icon.sm}",
+            "ref": "size.icon.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          },
+          "lg": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          }
+        }
+      },
+      "dot": {
+        "bg": {
+          "$value": "{semantic.color.fg.brand}",
+          "ref": "color.fg.brand"
+        },
+        "bg-disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "sm": {
+            "$value": "0.5rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 8,
+              "rule": {
+                "type": "nesting",
+                "formula": "control.size(icon.sm) − 2×4px",
+                "why": "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)"
+              }
+            }
+          },
+          "md": {
+            "$value": "0.75rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 12,
+              "rule": {
+                "type": "nesting",
+                "formula": "control.size(icon.md) − 2×4px",
+                "why": "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)"
+              }
+            }
+          },
+          "lg": {
+            "$value": "1rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 16,
+              "rule": {
+                "type": "nesting",
+                "formula": "control.size(icon.lg) − 2×4px",
+                "why": "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)"
+              }
+            }
+          }
+        }
+      },
+      "label": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.inline.sm}",
+          "ref": "spacing.inline.sm"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.stroke.focus}",
+        "ref": "color.stroke.focus"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

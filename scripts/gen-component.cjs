@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 /**
- * gen-component.cjs — 컴포넌트 레이어 DTCG JSON 생성기 (A3 Wave 1, 2026-07-21)
+ * gen-component.cjs — 컴포넌트 레이어 DTCG JSON 생성기
+ * (Wave 1+2: A3, 2026-07-21 완료 · Wave 3: CDS_Components, 2026-07-29 확장)
  *
- * 무엇: 시맨틱 역할 + 신설 primitive(size·border-width) 위에서 Wave 1 4종
- *      (Button·Input·Select·Card)의 컴포넌트 프리셋 토큰을 생성한다.
- * 원칙(B1 계약 §7·제안서 §4):
+ * 무엇: 시맨틱 역할 + 신설 primitive(size·border-width·motion) 위에서 컴포넌트 프리셋
+ *      토큰을 생성한다. Wave 1+2 = Button·Input·Select·Card·Switch·Tabs·Modal·Toast(8종).
+ *      Wave 3 = Checkbox·Radio·Slider·Segmented·Tooltip·Badge·Banner(7종, general-component-list.md §2).
+ * 원칙(B1 계약 §7·제안서 §4, component-layer-spec.md §0 — Wave 3도 동일 승계):
  *   - 컴포넌트 $value는 "모드-중립 시맨틱 alias"만. {semantic.color.bg.action-primary}
  *     처럼 light/dark 세그먼트를 생략한 단일 문법(§4.3). 모드 해석은 gen 체인 상류(이 파일)가
  *     시맨틱을 모드별 세트로 전개해서 수행 → 컴포넌트 정의 1벌, 산출 모드 수만큼.
- *   - 예외 2종만: ⓐ 규칙 실체화 computed( $extensions.rule 필수, nesting 등 ) ⓑ 센티넬(pill/circle).
- *   - 상호작용 상태는 참조 전용(재정의 금지). 컴포넌트 고유 상태(selected)만 규칙 실체화로 신설.
- * 어떻게: node gen-component.cjs   → tokens/component/*.json + tokens/tokens.{size,border-width}.json
+ *   - 예외 2종만: ⓐ 규칙 실체화 computed( $extensions.rule 필수, nesting·scale 등 ) ⓑ 센티넬(pill/circle).
+ *   - 상호작용 상태는 참조 전용(재정의 금지). 컴포넌트 고유 상태(selected 등)만 규칙 실체화로 신설,
+ *     2개 이상 컴포넌트에서 반복되면 시맨틱 승격 검토(컨펌 큐 경유, 독단 금지 — Q-009).
+ * 어떻게: node gen-component.cjs   → tokens/component/*.json + tokens/tokens.{size,border-width,motion}.json
  *                                     + build/component.resolved.json(검증 데모용) + 검사 리포트
  * 주의: 시맨틱 resolved 값은 tokens/tokens.semantic.json(gen-semantic 산출)에서 직접 읽는다.
  *       신설 primitive는 아래 파라미터로 생성한다(값 목록이 아니라 규칙 — B1 계약 §7-8).
+ * 네이밍: Q-011(하이픈 워싱) 총괄 최종 컨펌 대기 중 — 확정 전까지 기존 8종과 동일하게
+ *       component-layer-spec.md §1(하이픈 세그먼트는 예약어 한정) 규칙을 Wave 3에도 그대로 적용.
  */
 const fs = require("fs");
 const path = require("path");
@@ -334,6 +339,184 @@ function buildToast(){
 }
 
 /* ============================================================
+ * Wave 3 (CDS_Components, 2026-07-29) — Checkbox·Radio·Slider·Segmented·
+ * Tooltip·Badge·Banner. general-component-list.md §2(Wave 3 백로그 7종).
+ * 값 규칙(§0)·1차 아웃풋 범위 제외(§0)를 Wave 1+2와 동일 승계.
+ * 새 시맨틱 역할은 신설하지 않는다 — 기존 인벤토리만 재사용.
+ * 필요한데 없는 값은 computed(§0 예외ⓐ, 아래 computedScale/computedOffset)로
+ * 규칙을 실체화하거나, 승격이 필요하면 컨펌 큐로 상정한다(독단 금지).
+ * ============================================================ */
+// computed 예외ⓐ 신규 rule type "scale" — 기존 nesting(부모−자식 감산)과 달리
+// "비율 축소"가 필요한 경우(작은 컨트롤에 큰 tier 값을 그대로 못 쓸 때). 값 목록이 아니라
+// 규칙(원본 alias × 배수)이 SSOT라 프리셋이 바뀌어도 자동 추종.
+function computedScale(baseLabel, basePx, factor, why){
+  const v = Math.max(1, Math.round(basePx*factor));
+  return { "$value":`${px2rem(v)}rem`, "$type":"dimension", "$extensions":{ px:v, rule:{ type:"scale", formula:`${baseLabel} × ${factor}`, why } } };
+}
+// computed 예외ⓐ nesting 재사용 — Switch.knob과 동형(부모 치수 − 2×inset)
+function computedOffset(baseLabel, basePx, insetEachSide, why){
+  const v = Math.max(0, basePx - 2*insetEachSide);
+  return { "$value":`${px2rem(v)}rem`, "$type":"dimension", "$extensions":{ px:v, rule:{ type:"nesting", formula:`${baseLabel} − 2×${insetEachSide}px`, why } } };
+}
+
+// ---- Checkbox (2/3상태: unchecked/checked/indeterminate, 박스 sm/md/lg) ----
+function buildCheckbox(){
+  return { "component":{ "checkbox":{
+    "$description":"Checkbox — unchecked/checked/indeterminate×상태, 박스 sm/md/lg(아이콘 치수 재사용 — Switch 선례). 터치타깃 44px은 히트 영역(패딩) 몫 — 시각 박스 자체는 T-3 비적용(Switch 트랙과 동일 선례).",
+    "box":{
+      "bg":{
+        "unchecked":a("color.bg.surface"),
+        "unchecked-disabled":a("color.bg.subtle"),
+        "checked":a("color.bg.action-primary.default"),
+        "checked-hover":a("color.bg.action-primary.hover"),
+        "checked-active":a("color.bg.action-primary.active"),
+        "indeterminate":a("color.bg.action-primary.default"),
+        "disabled":a("color.bg.action-disabled")
+      },
+      "stroke":{
+        "default":a("color.stroke.default"),
+        "hover":a("color.stroke.strong"),
+        "focus":a("color.stroke.focus"),
+        "invalid":a("color.stroke.danger"),
+        "disabled":a("color.stroke.subtle")
+      },
+      "stroke-width":{ "default":a("stroke-width.default"), "focus":a("stroke-width.focus") },
+      "fg":a("color.fg.on-action"),
+      "fg-indeterminate":a("color.fg.on-action"),
+      "size":{ "sm":a("size.icon.sm"),"md":a("size.icon.md"),"lg":a("size.icon.lg") },
+      "radius":computedScale("radius.control", RADIUS_PX.control, 0.5, "박스가 16~24px로 작아 control(8px) 그대로면 과도하게 둥글다 — 새 radius 역할 발명 대신 규칙 실체화(§0 예외ⓐ)")
+    },
+    "label":{ "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") }, "typography":a("typography.label"), "gap":a("spacing.inline.sm") },
+    "focus-color":a("color.stroke.focus"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+// ---- Radio (원형 컨트롤 + 내부 점, 박스 sm/md/lg) ----
+function buildRadio(){
+  return { "component":{ "radio":{
+    "$description":"Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 stroke.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
+    "control":{
+      "bg":{ "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
+      "stroke":{
+        "default":a("color.stroke.default"),
+        "hover":a("color.stroke.strong"),
+        "focus":a("color.stroke.focus"),
+        "checked":a("color.fg.brand"),
+        "disabled":a("color.stroke.subtle")
+      },
+      "stroke-width":{ "default":a("stroke-width.default"), "checked":a("stroke-width.selected"), "focus":a("stroke-width.focus") },
+      "radius":a("radius.circle"),
+      "size":{ "sm":a("size.icon.sm"),"md":a("size.icon.md"),"lg":a("size.icon.lg") }
+    },
+    "dot":{
+      "bg":a("color.fg.brand"),
+      "bg-disabled":a("color.fg.disabled"),
+      "radius":a("radius.circle"),
+      "size":{
+        "sm":computedOffset("control.size(icon.sm)", ICON_PX.sm, 4, "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)"),
+        "md":computedOffset("control.size(icon.md)", ICON_PX.md, 4, "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)"),
+        "lg":computedOffset("control.size(icon.lg)", ICON_PX.lg, 4, "내부 점 여백 확보 — Switch.knob과 동형 nesting(#10 사상)")
+      }
+    },
+    "label":{ "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") }, "typography":a("typography.label"), "gap":a("spacing.inline.sm") },
+    "focus-color":a("color.stroke.focus"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+// ---- Slider (트랙+필+섬, 단일 크기 — 밀도 변형은 1차 범위 밖) ----
+function buildSlider(){
+  return { "component":{ "slider":{
+    "$description":"Slider — 트랙(비활성)+fill(진행, action-primary)+thumb(control-knob 재사용, Switch 선례). sm/md/lg 밀도 변형은 1차 범위 밖(단일 크기로 축소 — Toast·Modal·Card 선례와 동일하게 전 컴포넌트가 3단 변형을 갖지는 않음).",
+    "track":{
+      "bg":a("color.bg.action-secondary.default"),
+      "bg-disabled":a("color.bg.action-disabled"),
+      "radius":a("radius.pill"),
+      "height":computedScale("size.icon.sm", ICON_PX.sm, 0.25, "트랙 두께 — 컨트롤 치수 대비 비례 축소, 새 치수 역할 발명 대신 규칙 실체화(§0 예외ⓐ)")
+    },
+    "fill":{ "bg":a("color.bg.action-primary.default"), "bg-disabled":a("color.bg.action-disabled") },
+    "thumb":{
+      "bg":a("color.bg.control-knob"),
+      "stroke":a("color.stroke.subtle"),
+      "radius":a("radius.circle"),
+      "size":a("size.icon.md"),
+      "motion":a("motion.control")
+    },
+    "focus-color":a("color.stroke.focus"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+// ---- Segmented (그룹 트랙 + 세그먼트, 선택 세그먼트=raised 칩) ----
+// ⚠ selected 고유 상태 — Select.item.selected(1차)·Tabs.tab.selected(2차)에 이은 3번째 반복.
+// Q-009(컨펌 큐, 2026-07-24 보류 판정)가 "3번째 반복 시 재상정"을 명시 조건으로 걸어 둔 바로 그 사례.
+// 값은 이전 2건(bg.brand-subtle+fg.brand)과 다르게 raised 칩(bg.surface-raised+elevation.raised)으로
+// 설계했다 — 실물 세그먼트 컨트롤 관행(Primer SegmentedControl 등, 선택 세그먼트=카드형 칩) 반영.
+// 이 파일은 값을 정의할 뿐 승격 여부를 결정하지 않는다 — 신규 Q 발급은 CONFIRM-QUEUE.md 몫(독단 금지).
+function buildSegmented(){
+  return { "component":{ "segmented":{
+    "$description":"Segmented — 그룹 트랙(action-secondary) + 세그먼트, 선택 세그먼트는 raised 칩(E-1 쌍: bg.surface-raised+elevation.raised). selected 고유상태 3번째 반복 — Q-009 재상정 트리거(신규 Q, 총괄 판정 전까지 승격 미실행).",
+    "container":{ "bg":a("color.bg.action-secondary.default"), "radius":a("radius.pill"), "padding":a("spacing.inset.sm") },
+    "segment":{
+      "fg":{ "default":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+      "bg":{ "hover":a("color.bg.action-ghost.hover") },
+      "selected":{
+        "bg":a("color.bg.surface-raised"),
+        "fg":a("color.fg.primary"),
+        "elevation":a("elevation.raised"),
+        "$extensions":{ rule:{ type:"component-state", state:"selected", why:"Select.item.selected(1차)·Tabs.tab.selected(2차) 반복의 3번째 사례 — Q-009(2026-07-24 보류, '3번째 반복 시 확정' 조건부) 재상정 트리거 충족. 값은 이번엔 raised 칩으로 이전 2건과 다르게 설계(실물 세그먼트 컨트롤 관행) — 승격 여부는 컨펌 큐 신규 Q로 상정, 이 생성기는 판정하지 않는다." } }
+      },
+      "height":{ "sm":a("size.control.sm"),"md":a("size.control.md"),"lg":a("size.control.lg") },
+      "radius":a("radius.pill"),
+      "typography":a("typography.label"),
+      "motion":a("motion.control")
+    },
+    "focus-color":a("color.stroke.focus"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+// ---- Tooltip (소형 오버레이 버블) ----
+function buildTooltip(){
+  return { "component":{ "tooltip":{
+    "$description":"Tooltip — 소형 오버레이 버블(surface-overlay+elevation.overlay 쌍, Modal과 동형이나 radius.control로 축소). 반전(inverted, 라이트에서도 다크 버블) 스타일은 bg.inverse 시맨틱 부재 — 새로 발명하지 않고 1차 범위 밖으로 기록(향후 승격 후보).",
+    "bg":a("color.bg.surface-overlay"),
+    "elevation":a("elevation.overlay"),
+    "stroke":a("color.stroke.subtle"),
+    "radius":a("radius.control"),
+    "fg":a("color.fg.primary"),
+    "padding":a("spacing.inset.sm"),
+    "typography":a("typography.caption"),
+    "motion":{ "enter":a("motion.overlay-enter"), "exit":a("motion.overlay-exit") }
+  }}};
+}
+// ---- Badge (인라인 상태 라벨, 비인터랙티브 — 높이·포커스 토큰 없음) ----
+function buildBadge(){
+  const status = (nm) => ({ "bg":a(`color.bg.${nm}-subtle`), "fg":a(`color.fg.${nm}`) });
+  return { "component":{ "badge":{
+    "$description":"Badge — 중립 base + 상태 4계열(Toast 패턴 재사용). 비인터랙티브 정적 표시 요소라 Toast처럼 focus·height 토큰 없음(S-3 동형 — 열린 요소에 고정 높이 금지).",
+    "base":{ "bg":a("color.bg.subtle"), "fg":a("color.fg.secondary") },
+    "status":{ "success":status("success"), "danger":status("danger"), "warning":status("warning"), "info":status("info") },
+    "radius":a("radius.pill"),
+    "padding":a("spacing.inset.sm"),
+    "icon":a("size.icon.sm"),
+    "typography":a("typography.caption")
+  }}};
+}
+// ---- Banner (페이지 인라인 상태 배너 — Toast와 의도적 차별화) ----
+function buildBanner(){
+  const status = (nm) => ({ "bg":a(`color.bg.${nm}-subtle`), "fg":a(`color.fg.${nm}`), "stroke":a("color.stroke.subtle") });
+  return { "component":{ "banner":{
+    "$description":"Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — stroke는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 stroke.subtle로 통일(Toast와 동일 절제).",
+    "base":{ "bg":a("color.bg.subtle"), "fg":a("color.fg.primary"), "stroke":a("color.stroke.subtle") },
+    "status":{ "success":status("success"), "danger":status("danger"), "warning":status("warning"), "info":status("info") },
+    "radius":a("radius.container"),
+    "inset":a("spacing.inset.md"),
+    "gap":a("spacing.inline.md"),
+    "icon":a("size.icon.md"),
+    "dismiss-icon":a("size.icon.sm"),
+    "typography":{ "title":a("typography.label"), "body":a("typography.body") }
+  }}};
+}
+
+/* ============================================================
  * 4) 검사 매트릭스 (제안서 §6.1 — Wave 1+2 적용분)
  * ============================================================ */
 function resolveSem(mode, ref){ // 모드-중립 semantic 경로 → 실측값
@@ -451,6 +634,68 @@ function runChecks(comps){
     const scrim = SEM.color[mode].bg.scrim;
     ck("A-2", scrim && scrim.$extensions.rule.type==="alpha", `${mode} scrim 알파 규칙 결손`);
   }
+
+  // ===== Wave 3 검사 (Checkbox·Radio·Slider·Segmented·Tooltip·Badge·Banner) =====
+  for (const mode of ["light","dark"]){
+    // C-2(checkbox): checked fill vs on-action 아이콘 ≥4.5 (Button primary와 동일 페어 재검증)
+    for (const st of ["checked","checked-hover","checked-active"]){
+      const bgRole = st==="checked" ? "default" : st.replace("checked-","");
+      const fg = resolveSem(mode,"color.fg.on-action").hex;
+      const bg = resolveSem(mode,`color.bg.action-primary.${bgRole}`).hex;
+      ck("C-2", contrast(fg,bg)>=4.5, `${mode} checkbox.box ${st}: on-action×fill ${round2(contrast(fg,bg))}<4.5`);
+    }
+    // C-3(radio): dot/ring(fg.brand) vs control bg(surface) 비텍스트 ≥3
+    const surf = resolveSem(mode,"color.bg.surface").hex;
+    const brandFg = resolveSem(mode,"color.fg.brand").hex;
+    ck("C-3", contrast(brandFg,surf)>=3, `${mode} radio dot×surface ${round2(contrast(brandFg,surf))}<3`);
+    // C-3(slider): thumb(control-knob) vs fill(action-primary) 비텍스트 ≥3 (Switch C-3와 동일 페어)
+    const knob = resolveSem(mode,"color.bg.control-knob").hex;
+    const fillOn = resolveSem(mode,"color.bg.action-primary.default").hex;
+    ck("C-3", contrast(knob,fillOn)>=3, `${mode} slider thumb×fill ${round2(contrast(knob,fillOn))}<3`);
+    // E-1(segmented): 선택 칩 = surface-raised ↔ elevation.raised 쌍
+    ck("E-1", !!resolveSem(mode,"color.bg.surface-raised") && !!SEM.elevation.raised, `${mode} segmented selected-chip raised 쌍 결손`);
+    // C-1(segmented): 선택 세그먼트 fg.primary × surface-raised ≥7 (raised 칩 위 본문급 텍스트)
+    const raisedHex = resolveSem(mode,"color.bg.surface-raised").hex;
+    ck("C-1", contrast(resolveSem(mode,"color.fg.primary").hex,raisedHex)>=7, `${mode} segmented.selected fg×surface-raised <7`);
+    // CS-1(governance): segmented.segment.selected가 component-state 마커를 보유 — Q-009 3번째 반복 추적
+    const segSel = buildSegmented().component.segmented.segment.selected;
+    const marker = segSel.$extensions && segSel.$extensions.rule;
+    ck("CS-1", !!marker && marker.type==="component-state" && marker.state==="selected", `segmented.selected component-state 마커 결손 — Q-009 반복 추적 불가`);
+    // E-1(tooltip): surface-overlay ↔ elevation.overlay 쌍 (Modal과 동일 페어 재검증)
+    ck("E-1", !!resolveSem(mode,"color.bg.surface-overlay") && !!SEM.elevation.overlay, `${mode} tooltip overlay 쌍 결손`);
+    // C-1(tooltip): fg.primary × surface-overlay ≥7
+    const ovHex = resolveSem(mode,"color.bg.surface-overlay").hex;
+    ck("C-1", contrast(resolveSem(mode,"color.fg.primary").hex,ovHex)>=7, `${mode} tooltip fg×overlay <7`);
+    // C-4(badge): base fg.secondary × bg.subtle ≥4.5, 상태 4종 fg.<s> × bg.<s>-subtle ≥4.5(자기-worst-case #19 재검증)
+    const subtleHex = resolveSem(mode,"color.bg.subtle").hex;
+    ck("C-4", contrast(resolveSem(mode,"color.fg.secondary").hex,subtleHex)>=4.5, `${mode} badge.base fg×subtle <4.5`);
+    for (const s of ["success","danger","warning","info"]){
+      const sFg = resolveSem(mode,`color.fg.${s}`).hex;
+      const sBg = resolveSem(mode,`color.bg.${s}-subtle`).hex;
+      ck("C-4", contrast(sFg,sBg)>=4.5, `${mode} badge.status.${s} fg×own-subtle-bg ${round2(contrast(sFg,sBg))}<4.5`);
+    }
+    // C-1(banner): base fg.primary × bg.subtle ≥7 (본문급 텍스트)
+    ck("C-1", contrast(resolveSem(mode,"color.fg.primary").hex,subtleHex)>=7, `${mode} banner.base fg×subtle <7`);
+    // C-4(banner): 상태 4종 fg.<s> × bg.<s>-subtle ≥4.5 (badge와 동일 자기-페어링)
+    for (const s of ["success","danger","warning","info"]){
+      const sFg = resolveSem(mode,`color.fg.${s}`).hex;
+      const sBg = resolveSem(mode,`color.bg.${s}-subtle`).hex;
+      ck("C-4", contrast(sFg,sBg)>=4.5, `${mode} banner.status.${s} fg×own-subtle-bg ${round2(contrast(sFg,sBg))}<4.5`);
+    }
+  }
+  // S-3: 비인터랙티브 열린 요소(Badge·Banner)에 고정 높이 토큰 금지
+  const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
+  ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
+  ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
+  // R-2(checkbox): radius scale 재계산 대조 — control(8)×0.5=4
+  const cbRadius = computedScale("radius.control", RADIUS_PX.control, 0.5, "재계산 대조");
+  ck("R-2", cbRadius.$extensions.px===Math.round(RADIUS_PX.control*0.5), `checkbox.box.radius 재계산 불일치`);
+  // R-2(radio): dot offset 재계산 대조 — icon.md(20)−2×4=12
+  const dotMd = computedOffset("icon.md", ICON_PX.md, 4, "재계산 대조");
+  ck("R-2", dotMd.$extensions.px===Math.max(0,ICON_PX.md-8), `radio.dot.size.md 재계산 불일치`);
+  // R-2(slider): track height scale 재계산 대조 — icon.sm(16)×0.25=4
+  const trackH = computedScale("icon.sm", ICON_PX.sm, 0.25, "재계산 대조");
+  ck("R-2", trackH.$extensions.px===Math.round(ICON_PX.sm*0.25), `slider.track.height 재계산 불일치`);
 }
 
 /* ============================================================
@@ -459,14 +704,17 @@ function runChecks(comps){
 injectSemanticAdditions();
 const size = buildSize(), bw = buildBorderWidth(), motion = buildMotion();
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
-               buildSwitch(), buildTabs(), buildModal(), buildToast()];
+               buildSwitch(), buildTabs(), buildModal(), buildToast(),
+               buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
+               buildTooltip(), buildBadge(), buildBanner()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
 const OUT = process.env.OUT_DIR ? path.join(ROOT, process.env.OUT_DIR) : ROOT;
 fs.mkdirSync(path.join(OUT, "tokens/component"), { recursive:true });
 const outDir = path.join(OUT, "tokens/component");
-const names = ["button","input","select","card","switch","tabs","modal","toast"];
+const names = ["button","input","select","card","switch","tabs","modal","toast",
+               "checkbox","radio","slider","segmented","tooltip","badge","banner"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.border-width.json"), JSON.stringify(bw,null,2));
@@ -522,6 +770,6 @@ const fail = checks.filter(c=>!c.ok);
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== A3 Wave 1 검사 리포트 ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 4종 → tokens/component/*.json · 신설 primitive 2종 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8종 + Wave3 7종) → tokens/component/*.json · 신설 primitive 3종(size·border-width·motion) · 검증셋 → build/component.resolved.json`);
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log("전 검사 ✗ 0건 — Wave 1 아키텍처 통과 ✓");
+console.log("전 검사 ✗ 0건 — Wave 1+2+3 아키텍처 통과 ✓");
