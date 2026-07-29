@@ -15,6 +15,10 @@
   .top .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
   .tbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--fg)}
   .tbtn.pri{background:var(--brand);color:#fff;border-color:var(--brand)}
+  /* 검증 미통과 상태를 버튼이 실제로 드러내게 한다. render() 가 data-ok 를 써 왔지만
+     이를 받는 규칙이 없어, 통과/미통과가 눌러보기 전까지 화면에 표시되지 않았다. */
+  .tbtn.pri[data-ok="0"]{background:#fff;color:var(--muted);border-color:var(--line)}
+  .tbtn.pri[data-ok="0"]::before{content:"⚠ ";color:#b06a12}
 
   .layout{display:grid;grid-template-columns:328px 1fr;gap:0;align-items:start}
   @media(max-width:920px){.layout{grid-template-columns:1fr}}
@@ -44,7 +48,9 @@
   .fk .fp{display:flex;gap:2px;justify-content:center;margin-bottom:4px}
   .fk .fp i{width:11px;height:11px;border-radius:2px}
   .fk .o{font-size:9.5px;color:var(--muted)}
-  .fkhint{font-size:10.5px;color:var(--l3);font-weight:600;margin-bottom:8px}
+  /* 경고색(--l3)이 아니라 안내색. 이 항목들은 기본값이 이미 정해져 있고(state.dark="on",
+     state.neutral="cool") 바꿔도 되는 것일 뿐이라, 붉은 경고로 읽히면 사실과 다르다. */
+  .fkhint{font-size:10.5px;color:var(--muted);font-weight:600;margin-bottom:8px}
   .lbl2{font-size:11.5px;font-weight:700;margin:12px 0 6px}
 
   .segrow{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -91,7 +97,9 @@
   .pvhd .share{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 9px;cursor:pointer;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .stages{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:1180px){.stages{grid-template-columns:1fr}}
-  .stage{border-radius:14px;padding:18px;border:1px solid var(--line)}
+  /* min-width:0 — 그리드 아이템 기본 min-width:auto 가 내용 폭으로 부풀어 1181~1594px 구간에서
+     가로 스크롤을 만들었다(1440px 에서 문서 폭 1594px). 잠금 없이 1fr 1fr 을 지키게 한다. */
+  .stage{border-radius:14px;padding:18px;border:1px solid var(--line);min-width:0}
   .shd{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
   .dot{width:9px;height:9px;border-radius:50%}
   .comps{display:flex;flex-direction:column;gap:16px}
@@ -166,7 +174,7 @@
     </div>
     <div class="grp">
       <div class="gh"><span class="gn p3">③</span><span class="gt">갈림길</span><button class="ghelp" data-guide="#s6" title="개념 가이드: 다크 모드가 생기는 방식" aria-label="개념 가이드에서 보기">?</button></div>
-      <div class="fkhint">↓ 도구가 기본을 안 정합니다 — 골라주세요</div>
+      <div class="fkhint">↓ 기본값은 <b>켜기 · 차가운 회색</b> — 브랜드 성격에 따라 바꾸세요</div>
       <div class="lbl2">다크모드</div>
       <div class="forks" id="fkDark" style="margin-bottom:12px">
         <div class="fk" data-v="on"><div class="l">켜기</div><div class="fp"><i style="background:#212325"></i><i style="background:#323437"></i><i style="background:#44474a"></i></div><div class="o">어두운 테마 포함</div></div>
