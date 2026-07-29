@@ -10,7 +10,13 @@
  * 미러가 라이브와 달라야 하는 지점은 딱 하나 — 가이드 URL.
  * 프로젝트 문서/아티팩트로 열리면 옆에 guide.html 이 없으므로 상대경로가 죽는다.
  * 그래서 절대 URL 로 바꾸고, iframe 이 샌드박스에 막히거나 아직 배포 전(404)일 때를
- * 대비해 ① 헤더의 새 탭 링크 ② 2.5초 로드 타임아웃 폴백 패널을 함께 넣는다.
+ * 대비해 ① 헤더의 새 탭 링크 ② iframe 아래 상시 안내 바를 함께 넣는다.
+ * (감지식이 아니라 "상시" 인 이유는 T5 주석 참고 — 실패를 감지할 방법이 없다.)
+ *
+ * 산출물은 두 곳에 게시된다. 둘은 별개 저장소이므로 반드시 함께 교체할 것:
+ *   ① 프로젝트 문서 `claude/b2a-configurator.html`  (Projects project_write)
+ *   ② Cowork 아티팩트 `b2a-configurator`            (SendUserFile → update_artifact)
+ * ①만 바꾸면 아티팩트 갤러리에서 여는 사람에게는 옛 버전이 계속 보인다.
  *
  * 사용: node scripts/build-b2a.cjs          → dist/b2a-configurator.html 생성
  *       node scripts/build-b2a.cjs --check  → 드리프트 검사(CI). 어긋나면 exit 1

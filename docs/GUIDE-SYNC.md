@@ -77,8 +77,22 @@ node scripts/build-guide.cjs --check
 | 정본 → 배포본 재생성 + 커밋 | **HQ** (요청 시) 또는 진아 로컬 | `node scripts/build-guide.cjs` |
 | 재생성 누락 감지 | **CI** (자동) | `--check` 실패 |
 | 앵커 구조 변경(섹션 id 추가·삭제) 시 딥링크 갱신 | **HQ** | `public/index.html` 의 `data-guide` 9개 재매핑 |
-| 컨피규레이터 UI 변경 → B2a 미러 반영 | **HQ** | `node scripts/build-b2a.cjs` + 프로젝트 문서 교체 |
+| 컨피규레이터 UI 변경 → B2a 미러 반영 | **HQ** | `node scripts/build-b2a.cjs` + **게시 2곳 모두 교체**(아래) |
 | 미러 재생성 누락 감지 | **CI** (자동) | `build-b2a.cjs --check` 실패 |
+
+### 4-1. 미러 게시처는 두 곳이다 (둘 다 바꿔야 한다)
+
+`dist/b2a-configurator.html` 은 서로 다른 저장소 두 군데에 게시됩니다. 한쪽만 바꾸면
+다른 쪽을 여는 사람에게는 **옛 버전이 계속 보입니다** — CI 로도 잡히지 않습니다.
+
+| 게시처 | 갱신 방법 |
+|---|---|
+| 프로젝트 문서 `claude/b2a-configurator.html` | `Projects project_write` |
+| Cowork 아티팩트 `b2a-configurator` | `SendUserFile` → `update_artifact` (`file_uuid` 전달) |
+
+2026-07-29 실제로 ①만 갱신하고 ②를 빠뜨려, 진아가 갤러리에서 연 컨피규레이터에
+가이드 진입점이 하나도 보이지 않는 일이 있었습니다. 미러를 재생성했다면
+**두 줄을 한 세트로** 실행하세요.
 
 가이드 갱신이 **결정 사항**(예: Q-011 확정, `selected` 승격 결론)에서 비롯된 경우,
 `PROJECT-STATE.md` 결정 기록 → 가이드 갱신 → 재생성 순서를 지킵니다.
