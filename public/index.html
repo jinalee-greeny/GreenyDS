@@ -20,25 +20,54 @@
   .tbtn.pri[data-ok="0"]{background:#fff;color:var(--muted);border-color:var(--line)}
   .tbtn.pri[data-ok="0"]::before{content:"⚠ ";color:#b06a12}
 
-  .layout{display:grid;grid-template-columns:328px 1fr;gap:0;align-items:start}
+  /* 결정 #31 (시안 C · 캔버스) — 3열: 아이콘 레일 · 인스펙터 · 전면 캔버스.
+     인스펙터를 떠 있는 패널이 아니라 그리드 열로 둔 이유: 시안 C의 가장 큰 약점이
+     "인스펙터가 미리보기를 가린다" 였고, 열로 두면 원리적으로 가릴 수 없다.
+     접기는 열 폭을 0 으로 만드는 방식이라 접었을 때는 진짜 전면 캔버스가 된다. */
+  .layout{display:grid;grid-template-columns:56px var(--inspw) 1fr;gap:0;align-items:start;--inspw:320px;
+          transition:grid-template-columns .18s cubic-bezier(.22,.61,.36,1)}
+  body.insp-off .layout{--inspw:0px}
+  /* ── 아이콘 레일 ── */
+  .rail{background:#fcfcfd;border-right:1px solid var(--line);height:calc(100vh - 53px);
+        position:sticky;top:53px;padding-top:8px;display:flex;flex-direction:column}
+  .ri{height:56px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      font-size:9.5px;font-weight:600;color:var(--faint);cursor:pointer;border:0;background:none;padding:0;
+      width:100%;font-family:inherit}
+  .ri i{font-style:normal;font-size:16px;line-height:1}
+  .ri:hover{color:var(--muted);background:#f5f6f8}
+  .ri.on{color:var(--fg);background:#fff;box-shadow:inset 2px 0 0 var(--brand)}
+  .ri.on i{color:var(--brand)}
   @media(max-width:920px){.layout{grid-template-columns:1fr}}
   /* padding-top 을 0 으로 내린 이유: .sech 가 sticky 로 패널 상단에 붙을 때
      위쪽 여백이 남으면 스크롤된 내용이 그 틈으로 비쳐 보인다. */
   .panel{background:#fff;border-right:1px solid var(--line);padding:0 18px 18px;height:calc(100vh - 53px);overflow-y:auto;position:sticky;top:53px}
+  body.insp-off .panel{padding-left:0;padding-right:0;overflow:hidden;border-right:none}
   @media(max-width:920px){.panel{height:auto;position:static;border-right:none;border-bottom:1px solid var(--line)}}
   /* 결정 #30 (B안) — 자율성 표기 단위를 그룹 배지에서 컨트롤별 낱말로 내렸다.
      .grp/.gh/.gn/.p1~.p4/.gt/.ghint 는 이 개편으로 참조가 사라져 삭제. */
-  .sec{margin-bottom:16px}
+  /* 한 번에 한 섹션만. 레일 클릭이 곧 섹션 전환이라 접근은 1클릭이다(2클릭이 아니다). */
+  .sec{margin-bottom:16px;display:none}
+  .sec.on{display:block}
   .sech{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:7px;
         margin:0 -18px 10px;padding:9px 18px;border-bottom:1px solid var(--line);
-        font-size:11.5px;font-weight:800;letter-spacing:.02em}
+        font-size:13.5px;font-weight:800;letter-spacing:-.01em}
   .sech .sn{font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
   .sech .sc{margin-left:auto;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--faint)}
   .blk{margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid var(--line2)}
   .blk:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
   .bh{display:flex;align-items:center;gap:7px;margin-bottom:7px}
-  .bt{font-size:12.5px;font-weight:700;margin-right:auto}
-  .mrow{display:flex;align-items:baseline;gap:8px;margin:2px 0 5px;line-height:1.35}
+  .bt{font-size:12px;font-weight:700;margin-right:auto}
+  .inspx{flex:none;width:19px;height:19px;border-radius:6px;border:1px solid var(--line);background:#fff;
+         color:var(--faint);font-size:11px;line-height:1;cursor:pointer;padding:0;margin-left:6px;
+         display:inline-flex;align-items:center;justify-content:center}
+  .inspx:hover{border-color:var(--brand);color:var(--brand)}
+  /* 마커 가-1 — 마커는 전용 줄을 갖지 않고 그 컨트롤의 이름 줄 오른쪽 끝에 붙는다. */
+  .bh{flex-wrap:wrap}
+  .bh .mx{font-size:10.5px;color:var(--faint);font-weight:400;margin-right:auto;min-width:0}
+  .bh .bt{margin-right:6px;white-space:nowrap;flex:none}
+  .bh .bt:only-of-type,.bh .bt+.mk{margin-right:auto}
+  .bh .mk+.ghelp{margin-left:6px}
+  .mrow{display:flex;align-items:baseline;gap:8px;margin:2px 0 4px;line-height:1.35}
   .ml{font-size:11px;color:var(--muted);font-weight:600;margin-right:auto}
   .mx{color:var(--faint);font-weight:400}
   /* 마커 색은 --l3/--l4(검증 실패/통과)와 의도적으로 분리. 자율성은 옳고 그름이 아니라
@@ -51,7 +80,9 @@
   .seedrow{display:flex;gap:8px;align-items:center}
   input[type=color]{width:40px;height:34px;border:1px solid var(--line);border-radius:8px;padding:2px;cursor:pointer;background:none}
   input[type=text].hex{width:104px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:12.5px}
-  .emp{font-size:10.5px;color:var(--l4);font-weight:600;margin-top:7px}
+  /* 결함 4 — .emp 는 검증 결과가 아니라 설명이다. 통과색(--l4)을 쓰면 "검증 통과"로 읽힌다.
+     초록은 이제 검증 게이트(.vok)에서만 쓴다. */
+  .emp{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:7px}
   .ramp{display:flex;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin-top:2px}
   .ramp .s{flex:1;height:26px}
   .roN{font-size:10px;color:var(--faint);font-family:var(--mono);margin-top:5px}
@@ -74,8 +105,11 @@
   .seg.on{background:var(--brand);color:#fff}
   .loadbtn{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--fg)}
   .loadbtn:hover{border-color:#c9bdf7}
-  .why{display:inline-flex;gap:5px;align-items:flex-start;background:var(--brand050);border:1px solid var(--brandln);color:#4c3aa0;border-radius:10px;padding:6px 10px;font-size:10px;margin-top:9px;line-height:1.45}
-  .f2{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+  .why{display:block;background:var(--brand050);border:1px solid var(--brandln);color:#4c3aa0;border-radius:10px;padding:6px 10px;font-size:10px;margin-top:9px;line-height:1.45}
+  /* 결함 1 — input[type=text] 의 기본 min-width:auto(size=20 기준)가 flex 축소를 막아
+     ↵ 버튼을 패널 밖 +3px 로 밀어냈다. min-width:0 이 근본 원인 해결이다. */
+  .slotbox input[type=text],.improw input[type=text]{min-width:0}
+  .f2{display:flex;align-items:center;gap:10px;margin-bottom:9px}
   .f2 .l{font-size:12px;font-weight:600;width:44px;flex:none}
   .f2 input[type=range]{flex:1;accent-color:var(--brand)}
   .f2 .num{width:58px;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:var(--mono);font-size:11.5px;text-align:right}
@@ -107,12 +141,35 @@
   .gcard .nm{font-size:10.5px;font-weight:600;padding:5px 8px}
 
   /* preview */
-  .stageWrap{padding:22px}
-  .pvhd{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-  .pvhd h2{font-size:15px;margin:0}
-  .pvhd .share{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 9px;cursor:pointer;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .stages{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:1180px){.stages{grid-template-columns:1fr}}
+  .stageWrap{padding:0;min-width:0}
+  .cvtop{position:sticky;top:53px;z-index:5;display:flex;align-items:center;gap:12px;
+         padding:9px 22px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+         border-bottom:1px solid var(--line)}
+  .cvtop h2{font-size:12.5px;margin:0;font-weight:700;color:var(--muted)}
+  .vseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .vseg button{border:0;border-right:1px solid var(--line);background:#fff;color:var(--muted);
+               font-family:inherit;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer}
+  .vseg button:last-child{border-right:0}
+  .vseg button.on{background:var(--fg);color:#fff}
+  .vseg button[disabled]{opacity:.4;cursor:not-allowed}
+  /* 결함 3 — theme: 문자열이 화면 끝에 잘려 디버그 출력처럼 보였다.
+     라벨 + 값 + 복사 버튼을 갖춘 정식 필드로 승격한다. */
+  .shfield{margin-left:auto;display:flex;align-items:center;gap:0;border:1px solid var(--line);
+           border-radius:8px;background:#fff;overflow:hidden;max-width:420px;min-width:0}
+  .shfield .shl{font-size:10.5px;font-weight:700;color:var(--muted);padding:5px 8px;
+                border-right:1px solid var(--line);background:#fbfbfc;flex:none}
+  .shfield .share{font-family:var(--mono);font-size:10.5px;color:var(--fg);padding:5px 9px;
+                  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+  .shfield .shc{flex:none;border:0;border-left:1px solid var(--line);background:#fbfbfc;color:var(--brand);
+                font-family:inherit;font-size:10.5px;font-weight:700;padding:5px 10px;cursor:pointer}
+  .shfield .shc:hover{background:var(--brand050)}
+  .canvas{padding:20px 22px 40px}
+  .stages{display:grid;grid-template-columns:1fr;gap:16px;max-width:1080px;margin:0 auto}
+  body[data-view="both"] .stages{grid-template-columns:1fr 1fr;max-width:1400px}
+  body[data-view="light"] .stages .stage:nth-child(2){display:none}
+  body[data-view="dark"] .stages .stage:nth-child(1){display:none}
+  .valid{max-width:1080px;margin-left:auto;margin-right:auto}
+  @media(max-width:1180px){body[data-view="both"] .stages{grid-template-columns:1fr}}
   /* min-width:0 — 그리드 아이템 기본 min-width:auto 가 내용 폭으로 부풀어 1181~1594px 구간에서
      가로 스크롤을 만들었다(1440px 에서 문서 폭 1594px). 잠금 없이 1fr 1fr 을 지키게 한다. */
   .stage{border-radius:14px;padding:18px;border:1px solid var(--line);min-width:0}
@@ -167,7 +224,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.6 — 패널 4섹션 재편</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.7 — 캔버스 레이아웃</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -175,24 +232,30 @@
   </div>
 </div>
 <div class="layout">
-  <!-- CONTROL PANEL -->
+  <!-- SECTION RAIL (결정 #31) -->
+  <nav class="rail" aria-label="설정 섹션">
+    <button class="ri on" data-sec="S1" aria-pressed="true"><i>◕</i>색</button>
+    <button class="ri" data-sec="S2" aria-pressed="false"><i>Aa</i>글자</button>
+    <button class="ri" data-sec="S3" aria-pressed="false"><i>▣</i>형태</button>
+    <button class="ri" data-sec="S4" aria-pressed="false"><i>☰</i>프리셋</button>
+  </nav>
+
+  <!-- INSPECTOR -->
   <div class="panel">
 
     <!-- ══ S1 · 색 ══ -->
-    <div class="sec">
-      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">5</span></div>
+    <div class="sec on" data-sec="S1">
+      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">설정 5개</span><button class="inspx" id="inspXS1" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
 
       <div class="blk">
-        <div class="bh"><span class="bt">시드</span><button class="ghelp" data-guide="#ref-color" title="개념 가이드: 브랜드색이 램프로 퍼지는 방식" aria-label="개념 가이드에서 보기">?</button></div>
-        <div class="mrow"><span class="ml">브랜드 시드색</span><span class="mk you">직접</span></div>
+        <div class="bh"><span class="bt">시드</span><span class="mk you">직접</span><button class="ghelp" data-guide="#ref-color" title="개념 가이드: 브랜드색이 램프로 퍼지는 방식" aria-label="개념 가이드에서 보기">?</button></div>
         <div class="seedrow"><input type="color" id="seed" value="#8974f0"><input type="text" class="hex" id="seedHex" value="#8974f0"></div>
         <label class="loadbtn" style="margin-top:8px">🖼 이미지에서 시드 추출 <span style="color:var(--faint);font-weight:400">로고·키비주얼</span><input type="file" id="seedImg" accept="image/*" hidden></label>
         <div class="emp">✓ 여기 한 곳만 정하면 아래 램프 전체가 다시 만들어집니다</div>
       </div>
 
       <div class="blk">
-        <div class="bh"><span class="bt">자동 램프</span><button class="ghelp" data-guide="#s-layers" title="개념 가이드: Primitive 계층 — 엔진이 만드는 원재료" aria-label="개념 가이드에서 보기">?</button></div>
-        <div class="mrow"><span class="ml">OKLCH 11단계 <span class="mx">— 시드에서 파생</span></span><span class="mk auto">자동</span></div>
+        <div class="bh"><span class="bt">자동 램프</span><span class="mx">— OKLCH 11단계 · 시드에서 파생</span><span class="mk auto">자동</span><button class="ghelp" data-guide="#s-layers" title="개념 가이드: Primitive 계층 — 엔진이 만드는 원재료" aria-label="개념 가이드에서 보기">?</button></div>
         <div class="ramp" id="ramp"></div>
         <div class="roN">읽기 전용 — 시드를 바꾸면 함께 바뀝니다</div>
       </div>
@@ -213,8 +276,7 @@
       </div>
 
       <div class="blk">
-        <div class="bh"><span class="bt">본문 대비</span><button class="ghelp" data-guide="#s7" title="개념 가이드: 대비 기준(AAA/AA)이 값 생성 조건이 되는 이유" aria-label="개념 가이드에서 보기">?</button></div>
-        <div class="mrow"><span class="ml">본문 글자 대비 기준</span><span class="mk def">기본값</span></div>
+        <div class="bh"><span class="bt">본문 대비</span><span class="mk def">기본값</span><button class="ghelp" data-guide="#s7" title="개념 가이드: 대비 기준(AAA/AA)이 값 생성 조건이 되는 이유" aria-label="개념 가이드에서 보기">?</button></div>
         <div class="segrow" id="segAA">
           <button class="seg" data-v="AAA">AAA·안전</button><button class="seg" data-v="AA">AA·유연</button>
         </div>
@@ -231,8 +293,8 @@
     </div>
 
     <!-- ══ S2 · 글자 ══ -->
-    <div class="sec">
-      <div class="sech"><span class="sn">S2</span><span>글자</span><span class="sc">2</span></div>
+    <div class="sec" data-sec="S2">
+      <div class="sech"><span class="sn">S2</span><span>글자</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS2" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">서체</span><button class="ghelp" data-guide="#ref-type" title="개념 가이드: typo · 글자 — 서체 슬롯" aria-label="개념 가이드에서 보기">?</button></div>
@@ -267,9 +329,9 @@
       <div class="blk">
         <div class="bh"><span class="bt">크기 · 비율 · 역할</span><button class="ghelp" data-guide="#type" title="개념 가이드: typo · 글자 스케일 6역할" aria-label="개념 가이드에서 보기">?</button></div>
         <div class="mrow"><span class="ml">기준 크기</span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">크기</span><input type="range" id="tbaseR" min="13" max="18" step="0.5" value="16"><input type="text" class="num" id="tbaseN" value="16"><span class="u">px</span></div>
+        <div class="f2"><input type="range" id="tbaseR" min="13" max="18" step="0.5" value="16"><input type="text" class="num" id="tbaseN" value="16"><span class="u">px</span></div>
         <div class="mrow"><span class="ml">단계 비율</span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">비율</span><input type="range" id="tratioR" min="1.1" max="1.414" step="0.007" value="1.25"><input type="text" class="num" id="tratioN" value="1.25"><span class="u">×</span></div>
+        <div class="f2"><input type="range" id="tratioR" min="1.1" max="1.414" step="0.007" value="1.25"><input type="text" class="num" id="tratioN" value="1.25"><span class="u">×</span></div>
         <div class="mrow"><span class="ml">6역할 스케일 <span class="mx">— 크기×비율에서 파생</span></span><span class="mk auto">자동</span></div>
 
         <div class="lbl2" id="roleTog" style="display:flex;align-items:center;cursor:pointer;user-select:none">역할별 정밀 조정 <span style="font-weight:400;color:var(--faint);font-size:10px;margin-left:6px">크기·굵기·행간·자간</span><span id="roleCaret" style="margin-left:auto;color:var(--faint)">▾</span></div>
@@ -294,14 +356,14 @@
     </div>
 
     <!-- ══ S3 · 형태 ══ -->
-    <div class="sec">
-      <div class="sech"><span class="sn">S3</span><span>형태</span><span class="sc">2</span></div>
+    <div class="sec" data-sec="S3">
+      <div class="sech"><span class="sn">S3</span><span>형태</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS3" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">간격 · 모서리</span><button class="ghelp" data-guide="#ref-space" title="개념 가이드: spatial · 여백 스케일" aria-label="개념 가이드에서 보기">?</button></div>
 
         <div class="mrow"><span class="ml">기준 간격 <span class="mx">— 4px 그리드 base</span></span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">base</span><input type="range" id="densR" min="4" max="12" step="2" value="8"><input type="text" class="num" id="densN" value="8"><span class="u">px</span></div>
+        <div class="f2"><input type="range" id="densR" min="4" max="12" step="2" value="8"><input type="text" class="num" id="densN" value="8"><span class="u">px</span></div>
         <div class="mrow"><span class="ml">space 스케일 <span class="mx">— base×배수</span></span><span class="mk auto">자동</span></div>
         <div class="scalestrip" id="spStrip"></div>
 
@@ -316,7 +378,7 @@
         </div>
 
         <div class="mrow"><span class="ml">기준 모서리 <span class="mx">— base</span></span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">base</span><input type="range" id="radR" min="0" max="16" value="8"><input type="text" class="num" id="radN" value="8"><span class="u">px</span></div>
+        <div class="f2"><input type="range" id="radR" min="0" max="16" value="8"><input type="text" class="num" id="radN" value="8"><span class="u">px</span></div>
         <div class="mrow"><span class="ml">티어 파생 <span class="mx">— control·container·overlay</span></span><span class="mk auto">자동</span></div>
 
         <div class="lbl2" id="radTog" style="display:flex;align-items:center;cursor:pointer;user-select:none">모서리 상세 <span style="font-weight:400;color:var(--faint);font-size:10px;margin-left:6px">티어별 지정</span><span id="radCaret" style="margin-left:auto;color:var(--faint)">▾</span></div>
@@ -334,7 +396,7 @@
         <div class="bh"><span class="bt">그림자 · 모션</span><button class="ghelp" data-guide="#ref-shape" title="개념 가이드: visual · 모서리·그림자 / motion" aria-label="개념 가이드에서 보기">?</button></div>
 
         <div class="mrow"><span class="ml">그림자 강도 <span class="mx">— 전역 배율</span></span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">강도</span><input type="range" id="elevR" min="0" max="100" value="50"><input type="text" class="num" id="elevN" value="50"><span class="u"></span></div>
+        <div class="f2"><input type="range" id="elevR" min="0" max="100" value="50"><input type="text" class="num" id="elevN" value="50"><span class="u"></span></div>
 
         <div class="lbl2" id="shTog" style="display:flex;align-items:center;cursor:pointer;user-select:none">그림자 상세 <span style="font-weight:400;color:var(--faint);font-size:10px;margin-left:6px">dp 단계·tint</span><span id="shCaret" style="margin-left:auto;color:var(--faint)">▾</span></div>
         <div id="shDetail" style="display:none">
@@ -348,7 +410,7 @@
         </div>
 
         <div class="mrow"><span class="ml">기준 속도 <span class="mx">— duration base</span></span><span class="mk def">기본값</span></div>
-        <div class="f2"><span class="l">base</span><input type="range" id="motR" min="80" max="500" step="10" value="200"><input type="text" class="num" id="motN" value="200"><span class="u">ms</span></div>
+        <div class="f2"><input type="range" id="motR" min="80" max="500" step="10" value="200"><input type="text" class="num" id="motN" value="200"><span class="u">ms</span></div>
         <div class="mrow"><span class="ml">duration 6단 <span class="mx">— base×[.35·.6·1·1.5·2.2·3]</span></span><span class="mk auto">자동</span></div>
         <div class="scalestrip" id="durStrip"></div>
 
@@ -366,8 +428,8 @@
     </div>
 
     <!-- ══ S4 · 프리셋 ══ -->
-    <div class="sec">
-      <div class="sech"><span class="sn">S4</span><span>프리셋</span><span class="sc">1</span></div>
+    <div class="sec" data-sec="S4">
+      <div class="sech"><span class="sn">S4</span><span>프리셋</span><span class="sc">설정 1개</span><button class="inspx" id="inspXS4" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">저장 · 갤러리 · 가져오기</span><button class="ghelp" data-guide="#s2" title="개념 가이드: 값이 아니라 값을 만드는 엔진" aria-label="개념 가이드에서 보기">?</button></div>
@@ -381,12 +443,92 @@
 
   <!-- PREVIEW -->
   <div class="stageWrap">
-    <div class="pvhd"><h2>실시간 미리보기 — 컴포넌트 8종</h2><span class="share" id="shareStr" title="클릭해 복사"></span></div>
-    <div class="stages" id="stages"></div>
-    <div class="valid"><h4>검증 게이트 <span class="g" id="vgoal"></span></h4><div id="vlist"></div></div>
+    <div class="cvtop">
+      <button class="inspx" id="inspOpen" title="인스펙터 열기" aria-label="인스펙터 열기" style="display:none">›</button>
+      <div class="vseg" id="viewSeg">
+        <button data-view="light" class="on">라이트</button>
+        <button data-view="dark">다크</button>
+        <button data-view="both">나란히</button>
+      </div>
+      <h2>실시간 미리보기 — 컴포넌트 8종</h2>
+      <div class="shfield">
+        <span class="shl">테마 링크</span>
+        <span class="share" id="shareStr" title="클릭해 복사"></span>
+        <button class="shc" id="shareCopy">복사</button>
+      </div>
+    </div>
+    <div class="canvas">
+      <div class="stages" id="stages"></div>
+      <div class="valid"><h4>검증 게이트 <span class="g" id="vgoal"></span></h4><div id="vlist"></div></div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<script>
+/* ── 결정 #31 · 시안 C 셸 (레일 / 인스펙터 접기 / 라이트·다크 뷰) ──
+   본 엔진 스크립트보다 뒤에 두어, 렌더가 끝난 DOM 위에서만 동작하게 한다. */
+(function(){
+  var body=document.body;
+
+  /* 1) 레일 → 섹션 전환. 인스펙터가 접혀 있으면 자동으로 펼친다(접근 1클릭 유지). */
+  var rails=[].slice.call(document.querySelectorAll('.ri'));
+  var secs=[].slice.call(document.querySelectorAll('.sec[data-sec]'));
+  function showSec(key){
+    rails.forEach(function(r){var on=r.dataset.sec===key;r.classList.toggle('on',on);r.setAttribute('aria-pressed',on?'true':'false');});
+    secs.forEach(function(v){v.classList.toggle('on',v.dataset.sec===key);});
+    body.classList.remove('insp-off');
+    var p=document.querySelector('.panel'); if(p) p.scrollTop=0;
+    syncOpenBtn();
+  }
+  rails.forEach(function(r){r.addEventListener('click',function(){showSec(r.dataset.sec);});});
+
+  /* 2) 인스펙터 접기 / 열기 */
+  var openBtn=document.getElementById('inspOpen');
+  function syncOpenBtn(){ if(openBtn) openBtn.style.display=body.classList.contains('insp-off')?'inline-flex':'none'; }
+  [].slice.call(document.querySelectorAll('.inspx[id^="inspX"]')).forEach(function(b){
+    b.addEventListener('click',function(){body.classList.add('insp-off');syncOpenBtn();});
+  });
+  if(openBtn) openBtn.addEventListener('click',function(){body.classList.remove('insp-off');syncOpenBtn();});
+
+  /* 3) 라이트 / 다크 / 나란히 */
+  var seg=document.getElementById('viewSeg');
+  var btns=seg?[].slice.call(seg.querySelectorAll('button')):[];
+  function setView(v){
+    body.dataset.view=v;
+    btns.forEach(function(b){b.classList.toggle('on',b.dataset.view===v);});
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){ if(!b.disabled) setView(b.dataset.view); });});
+  setView('light');
+
+  /* 다크 스테이지가 없는 상태(다크모드 끄기)에서는 다크·나란히를 잠근다.
+     stage 는 엔진이 다시 그릴 때마다 교체되므로 관찰이 필요하다. */
+  var stages=document.getElementById('stages');
+  function syncViewAvail(){
+    var n=stages?stages.querySelectorAll('.stage').length:0;
+    btns.forEach(function(b){
+      var need=b.dataset.view!=='light';
+      b.disabled=need&&n<2;
+      b.title=b.disabled?'다크모드가 꺼져 있어 비교할 수 없습니다':'';
+    });
+    if(n<2&&body.dataset.view!=='light') setView('light');
+  }
+  if(stages){ new MutationObserver(syncViewAvail).observe(stages,{childList:true}); syncViewAvail(); }
+
+  /* 4) 공유 문자열 복사 — 값이 잘려 보여도 전체가 복사되도록 */
+  var sc=document.getElementById('shareCopy'), ss=document.getElementById('shareStr');
+  function copyShare(){
+    if(!ss) return;
+    var t=ss.textContent||'';
+    if(ss.title!=='클릭해 복사'||true) ss.title=t;
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t);
+    var to=document.getElementById('toast');
+    if(to){to.textContent='테마 링크를 복사했습니다';to.classList.add('show');setTimeout(function(){to.classList.remove('show');},1400);}
+  }
+  if(sc) sc.addEventListener('click',copyShare);
+  if(ss) ss.addEventListener('click',function(){ ss.title=ss.textContent||''; });
+})();
+</script>
 
 <script>
 /* ===== OKLCH 램프 엔진 (configurator/p4 이식) ===== */
@@ -523,8 +665,8 @@ function radTier(t){const b=state.rad,def={control:b,container:b+4,overlay:b+8}[
 function comps(R,st,TR){
   const rc=radTier('control'), rcont=radTier('container'), rov=radTier('overlay'), fieldBg=R.light?"#ffffff":R.S.raised;
   const padCard=spx('inset','lg'), padCtl=spx('inline','md'), padField=spx('inset','sm'), gapTitle=spx('stack','sm');
-  const trShow=[["display","Display 히어로"],["heading","Heading 페이지 제목"],["title","Title 섹션 제목"],["body","Body 본문 텍스트가 이렇게 흐릅니다"],["label","LABEL 라벨"],["caption","Caption 보조 설명"]];
-  const typo=`<div style="display:flex;flex-direction:column;gap:6px">${trShow.map(([k,t])=>`<div style="display:flex;align-items:baseline;gap:8px"><span style="${ty(TR[k])};color:${(k==='caption')?R.fgSecondary:R.fgPrimary};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1">${t}</span><span style="font-size:10px;color:${R.fgDisabled};font-family:var(--mono);flex:none">${Math.round(TR[k].px)}px</span></div>`).join("")}</div>`;
+  const trShow=[["display","Display"],["heading","Heading 제목"],["title","Title 섹션"],["body","Body 본문 텍스트가 이렇게 흐릅니다"],["label","LABEL 라벨"],["caption","Caption 보조 설명"]];
+  const typo=`<div style="display:flex;flex-direction:column;gap:6px">${trShow.map(([k,t])=>`<div style="display:flex;align-items:baseline;gap:8px"><span style="${ty(TR[k])};color:${(k==='caption')?R.fgSecondary:R.fgPrimary};overflow-wrap:anywhere;flex:1;min-width:0">${t}</span><span style="font-size:10px;color:${R.fgDisabled};font-family:var(--mono);flex:none">${Math.round(TR[k].px)}px</span></div>`).join("")}</div>`;
   const bt=`${ty(TR.label)}`;
   const buttons=`<div class="row">
     <button style="height:44px;padding:0 ${padCtl}px;background:${R.ap};color:${R.onAction};border:none;border-radius:${rc}px;${bt};cursor:default">Primary</button>
