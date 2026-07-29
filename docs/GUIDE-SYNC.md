@@ -18,7 +18,20 @@ public/guide.html                    ← 생성물. 직접 수정 금지.
         │  <iframe src="guide.html">
         ▼
 public/index.html (컨피규레이터)      ← 본문을 품지 않고 가리키기만 함.
+        │  node scripts/build-b2a.cjs
+        ▼
+dist/b2a-configurator.html           ← B2a 미러(생성물). 프로젝트 문서 `claude/b2a-configurator.html`.
 ```
+
+미러도 손으로 복사하지 않습니다. 라이브에서 **생성**하며, 달라지는 지점은 가이드 URL 하나뿐입니다 —
+프로젝트 문서로 열리면 옆에 `guide.html` 이 없으므로 상대경로 대신
+`https://greeny-ds.vercel.app/guide.html` 절대 URL 을 씁니다. 문서 샌드박스가 iframe 을
+막는 경우를 대비해 드로어 헤더의 `새 탭에서 열기 ↗` 링크와 하단 안내 바를 함께 주입합니다
+(딥링크 해시는 두 링크에도 그대로 전달됩니다).
+
+iframe 로드 실패는 자동 감지하지 않습니다. 404 페이지도 CSP 차단 프레임도 `load` 이벤트를
+그대로 발생시키고 교차 출처라 내부를 들여다볼 수 없어, "실패"를 신뢰성 있게 판정할 방법이
+없기 때문입니다. 감지 대신 안내를 상시 노출합니다.
 
 컨피규레이터에는 가이드 문장이 한 줄도 들어 있지 않습니다. 상단 바 `개념 가이드` 버튼과
 패널 그룹 헤더의 `?` 버튼이 `data-guide="#앵커"` 로 **가리키기만** 합니다.
@@ -64,6 +77,8 @@ node scripts/build-guide.cjs --check
 | 정본 → 배포본 재생성 + 커밋 | **HQ** (요청 시) 또는 진아 로컬 | `node scripts/build-guide.cjs` |
 | 재생성 누락 감지 | **CI** (자동) | `--check` 실패 |
 | 앵커 구조 변경(섹션 id 추가·삭제) 시 딥링크 갱신 | **HQ** | `public/index.html` 의 `data-guide` 9개 재매핑 |
+| 컨피규레이터 UI 변경 → B2a 미러 반영 | **HQ** | `node scripts/build-b2a.cjs` + 프로젝트 문서 교체 |
+| 미러 재생성 누락 감지 | **CI** (자동) | `build-b2a.cjs --check` 실패 |
 
 가이드 갱신이 **결정 사항**(예: Q-011 확정, `selected` 승격 결론)에서 비롯된 경우,
 `PROJECT-STATE.md` 결정 기록 → 가이드 갱신 → 재생성 순서를 지킵니다.

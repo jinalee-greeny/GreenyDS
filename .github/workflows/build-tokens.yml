@@ -55,6 +55,11 @@ jobs:
       - name: Check published guide matches source of truth (no drift)
         run: node scripts/build-guide.cjs --check
 
+      # B2a 미러(dist/b2a-configurator.html)가 라이브 컨피규레이터(public/index.html)와
+      # 어긋나지 않는지 검증 — 미러를 손으로 유지하던 "B2a 미러 스왑" 수작업을 대체한다.
+      - name: Check B2a mirror matches live configurator (no drift)
+        run: node scripts/build-b2a.cjs --check
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
