@@ -207,7 +207,7 @@
   .gcard .nm{font-size:10.5px;font-weight:600;padding:5px 8px}
 
   /* preview */
-  .stageWrap{padding:0;min-width:0}
+  .stageWrap{padding:0;min-width:0;container-type:inline-size;container-name:cv}
   .cvtop{position:sticky;top:53px;z-index:5;display:flex;align-items:center;gap:12px;
          padding:9px 22px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
          border-bottom:1px solid var(--line)}
@@ -234,12 +234,92 @@
   .shfield .shc{flex:none;border:0;border-left:1px solid var(--line);background:#fbfbfc;color:var(--brand);
                 font-family:inherit;font-size:10.5px;font-weight:700;padding:5px 10px;cursor:pointer}
   .shfield .shc:hover{background:var(--brand050)}
+  /* 상단 바 양보 순서 (v1.1 · 결함 V2). 기준은 뷰포트가 아니라 캔버스 열의 폭이다 —
+     같은 1440px 에서도 인스펙터를 560px 로 끌면 눌리기 때문에 미디어 쿼리로는 못 잡는다.
+     ① 설명 h2 ② 라벨 ③ theme 값 순으로 버리고, 복사 버튼은 끝까지 남긴다.
+     임계값 근거: 기록 57 + 뷰탭 211 + 여백 68 = 336px 이 조작 요소의 하한선. */
+  @container cv (max-width:700px){ .cvtop h2{display:none} }
+  @container cv (max-width:520px){ .shfield .shl{display:none} }
+  @container cv (max-width:430px){ .shfield .share{display:none} .shfield{flex:none} }
   .canvas{padding:20px 22px 40px}
   .stages{display:grid;grid-template-columns:1fr;gap:16px;max-width:1080px;margin:0 auto}
   body[data-view="both"] .stages{grid-template-columns:1fr 1fr;max-width:1400px}
   body[data-view="light"] .stages .stage:nth-child(2){display:none}
   body[data-view="dark"] .stages .stage:nth-child(1){display:none}
   @media(max-width:1180px){body[data-view="both"] .stages{grid-template-columns:1fr}}
+  /* ── 토큰 스튜디오 (v1.1 · 결정 #36) ─────────────────────────────────────
+     캔버스의 네 번째 뷰. 미리보기가 "이렇게 보인다" 면 스튜디오는 "그래서
+     토큰이 이렇게 쌓였다" 를 보여준다. 진입점을 .cvtop 에 새 컨트롤로 달지
+     않고 기존 #viewSeg 의 4번째 버튼으로 넣은 이유는 BC-31 함정 3 —
+     상단바에 컨트롤을 하나 더 붙이면 글자가 세로로 쪼개진다. */
+  body[data-view="tokens"] .stages{display:none}
+  body[data-view="tokens"] .tstudio{display:block}
+  .tstudio{display:none;max-width:1080px;margin:0 auto}
+  .tstab{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:13px;flex-wrap:wrap}
+  .tstab button{border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--muted);
+    padding:8px 11px;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
+  .tstab button:hover{color:var(--fg)}
+  .tstab button.on{color:var(--fg);border-bottom-color:var(--fg)}
+  .tsnote{font-size:11px;line-height:1.65;color:var(--muted);background:#fbfbfc;border:1px solid var(--line);
+    border-radius:9px;padding:9px 12px;margin-bottom:13px}
+  .tsnote b{color:var(--fg)}
+  .tsnote code{font-family:var(--mono);font-size:10px;color:#4c3aa0}
+  .tspane{display:none}
+  .tspane.on{display:block}
+  .tsec{margin:17px 0 8px;font-size:12px;font-weight:800;color:var(--fg)}
+  .tsec span{font-weight:600;color:var(--faint);font-size:10.5px}
+  .tsum{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .tsum i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--line);
+    border-radius:7px;padding:4px 9px;background:#fbfbfc}
+  .tsum i b{color:var(--fg)}
+  .tgrp{border:1px solid var(--line);border-radius:10px;margin-bottom:7px;overflow:hidden;background:#fff}
+  .tgrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;
+    font-size:11.5px;font-weight:700;color:var(--fg);background:#fbfbfc}
+  .tgrp>summary::-webkit-details-marker{display:none}
+  .tgrp>summary::before{content:"▸";color:var(--faint);font-size:9px;flex:none}
+  .tgrp[open]>summary::before{content:"▾"}
+  .tgrp .gc{margin-left:auto;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--faint);flex:none}
+  .trow{display:flex;align-items:center;gap:8px;padding:5px 12px;border-top:1px solid var(--line)}
+  .trow:hover{background:var(--brand050)}
+  .tsw{width:15px;height:15px;border-radius:4px;border:1px solid var(--line);flex:none}
+  .tnm{font-family:var(--mono);font-size:11px;color:var(--fg);flex:1;min-width:0;
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tnm em{font-style:normal;color:var(--faint)}
+  .tvl{font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:none;max-width:44%;
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tref{font-family:var(--mono);font-size:9.5px;color:#4c3aa0;background:var(--brand050);border:1px solid var(--brandln);
+    border-radius:4px;padding:1px 5px;flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tovr{font-size:9.5px;font-weight:700;color:#b06a12;flex:none;white-space:nowrap}
+  .tlin{padding:10px 12px;border-top:1px solid var(--line)}
+  .tlin .lh{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--fg);margin-bottom:7px}
+  .tchain{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .tnode{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:7px;
+    padding:3px 8px;background:#fbfbfc;min-width:0}
+  .tnode .lv{font-size:8.5px;font-weight:700;color:var(--faint);flex:none}
+  .tnode .nm{font-family:var(--mono);font-size:10.5px;color:var(--fg)}
+  .tnode .vv{font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+  .tarr{color:var(--faint);font-size:11px;flex:none}
+  .tdrow{display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid var(--line)}
+  .tdrow .was{font-family:var(--mono);font-size:10.5px;color:var(--faint);text-decoration:line-through;
+    flex:none;max-width:26%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tdrow .now{font-family:var(--mono);font-size:10.5px;color:#0b6b3a;font-weight:600;
+    flex:none;max-width:26%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tdrow .dk{font-size:9px;font-weight:700;border-radius:4px;padding:1px 5px;flex:none}
+  .tsempty{font-size:12px;line-height:1.7;color:var(--muted);text-align:center;padding:34px 14px;
+    border:1px dashed var(--line);border-radius:10px}
+  .tsfmt{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+  .tsfmt button{border:1px solid var(--line);background:#fff;border-radius:7px;font:inherit;font-size:11px;
+    font-weight:600;color:var(--muted);padding:5px 10px;cursor:pointer;white-space:nowrap}
+  .tsfmt button:hover{color:var(--fg)}
+  .tsfmt button.on{border-color:var(--fg);color:var(--fg)}
+  .tsfmt .cp{margin-left:auto;color:var(--brand);border-color:var(--brandln);background:var(--brand050)}
+  .tscap{display:flex;align-items:baseline;gap:10px;margin:0 2px 7px;font-size:10.5px;line-height:1.6;color:var(--muted)}
+  .tscap code{font-family:var(--mono);font-size:10px;color:#4c3aa0}
+  .tscap b{color:var(--fg)}
+  .tscap i{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--faint);flex:none;white-space:nowrap}
+  .tscode{font-family:var(--mono);font-size:10.5px;line-height:1.55;white-space:pre;overflow:auto;max-height:56vh;
+    background:#fbfbfc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--fg)}
+  @media(max-width:920px){.tvl{max-width:38%}.tref{display:none}}
   /* min-width:0 — 그리드 아이템 기본 min-width:auto 가 내용 폭으로 부풀어 1181~1594px 구간에서
      가로 스크롤을 만들었다(1440px 에서 문서 폭 1594px). 잠금 없이 1fr 1fr 을 지키게 한다. */
   .stage{border-radius:14px;padding:18px;border:1px solid var(--line);min-width:0}
@@ -341,7 +421,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.0 — 레일 최우측 · 좌측 기록 독(검증·이력) · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.1 — 토큰 스튜디오 · 레일 최우측 · 좌측 기록 독 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -370,8 +450,9 @@
         <button data-view="light" class="on">라이트</button>
         <button data-view="dark">다크</button>
         <button data-view="both">나란히</button>
+        <button data-view="tokens" title="지금 설정으로 쌓인 토큰을 봅니다 (읽기 전용)">토큰</button>
       </div>
-      <h2>실시간 미리보기 — 컴포넌트 8종</h2>
+      <h2 id="cvTitle">실시간 미리보기 — 컴포넌트 8종</h2>
       <div class="shfield">
         <span class="shl">테마 링크</span>
         <span class="share" id="shareStr" title="클릭해 복사"></span>
@@ -380,6 +461,18 @@
     </div>
     <div class="canvas">
       <div class="stages" id="stages"></div>
+      <div class="tstudio" id="tstudio">
+        <div class="tstab" id="tsTab">
+          <button data-pane="tree" class="on">3계층 트리</button>
+          <button data-pane="lineage">참조 계보</button>
+          <button data-pane="diff">변경분</button>
+          <button data-pane="export">내보내기 미리보기</button>
+        </div>
+        <div class="tspane on" id="tsTree"></div>
+        <div class="tspane" id="tsLineage"></div>
+        <div class="tspane" id="tsDiff"></div>
+        <div class="tspane" id="tsExport"></div>
+      </div>
     </div>
   </div>
 
@@ -687,6 +780,12 @@
   function setView(v){
     body.dataset.view=v;
     btns.forEach(function(b){b.classList.toggle('on',b.dataset.view===v);});
+    var t=document.getElementById('cvTitle');
+    if(t) t.textContent = (v==='tokens')
+      ? '토큰 스튜디오 — 지금 설정으로 쌓인 토큰 (읽기 전용)'
+      : '실시간 미리보기 — 컴포넌트 8종';
+    /* 스튜디오 엔진은 아래 <script> 블록에 있다 — 로드 후에만 호출된다. */
+    if(v==='tokens'&&window.renderStudio) window.renderStudio();
   }
   btns.forEach(function(b){b.addEventListener('click',function(){ if(!b.disabled) setView(b.dataset.view); });});
   setView('light');
@@ -697,11 +796,14 @@
   function syncViewAvail(){
     var n=stages?stages.querySelectorAll('.stage').length:0;
     btns.forEach(function(b){
-      var need=b.dataset.view!=='light';
+      /* 토큰 뷰는 다크 스테이지 유무와 무관하다 — 다크가 꺼져 있으면
+         "다크 토큰이 없다" 는 사실 자체가 스튜디오가 보여줄 내용이다. */
+      var need=(b.dataset.view==='dark'||b.dataset.view==='both');
       b.disabled=need&&n<2;
-      b.title=b.disabled?'다크모드가 꺼져 있어 비교할 수 없습니다':'';
+      b.title=b.disabled?'다크모드가 꺼져 있어 비교할 수 없습니다'
+             :(b.dataset.view==='tokens'?'지금 설정으로 쌓인 토큰을 봅니다 (읽기 전용)':'');
     });
-    if(n<2&&body.dataset.view!=='light') setView('light');
+    if(n<2&&(body.dataset.view==='dark'||body.dataset.view==='both')) setView('light');
   }
   if(stages){ new MutationObserver(syncViewAvail).observe(stages,{childList:true}); syncViewAvail(); }
 
@@ -1161,6 +1263,473 @@ document.addEventListener("click",function(e){
   toast("↺ #"+n+" 시점의 설정으로 되돌렸습니다");
 });
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   토큰 스튜디오 엔진 (v1.1 · 결정 #36)
+
+   무엇: 인스펙터에서 만든 지금 설정이 primitive → semantic → component 3계층으로
+         어떻게 쌓였는지 보여준다. 트리 · 참조 계보 · 기본값 대비 변경분 ·
+         내보내기 미리보기 네 가지. 읽기 전용 — 조작은 인스펙터에서만.
+
+   왜 별도 계산 엔진을 두지 않는가: roles()·typeRoles()·spaceScale()·radTier()·
+   durScale() 가 이미 SSOT 다. 여기서 값을 다시 계산하면 두 벌이 되어 조용히
+   어긋난다(결정 #29 "복사가 아니라 생성" 의 같은 정신). 그래서 스튜디오는
+   엔진 산출물을 **역으로 조회**만 한다 — 해결된 hex 를 램프에서 되찾고, px 를
+   스케일에서 되찾고, 인덱스를 spIdx()/durScale() 에서 되찾는다.
+   ⇒ 계보가 끊겨 보이면 그건 표시 버그가 아니라 "엔진이 그 값을 램프에서
+     가져오지 않았다" 는 사실 보고다. 이 성질을 잃지 말 것.
+
+   ⚠ 정직성: 여기의 component 계층은 미리보기가 실제로 그리는 8종(comps())
+     기준이다. 저장소의 Wave 1–3 컴포넌트 토큰 15종(tokens/component/*.json)
+     과는 아직 별개이며, 화면 상단 안내에도 그렇게 적어 둔다. */
+
+function tokenModel(){
+  const NEU=state.neutral==="warm"?WARM:COOL, tgt=state.aa==="AAA"?7:4.5;
+  const seed=/^#[0-9a-fA-F]{6}$/.test(state.seed)?state.seed:"#8974f0";
+  const BR=genRamp(seed), ST=statusRamps();
+  const L=roles(BR,NEU,tgt,"light",ST), D=roles(BR,NEU,tgt,"dark",ST);
+  const TR=typeRoles(state.tbase,state.tratio);
+  const TSC=typeScale(state.tbase,state.tratio), SC=spaceScale(state.dens), DUR=durScale();
+  const RAMPS=[["color.brand",BR],["color.neutral",NEU],["color.danger",ST.danger],
+               ["color.warning",ST.warning],["color.success",ST.success],["color.info",ST.info]];
+  const MODES=state.dark==="on"?[["light",L],["dark",D]]:[["light",L]];
+  const P=[],S=[],C=[],index={};
+
+  function tk(arr,layer,group,name,value,type,opt){
+    const o={layer:layer,group:group,name:name,value:String(value),type:type,ref:null,note:null,mode:null};
+    if(opt)Object.assign(o,opt);
+    o.key=o.name+(o.mode?"@"+o.mode:"");
+    arr.push(o); index[o.key]=o; return o;
+  }
+
+  /* ── 역조회 ────────────────────────────────────────────────────────────
+     같은 hex 가 여러 램프에 동시에 존재할 수 있다(중립 50 과 상태 50 등).
+     그래서 그 역할이 실제로 쓰는 램프를 먼저 본다 — 우연한 일치로 엉뚱한
+     계보를 그리지 않기 위해서다. */
+  function refColor(hex,prefer){
+    if(!hex)return null;
+    const h=String(hex).toLowerCase(); if(h.charAt(0)!=="#")return null;
+    const order=[];
+    if(prefer)RAMPS.forEach(function(r){if(r[0]===prefer)order.push(r);});
+    RAMPS.forEach(function(r){if(r[0]!==prefer)order.push(r);});
+    for(let i=0;i<order.length;i++){
+      const g=order[i][0],ramp=order[i][1];
+      for(let j=0;j<STEPS.length;j++) if(String(ramp[STEPS[j]]).toLowerCase()===h) return g+"."+STEPS[j];
+    }
+    return null;
+  }
+  function refFont(px){for(let i=0;i<TSTEPS.length;i++) if(Math.abs(TSC[TSTEPS[i]]-px)<0.05) return "size.font."+TSTEPS[i]; return null;}
+
+  /* ── ① primitive — 엔진이 만든 원본 값 ───────────────────────────────── */
+  RAMPS.forEach(function(r){STEPS.forEach(function(st){tk(P,"primitive",r[0],r[0]+"."+st,r[1][st],"color");});});
+  TSTEPS.forEach(function(st){tk(P,"primitive","size.font","size.font."+st,TSC[st]+"px","dimension");});
+  SC.forEach(function(v,i){tk(P,"primitive","size.space","size.space."+i,v+"px","dimension");});
+  tk(P,"primitive","size.radius","size.radius.base",state.rad+"px","dimension");
+  DUR_ROLES.forEach(function(r,i){tk(P,"primitive","duration","duration."+r,DUR[i]+"ms","duration");});
+  Object.keys(EASINGS).forEach(function(k){tk(P,"primitive","easing","easing."+k,EASINGS[k],"cubicBezier");});
+
+  /* ── ② semantic — 역할에 붙은 이름 (대비 게이트를 통과한 결과) ───────── */
+  const SEMC=function(R){return [
+    ["color.bg.page",R.S.page,"color.neutral"],
+    ["color.bg.surface",R.S.surface,"color.neutral"],
+    ["color.bg.raised",R.S.raised,"color.neutral"],
+    ["color.bg.overlay",R.S.overlay,"color.neutral"],
+    ["color.bg.subtle",R.S.subtle,"color.neutral"],
+    ["color.bg.brand-subtle",R.brandSub,"color.brand"],
+    ["color.bg.danger-subtle",R.dangerSub,"color.danger"],
+    ["color.bg.warning-subtle",R.warnSub,"color.warning"],
+    ["color.bg.success-subtle",R.succSub,"color.success"],
+    ["color.bg.info-subtle",R.infoSub,"color.info"],
+    ["color.bg.scrim",R.scrim,null],
+    ["color.action.primary",R.ap,"color.brand"],
+    ["color.action.primary-hover",R.apHover,"color.brand"],
+    ["color.action.primary-active",R.apActive,"color.brand"],
+    ["color.action.on-primary",R.onAction,"color.neutral"],
+    ["color.action.secondary",R.asDef,"color.neutral"],
+    ["color.action.secondary-hover",R.asHover,"color.neutral"],
+    ["color.action.disabled",R.disabled,"color.neutral"],
+    ["color.action.knob",R.knob,"color.neutral"],
+    ["color.fg.primary",R.fgPrimary,"color.neutral"],
+    ["color.fg.secondary",R.fgSecondary,"color.neutral"],
+    ["color.fg.placeholder",R.fgPlaceholder,"color.neutral"],
+    ["color.fg.disabled",R.fgDisabled,"color.neutral"],
+    ["color.fg.brand",R.fgBrand,"color.brand"],
+    ["color.fg.danger",R.fgDanger,"color.danger"],
+    ["color.fg.warning",R.fgWarn,"color.warning"],
+    ["color.fg.success",R.fgSucc,"color.success"],
+    ["color.fg.info",R.fgInfo,"color.info"],
+    ["color.fg.link",R.link,"color.info"],
+    ["color.stroke.default",R.strokeDefault,"color.neutral"],
+    ["color.stroke.subtle",R.strokeSubtle,"color.neutral"],
+    ["color.stroke.strong",R.strokeStrong,"color.neutral"],
+    ["color.stroke.focus",R.focus,"color.brand"],
+    ["color.stroke.danger",R.strokeDanger,"color.danger"]
+  ];};
+  MODES.forEach(function(mm){const m=mm[0],R=mm[1];
+    SEMC(R).forEach(function(a){
+      const grp=a[0].split(".").slice(0,2).join(".")+" · "+m;
+      tk(S,"semantic",grp,a[0],a[1],"color",{ref:refColor(a[1],a[2]),mode:m});
+    });
+  });
+
+  ["display","heading","title","body","label","caption"].forEach(function(k){
+    const r=TR[k], ov=state.roleOv[k]||{};
+    const sizeRef=(ov.px!=null)?null:refFont(r.px);
+    let note=(ov.px!=null)?"인스펙터 override":null;
+    if(!sizeRef&&!note&&k==="caption")note="가독성 바닥 12px 고정";
+    tk(S,"semantic","typography","font."+k+".size",(Math.round(r.px*10)/10)+"px","dimension",{ref:sizeRef,note:note});
+    tk(S,"semantic","typography","font."+k+".weight",r.w,"fontWeight",{note:ov.w!=null?"인스펙터 override":null});
+    tk(S,"semantic","typography","font."+k+".lineHeight",r.lh,"number",{note:ov.lh!=null?"인스펙터 override":null});
+    tk(S,"semantic","typography","font."+k+".letterSpacing",r.ls,"dimension",{note:ov.ls!=null?"인스펙터 override":null});
+    tk(S,"semantic","typography","font."+k+".family",r.fam,"fontFamily");
+  });
+
+  [["inset","안쪽 여백"],["stack","세로 간격"],["inline","가로 간격"],["section","섹션 간격"]].forEach(function(f){
+    ["sm","md","lg"].forEach(function(sz){
+      const i=spIdx(f[0],sz);
+      tk(S,"semantic","space","space."+f[0]+"."+sz,SC[i]+"px","dimension",{ref:"size.space."+i});
+    });
+  });
+
+  ["control","container","overlay"].forEach(function(t){
+    const ov=state.radTiers[t];
+    tk(S,"semantic","radius","radius."+t,radTier(t)+"px","dimension",
+       {ref:ov==null?"size.radius.base":null,
+        note:ov==null?null:"인스펙터 override"});
+  });
+
+  MODES.forEach(function(mm){const m=mm[0],R=mm[1];
+    ["resting","raised","overlay","spotlight"].forEach(function(k){
+      tk(S,"semantic","elevation · "+m,"elevation."+k,shadow(R,k),"shadow",
+         {mode:m,note:state.dpRoles[k]+"dp · tint "+state.shadowTint+"%"});
+    });
+  });
+
+  tk(S,"semantic","motion","motion.duration.default",motionDur()+"ms","duration",
+     {ref:state.reducedMotion?null:"duration.base",note:state.reducedMotion?"reduced-motion — 사실상 즉시":null});
+  tk(S,"semantic","motion","motion.easing.default",easeCss(),"cubicBezier",{ref:"easing."+state.easing});
+
+  /* ── ③ component — 미리보기 8종이 실제로 쓰는 값 ─────────────────────── */
+  const rc=radTier("control"), rcont=radTier("container"), rov=radTier("overlay");
+  const CGEO=[
+    ["button","button.radius",rc+"px","radius.control",null],
+    ["button","button.height","44px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
+    ["button","button.padding-x",spx("inline","md")+"px","space.inline.md",null],
+    ["input","input.radius",rc+"px","radius.control",null],
+    ["input","input.height","44px",null,"프리뷰 고정값"],
+    ["input","input.padding-x","12px",null,"프리뷰 고정값"],
+    ["input","input.focus-ring","2px",null,"프리뷰 고정값"],
+    ["select","select.trigger.radius",rc+"px","radius.control",null],
+    ["select","select.menu.radius",rcont+"px","radius.container",null],
+    ["select","select.menu.padding",spx("inset","sm")+"px","space.inset.sm",null],
+    ["select","select.item.radius",Math.max(0,rcont-8)+"px","radius.container","container −8px 파생"],
+    ["switch","switch.track.width","42px",null,"프리뷰 고정값"],
+    ["switch","switch.track.height","24px",null,"프리뷰 고정값"],
+    ["switch","switch.knob.size","20px",null,"프리뷰 고정값"],
+    ["tabs","tabs.indicator.height","2px",null,"프리뷰 고정값"],
+    ["card","card.radius",rcont+"px","radius.container",null],
+    ["card","card.padding",spx("inset","lg")+"px","space.inset.lg",null],
+    ["card","card.title.gap",spx("stack","sm")+"px","space.stack.sm",null],
+    ["toast","toast.radius",rcont+"px","radius.container",null],
+    ["toast","toast.accent.width","3px",null,"프리뷰 고정값"],
+    ["modal","modal.radius",rov+"px","radius.overlay",null],
+    ["modal","modal.padding",spx("inset","lg")+"px","space.inset.lg",null]
+  ];
+  const CCOL=function(R){return [
+    ["button","button.primary.bg",R.ap,"color.action.primary"],
+    ["button","button.primary.fg",R.onAction,"color.action.on-primary"],
+    ["button","button.primary.bg-hover",R.apHover,"color.action.primary-hover"],
+    ["button","button.primary.bg-active",R.apActive,"color.action.primary-active"],
+    ["button","button.secondary.bg",R.asDef,"color.action.secondary"],
+    ["button","button.secondary.fg",R.fgPrimary,"color.fg.primary"],
+    ["button","button.secondary.border",R.strokeDefault,"color.stroke.default"],
+    ["button","button.ghost.fg",R.fgPrimary,"color.fg.primary"],
+    ["button","button.disabled.bg",R.disabled,"color.action.disabled"],
+    ["button","button.disabled.fg",R.fgDisabled,"color.fg.disabled"],
+    ["input","input.bg",R.light?"#ffffff":R.S.raised,R.light?null:"color.bg.raised"],
+    ["input","input.fg",R.fgPrimary,"color.fg.primary"],
+    ["input","input.placeholder",R.fgPlaceholder,"color.fg.placeholder"],
+    ["input","input.border",R.strokeDefault,"color.stroke.default"],
+    ["input","input.border-focus",R.focus,"color.stroke.focus"],
+    ["select","select.trigger.bg",R.S.surface,"color.bg.surface"],
+    ["select","select.trigger.border",R.strokeDefault,"color.stroke.default"],
+    ["select","select.menu.bg",R.S.raised,"color.bg.raised"],
+    ["select","select.menu.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["select","select.menu.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
+    ["select","select.item.fg",R.fgPrimary,"color.fg.primary"],
+    ["select","select.item.selected.bg",R.brandSub,"color.bg.brand-subtle"],
+    ["select","select.item.selected.fg",R.fgBrand,"color.fg.brand"],
+    ["switch","switch.track.on",R.ap,"color.action.primary"],
+    ["switch","switch.track.off",R.asDef,"color.action.secondary"],
+    ["switch","switch.knob.bg",R.knob,"color.action.knob"],
+    ["switch","switch.knob.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["tabs","tabs.active.fg",R.fgBrand,"color.fg.brand"],
+    ["tabs","tabs.rest.fg",R.fgSecondary,"color.fg.secondary"],
+    ["tabs","tabs.divider",R.strokeSubtle,"color.stroke.subtle"],
+    ["tabs","tabs.indicator",R.fgBrand,"color.fg.brand"],
+    ["card","card.bg",R.S.surface,"color.bg.surface"],
+    ["card","card.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["card","card.title.fg",R.fgPrimary,"color.fg.primary"],
+    ["card","card.body.fg",R.fgSecondary,"color.fg.secondary"],
+    ["card","card.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
+    ["toast","toast.bg",R.S.raised,"color.bg.raised"],
+    ["toast","toast.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["toast","toast.fg",R.fgPrimary,"color.fg.primary"],
+    ["toast","toast.accent.success",R.fgSucc,"color.fg.success"],
+    ["toast","toast.accent.danger",R.fgDanger,"color.fg.danger"],
+    ["toast","toast.accent.info",R.fgInfo,"color.fg.info"],
+    ["toast","toast.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
+    ["modal","modal.bg",R.S.overlay,"color.bg.overlay"],
+    ["modal","modal.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["modal","modal.scrim",R.scrim,"color.bg.scrim"],
+    ["modal","modal.title.fg",R.fgPrimary,"color.fg.primary"],
+    ["modal","modal.body.fg",R.fgSecondary,"color.fg.secondary"],
+    ["modal","modal.shadow",shadow(R,"overlay"),"elevation.overlay","shadow"]
+  ];};
+  ["button","input","select","switch","tabs","card","toast","modal"].forEach(function(cn){
+    CGEO.forEach(function(a){ if(a[0]!==cn)return;
+      tk(C,"component",cn+" · 형태",a[1],a[2],"dimension",{ref:a[3],note:a[4]}); });
+    MODES.forEach(function(mm){const m=mm[0],R=mm[1];
+      CCOL(R).forEach(function(a){ if(a[0]!==cn)return;
+        tk(C,"component",cn+" · 색 ("+m+")",a[1],a[2],a[4]||"color",{ref:a[3],mode:m}); });
+    });
+  });
+
+  return {primitive:P,semantic:S,component:C,index:index};
+}
+
+function flatTokens(M){
+  const o={};
+  M.primitive.concat(M.semantic,M.component).forEach(function(t){o[t.key]=t.value;});
+  return o;
+}
+function tsRefTok(M,t){
+  if(!t.ref)return null;
+  return M.index[t.ref+(t.mode?"@"+t.mode:"")]||M.index[t.ref]||null;
+}
+function tsChain(M,t){
+  const out=[t]; let cur=t, guard=0;
+  while(cur&&cur.ref&&guard++<6){
+    const nx=tsRefTok(M,cur);
+    if(!nx||out.indexOf(nx)>=0)break;
+    out.push(nx); cur=nx;
+  }
+  return out;
+}
+
+/* ── 기본 프리셋 스냅샷 ─────────────────────────────────────────────────
+   여기서 즉시 확정할 수 있는 이유: 로드 시 URL 해시/쿼리로 테마를 자동
+   적용하는 경로가 없다(applyThemeString 은 #themeApply 클릭에서만 불린다).
+   즉 이 시점의 state 는 확실히 기본값이다. */
+const BASE_TOKENS=flatTokens(tokenModel());
+
+/* ── 렌더 ──────────────────────────────────────────────────────────────── */
+let TSPANE="tree", TSFMT="dtcg", TSCODE="";
+const TSOPEN=new Set(["color.brand","color.bg · light","button · 색 (light)","button"]);
+
+function tsEsc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function tsClip(v,n){v=String(v);return v.length>n?v.slice(0,n-1)+"…":v;}
+function tsSw(v){return /^#[0-9a-fA-F]{3,8}$/.test(String(v))?'<span class="tsw" style="background:'+tsEsc(v)+'"></span>':'';}
+function tsGroups(list){const m=new Map();list.forEach(function(t){if(!m.has(t.group))m.set(t.group,[]);m.get(t.group).push(t);});return Array.from(m.entries());}
+function tsGrp(g,n,inner){
+  return '<details class="tgrp" data-g="'+tsEsc(g)+'"'+(TSOPEN.has(g)?' open':'')+'>'+
+    '<summary>'+tsEsc(g)+'<span class="gc">'+n+'</span></summary>'+inner+'</details>';
+}
+function tsRow(t){
+  return '<div class="trow">'+tsSw(t.value)+
+    '<span class="tnm">'+tsEsc(t.name)+(t.mode?' <em>@'+t.mode+'</em>':'')+'</span>'+
+    (t.ref?'<span class="tref">← '+tsEsc(t.ref)+'</span>':'')+
+    (t.note?'<span class="tovr">'+tsEsc(t.note)+'</span>':'')+
+    '<span class="tvl">'+tsEsc(t.value)+'</span></div>';
+}
+function tsNode(t){
+  const lv={primitive:"원시",semantic:"시맨틱",component:"컴포넌트"}[t.layer]||"";
+  return '<div class="tnode">'+tsSw(t.value)+'<span class="lv">'+lv+'</span>'+
+    '<span class="nm">'+tsEsc(t.name)+'</span><span class="vv">'+tsEsc(tsClip(t.value,20))+'</span></div>';
+}
+function tsDiffRows(M){
+  const cur=flatTokens(M), rows=[];
+  Object.keys(cur).forEach(function(k){
+    if(!(k in BASE_TOKENS)) rows.push({k:k,was:null,now:cur[k],kind:"추가"});
+    else if(BASE_TOKENS[k]!==cur[k]) rows.push({k:k,was:BASE_TOKENS[k],now:cur[k],kind:"변경"});
+  });
+  Object.keys(BASE_TOKENS).forEach(function(k){ if(!(k in cur)) rows.push({k:k,was:BASE_TOKENS[k],now:null,kind:"제거"}); });
+  return rows;
+}
+const TS_NOTE='<div class="tsnote">이 스튜디오는 컨피규레이터 엔진이 <b>지금 실제로 쓰는</b> 값을 역으로 조회해 보여줍니다 — 별도 계산기가 아니라 거울입니다. 컴포넌트 계층은 미리보기가 그리는 <b>8종</b> 기준이며, 저장소의 Wave 1–3 컴포넌트 토큰 15종(<code>tokens/component/*.json</code>)과는 아직 별개입니다. <b>읽기 전용</b> — 값 변경은 오른쪽 인스펙터에서 하세요.</div>';
+
+function tsSum(M){
+  const n=M.primitive.length+M.semantic.length+M.component.length;
+  return '<div class="tsum"><i>원시 <b>'+M.primitive.length+'</b></i><i>시맨틱 <b>'+M.semantic.length+'</b></i>'+
+    '<i>컴포넌트 <b>'+M.component.length+'</b></i><i>합계 <b>'+n+'</b></i>'+
+    '<i>기본값 대비 <b>'+tsDiffRows(M).length+'</b> 변경</i>'+
+    '<i>모드 <b>'+(state.dark==="on"?"라이트+다크":"라이트만")+'</b></i></div>';
+}
+function tsSec(title,sub,list){
+  return '<div class="tsec">'+title+' <span>'+sub+'</span></div>'+
+    tsGroups(list).map(function(e){return tsGrp(e[0],e[1].length,e[1].map(tsRow).join(""));}).join("");
+}
+function paneTree(M){
+  return TS_NOTE+tsSum(M)+
+    tsSec("① 원시 (primitive)","엔진이 만든 원본 — 램프·스케일·사다리",M.primitive)+
+    tsSec("② 시맨틱 (semantic)","역할에 붙은 이름 — 대비 게이트를 통과한 결과",M.semantic)+
+    tsSec("③ 컴포넌트 (component)","미리보기 8종이 실제로 쓰는 값",M.component);
+}
+function paneLineage(M){
+  const list=M.component.filter(function(t){return !!t.ref;});
+  const note='<div class="tsnote"><b>참조 체인</b> — 원시 값이 어떤 시맨틱 역할을 거쳐 컴포넌트에 도달하는지 왼쪽에서 오른쪽으로 읽습니다. 예: <code>color.brand.600 → color.action.primary → button.primary.bg</code>. 체인이 짧게 끊겨 보이면 표시 버그가 아니라 <b>엔진이 그 값을 램프에서 가져오지 않았다</b>는 사실 보고입니다.</div>';
+  if(!list.length) return note+'<div class="tsempty">계보를 표시할 컴포넌트 토큰이 없습니다.</div>';
+  return note+tsGroups(list).map(function(e){
+    const g=e[0],arr=e[1];
+    return tsGrp(g,arr.length,arr.map(function(t){
+      const ch=tsChain(M,t).slice().reverse();
+      return '<div class="tlin"><div class="lh">'+tsEsc(t.name)+(t.mode?' <span style="color:var(--faint)">@'+t.mode+'</span>':'')+'</div>'+
+        '<div class="tchain">'+ch.map(tsNode).join('<span class="tarr">→</span>')+'</div></div>';
+    }).join(""));
+  }).join("");
+}
+function paneDiff(M){
+  const rows=tsDiffRows(M);
+  const note='<div class="tsnote"><b>변경분</b> — 페이지를 처음 연 기본 프리셋과 비교해 값이 달라진 토큰만 모았습니다. 이전값 → 현재값. 다크모드를 끄면 다크 토큰이 <b>제거</b>로 잡히는데, 그것도 사실입니다.</div>';
+  if(!rows.length) return note+'<div class="tsempty">기본 프리셋과 동일합니다 — 바뀐 토큰이 없습니다.<br><span style="color:var(--faint)">오른쪽 인스펙터에서 값을 바꾸면 여기에 이전값 → 현재값이 쌓입니다.</span></div>';
+  const KC={"변경":"color:#4c3aa0;background:var(--brand050);border:1px solid var(--brandln)",
+            "추가":"color:#0b6b3a;background:#e8f6ee;border:1px solid #bfe3cd",
+            "제거":"color:#b06a12;background:#fdf3e4;border:1px solid #f0d9b2"};
+  rows.sort(function(a,b){return a.k<b.k?-1:a.k>b.k?1:0;});
+  const body=rows.map(function(r){
+    return '<div class="tdrow"><span class="dk" style="'+KC[r.kind]+'">'+r.kind+'</span>'+
+      '<span class="tnm">'+tsEsc(r.k)+'</span>'+
+      (r.was!=null?'<span class="was">'+tsEsc(tsClip(r.was,22))+'</span><span class="tarr">→</span>':'')+
+      (r.now!=null?tsSw(r.now)+'<span class="now">'+tsEsc(tsClip(r.now,22))+'</span>':'<span class="was">—</span>')+
+      '</div>';
+  }).join("");
+  return note+'<div class="tsum"><i>변경 <b>'+rows.filter(function(r){return r.kind==="변경";}).length+'</b></i>'+
+    '<i>추가 <b>'+rows.filter(function(r){return r.kind==="추가";}).length+'</b></i>'+
+    '<i>제거 <b>'+rows.filter(function(r){return r.kind==="제거";}).length+'</b></i></div>'+
+    '<div class="tgrp">'+body+'</div>';
+}
+
+/* ── 내보내기 미리보기 ─────────────────────────────────────────────────── */
+function tsPath(t){return t.mode?("mode."+t.mode+"."+t.name):t.name;}
+function cssv(n){return "--"+String(n).replace(/\./g,"-");}
+function exportDTCG(M){
+  const root={};
+  M.primitive.concat(M.semantic,M.component).forEach(function(t){
+    const parts=tsPath(t).split("."); let n=root;
+    for(let i=0;i<parts.length-1;i++){ if(!n[parts[i]]||typeof n[parts[i]]!=="object")n[parts[i]]={}; n=n[parts[i]]; }
+    const rt=tsRefTok(M,t), leaf={"$type":t.type};
+    leaf["$value"]=rt?("{"+tsPath(rt)+"}"):t.value;
+    const d=[]; if(rt)d.push("해결값 "+t.value); if(t.note)d.push(t.note);
+    if(d.length)leaf["$description"]=d.join(" · ");
+    n[parts[parts.length-1]]=leaf;
+  });
+  /* 주석을 붙이지 않는다 — DTCG 는 JSON 이고 JSON 에는 주석이 없다.
+     설명은 코드 블록 밖 캡션(.tscap)으로 뺀다. 복사된 본문이 곧바로
+     JSON.parse 를 통과하지 못하면 "복사해서 쓰세요" 는 거짓말이 된다. */
+  return JSON.stringify(root,null,2);
+}
+function exportCSS(M){
+  const out=[], emit=function(t){const rt=tsRefTok(M,t);
+    return "  "+cssv(t.name)+": "+(rt?("var("+cssv(rt.name)+")"):t.value)+";";};
+  out.push("/* ① 원시 (primitive) — 엔진 산출 원본 값 */");
+  out.push(":root{");
+  M.primitive.forEach(function(t){out.push(emit(t));});
+  out.push("}");
+  out.push("");
+  out.push("/* ② 시맨틱 + ③ 컴포넌트 — 라이트(기본) */");
+  out.push(":root{");
+  M.semantic.concat(M.component).forEach(function(t){if(t.mode==null||t.mode==="light")out.push(emit(t));});
+  out.push("}");
+  const dk=M.semantic.concat(M.component).filter(function(t){return t.mode==="dark";});
+  if(dk.length){
+    out.push("");
+    out.push("/* 다크 — 같은 변수명을 덮어쓴다. 컴포넌트가 시맨틱을 var() 로 참조하므로");
+    out.push("   이 블록 안에서는 다크 값이 자동으로 흘러든다. */");
+    out.push('[data-theme="dark"]{');
+    dk.forEach(function(t){out.push(emit(t));});
+    out.push("}");
+  }
+  return out.join("\n");
+}
+function exportFigma(M){
+  const out=[], pad=function(s,n){s=String(s);return s.length>=n?s+"  ":s+new Array(n-s.length+1).join(" ");};
+  const fg=function(n){return String(n).replace(/\./g,"/");};
+  const hasDark=M.semantic.some(function(t){return t.mode==="dark";});
+  out.push("Figma Variables — 붙여넣기용 텍스트 (컬렉션 / 모드 / 별칭 구조)");
+  out.push("'→' 는 별칭(alias) 입니다. Figma 에서 그 변수를 참조하도록 연결하세요.");
+  out.push("");
+  out.push("▸ Collection: Primitive   (mode: Default)");
+  M.primitive.forEach(function(t){out.push("   "+pad(fg(t.name),34)+t.value);});
+  out.push("");
+  [["Semantic",M.semantic],["Component",M.component]].forEach(function(e){
+    out.push("▸ Collection: "+e[0]+"   (modes: Light"+(hasDark?", Dark":"")+")");
+    const seen={},order=[];
+    e[1].forEach(function(t){if(!(t.name in seen)){seen[t.name]=[];order.push(t.name);}seen[t.name].push(t);});
+    order.forEach(function(nm){
+      const cells=seen[nm].map(function(t){
+        const rt=tsRefTok(M,t);
+        return (t.mode?(t.mode==="light"?"Light":"Dark"):"Default")+": "+(rt?("→ "+fg(rt.name)):tsClip(t.value,26));
+      });
+      out.push("   "+pad(fg(nm),34)+cells.join("   |   "));
+    });
+    out.push("");
+  });
+  return out.join("\n");
+}
+function paneExport(M){
+  TSCODE=(TSFMT==="dtcg")?exportDTCG(M):(TSFMT==="css")?exportCSS(M):exportFigma(M);
+  const fmts=[["dtcg","DTCG JSON"],["css","CSS 변수"],["figma","Figma Variables"]];
+  const note='<div class="tsnote"><b>내보내기 미리보기</b> — 지금 설정이 세 형식으로 어떻게 나가는지 미리 봅니다. 아직 <b>파일 저장은 없습니다</b>(B1 파이프라인 연결 예정). 지금은 복사해서 쓰세요.</div>';
+  const CAP={
+    dtcg:"별칭 <code>{…}</code> 이 3계층 참조를 그대로 드러냅니다. shadow 는 아직 CSS 문자열입니다(composite 매핑은 B1 과제). 본문은 <b>순수 JSON</b> — 그대로 <code>JSON.parse</code> 를 통과합니다.",
+    css:"참조가 있는 토큰은 값이 아니라 <code>var(--…)</code> 로 나갑니다 — 계보가 CSS 에서도 살아 있습니다. 다크는 <code>[data-theme=\"dark\"]</code> 블록입니다.",
+    figma:"붙여넣기용 텍스트입니다. <code>→</code> 는 별칭 — Figma 에서 해당 변수를 참조하도록 연결하세요. 컬렉션·모드 구조는 그대로 옮겨집니다."
+  };
+  const cap='<div class="tscap"><span>'+CAP[TSFMT]+'</span><i>'+TSCODE.length.toLocaleString()+'자 · '+TSCODE.split("\n").length.toLocaleString()+'줄</i></div>';
+  return note+'<div class="tsfmt" id="tsFmt">'+
+    fmts.map(function(f){return '<button data-f="'+f[0]+'"'+(TSFMT===f[0]?' class="on"':'')+'>'+f[1]+'</button>';}).join("")+
+    '<button class="cp" id="tsCopy">전체 복사</button></div>'+
+    cap+'<div class="tscode">'+tsEsc(TSCODE)+'</div>';
+}
+
+function bindStudio(){
+  document.querySelectorAll("#tstudio details.tgrp[data-g]").forEach(function(d){
+    d.addEventListener("toggle",function(){ if(d.open)TSOPEN.add(d.dataset.g); else TSOPEN.delete(d.dataset.g); });
+  });
+  const fm=document.getElementById("tsFmt");
+  if(fm){
+    fm.querySelectorAll("button[data-f]").forEach(function(b){ b.onclick=function(){ TSFMT=b.dataset.f; renderStudio(); }; });
+    const cp=document.getElementById("tsCopy");
+    if(cp) cp.onclick=function(){
+      if(navigator.clipboard)navigator.clipboard.writeText(TSCODE);
+      toast("✓ "+({dtcg:"DTCG JSON",css:"CSS 변수",figma:"Figma Variables"}[TSFMT])+" 복사됨 — "+TSCODE.length+"자");
+    };
+  }
+}
+function renderStudio(){
+  const M=tokenModel();
+  if(TSPANE==="tree")$("tsTree").innerHTML=paneTree(M);
+  else if(TSPANE==="lineage")$("tsLineage").innerHTML=paneLineage(M);
+  else if(TSPANE==="diff")$("tsDiff").innerHTML=paneDiff(M);
+  else $("tsExport").innerHTML=paneExport(M);
+  bindStudio();
+}
+function setStudioTab(p){
+  TSPANE=p;
+  const tb=$("tsTab"); if(!tb)return;
+  tb.querySelectorAll("button").forEach(function(b){b.classList.toggle("on",b.dataset.pane===p);});
+  const map={tree:"tsTree",lineage:"tsLineage",diff:"tsDiff",export:"tsExport"};
+  Object.keys(map).forEach(function(k){$(map[k]).classList.toggle("on",k===p);});
+  renderStudio();
+}
+(function(){
+  const tb=$("tsTab"); if(!tb)return;
+  tb.querySelectorAll("button").forEach(function(b){
+    b.addEventListener("click",function(){setStudioTab(b.dataset.pane);});
+  });
+})();
+/* 캔버스 뷰 전환 탭(위쪽 <script> 블록)에서 부르는 진입점 */
+window.renderStudio=renderStudio;
+
 function render(){
   const NEU=state.neutral==="warm"?WARM:COOL, tgt=state.aa==="AAA"?7:4.5;
   const seed=/^#[0-9a-fA-F]{6}$/.test(state.seed)?state.seed:"#8974f0";
@@ -1198,6 +1767,8 @@ function render(){
   $("exportBtn").dataset.ok=allOK?"1":"0";
   $("shareStr").textContent=shareString();
   logHistory(checks.filter(function(c){return c[1];}).length,checks.length);
+  /* 토큰 스튜디오는 render() 의 결과를 비추는 거울 — 열려 있을 때만 갱신한다. */
+  if(document.body.dataset.view==="tokens") renderStudio();
 }
 
 /* 상태색 행 (v0.2) */
@@ -1316,7 +1887,14 @@ bindNum("densR","densN","dens");bindNum("radR","radN","rad");bindNum("tbaseR","t
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400);}
 $("copyBtn").onclick=()=>{const s=shareString();navigator.clipboard&&navigator.clipboard.writeText(s);toast("✓ 테마 링크 복사됨 — "+s);};
 $("shareStr").onclick=$("copyBtn").onclick;
-$("exportBtn").onclick=()=>{toast($("exportBtn").dataset.ok==="1"?"✓ 검증 통과 — DTCG·CSS·Figma 내보내기 (B1 파이프라인 연결 예정)":"⚠ 검증 미통과 — 대비를 먼저 맞춰주세요");};
+$("exportBtn").onclick=()=>{
+  /* setView 는 위쪽 IIFE 안이라 직접 못 부른다 — 탭을 눌러 같은 경로를 탄다. */
+  const vb=document.querySelector('#viewSeg button[data-view="tokens"]'); if(vb)vb.click();
+  setStudioTab("export");
+  toast($("exportBtn").dataset.ok==="1"
+    ? "✓ 검증 통과 — 내보내기 미리보기 (파일 저장은 B1 파이프라인 연결 예정)"
+    : "⚠ 검증 미통과 — 미리보기는 열지만, 대비를 먼저 맞춰주세요");
+};
 initStatusRows();initSpacingRows();renderGallery();render();
 </script>
 <!-- ── 개념 가이드 슬라이드오버 (public/guide.html · scripts/build-guide.cjs 생성물) ── -->
