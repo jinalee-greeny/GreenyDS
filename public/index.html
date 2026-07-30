@@ -190,7 +190,7 @@
   .rfield input,.rfield select{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:var(--mono);font-size:11.5px}
   .rfield .rauto{font-size:9.5px;color:var(--faint);font-family:var(--mono);margin-left:auto}
   .scalestrip{display:flex;align-items:flex-end;gap:3px;height:46px;margin:8px 0 2px}
-  .scalestrip .sb{flex:1;min-width:0;background:linear-gradient(var(--brand050),#ece9fb);border:1px solid var(--brandln);border-bottom:none;border-radius:3px 3px 0 0;position:relative}
+  .scalestrip .sb{flex:1;min-width:0;background:var(--brand050);border:1px solid var(--brandln);border-bottom:none;border-radius:3px 3px 0 0;position:relative}
   .scalestrip .sb span{position:absolute;bottom:1px;left:0;right:0;font-size:8px;color:#4c3aa0;font-family:var(--mono);text-align:center}
   .scalestrip .sb i{position:absolute;top:-11px;left:0;right:0;font-size:7.5px;color:var(--faint);font-family:var(--mono);text-align:center;font-style:normal}
   .sprow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -289,7 +289,6 @@
   @container cv (max-width:760px){ .csmodes.two{grid-template-columns:1fr} }
   .csmode{border:1px solid var(--line);border-radius:11px;overflow:hidden;min-width:0}
   .csmh{font-family:var(--mono);font-size:9.5px;padding:6px 11px;display:flex;align-items:center;gap:7px}
-  .csmh .dot{width:7px;height:7px;border-radius:999px;flex:none}
   .csbody{padding:13px;display:flex;flex-direction:column;gap:14px;min-width:0}
   .cfrow{display:flex;flex-direction:column;gap:7px;min-width:0}
   .cfax{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.07em}
@@ -401,8 +400,7 @@
        margin:0 0 9px;display:flex;align-items:center}
   .dkh .g{margin-left:auto;font-family:var(--mono);text-transform:none;letter-spacing:0;font-size:10px}
   .hlist{display:flex;flex-direction:column;gap:7px}
-  .hitem{border:1px solid var(--line);border-left:3px solid var(--l4);border-radius:9px;background:#fff;padding:8px 10px}
-  .hitem.bad{border-left-color:var(--l3)}
+  .hitem{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 10px}
   .hmeta{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--faint);
          font-family:var(--mono);margin-bottom:5px}
   .hmeta .hn{font-weight:700;color:var(--muted)}
@@ -469,7 +467,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.2 — 컴포넌트 스튜디오 · 형태 매트릭스 · 토큰↔컴포넌트 이동</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.2.1 — 컴포넌트 스튜디오 · 형태 매트릭스 · 장식 제거</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -1116,12 +1114,15 @@ function fCard(R,TR,o){
     '<div style="'+ty(TR.title)+";color:"+R.fgPrimary+";margin-bottom:"+spx("stack","sm")+'px">카드 타이틀</div>'+
     '<div style="'+ty(TR.body)+";color:"+R.fgSecondary+'">'+(o.t||"본문 텍스트가 여기에. 대비 자동 해결.")+"</div></div>";
 }
+/* v1.2.1 — 좌측 액센트 바와 상태 점을 뺐다.
+   상태 하나를 말하려고 바·점·테두리·라벨 색까지 네 겹을 쓰고 있었다.
+   이제 한 겹이다 — soft 는 배경으로, 기본은 라벨 색으로. 테두리는
+   두 변형 모두 stroke.subtle 로 통일한다. */
 function fToast(R,TR,o){
   o=o||{}; const k=o.status||"success", m=F_ST[k], fg=R[m[1]], rcont=radTier("container"), soft=o.v==="soft";
-  return '<div style="display:flex;align-items:center;gap:9px;background:'+(soft?R[m[2]]:R.S.raised)+
-    ";border:1px solid "+(soft?fg:R.strokeSubtle)+";border-left:3px solid "+fg+";border-radius:"+rcont+
+  return '<div style="display:flex;align-items:center;background:'+(soft?R[m[2]]:R.S.raised)+
+    ";border:1px solid "+R.strokeSubtle+";border-radius:"+rcont+
     "px;box-shadow:"+(soft?"none":shadow(R,"raised"))+';padding:10px 12px;min-width:0;max-width:100%">'+
-    '<span style="width:7px;height:7px;border-radius:999px;background:'+fg+';flex:none"></span>'+
     '<span style="'+ty(TR.label)+";color:"+R.fgPrimary+';min-width:0"><b style="color:'+fg+'">'+m[0]+"</b> — 상태 메시지</span></div>";
 }
 function fModal(R,TR,o){
@@ -1638,7 +1639,6 @@ function tokenModel(){
     ["card","card.padding",spx("inset","lg")+"px","space.inset.lg",null],
     ["card","card.title.gap",spx("stack","sm")+"px","space.stack.sm",null],
     ["toast","toast.radius",rcont+"px","radius.container",null],
-    ["toast","toast.accent.width","3px",null,"프리뷰 고정값"],
     ["modal","modal.radius",rov+"px","radius.overlay",null],
     ["modal","modal.padding",spx("inset","lg")+"px","space.inset.lg",null],
     ["modal","modal.width.sm",F_MODALW.sm+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
@@ -1703,10 +1703,10 @@ function tokenModel(){
     ["toast","toast.bg",R.S.raised,"color.bg.raised"],
     ["toast","toast.border",R.strokeSubtle,"color.stroke.subtle"],
     ["toast","toast.fg",R.fgPrimary,"color.fg.primary"],
-    ["toast","toast.accent.success",R.fgSucc,"color.fg.success"],
-    ["toast","toast.accent.danger",R.fgDanger,"color.fg.danger"],
-    ["toast","toast.accent.warning",R.fgWarn,"color.fg.warning"],
-    ["toast","toast.accent.info",R.fgInfo,"color.fg.info"],
+    ["toast","toast.status.success",R.fgSucc,"color.fg.success"],
+    ["toast","toast.status.danger",R.fgDanger,"color.fg.danger"],
+    ["toast","toast.status.warning",R.fgWarn,"color.fg.warning"],
+    ["toast","toast.status.info",R.fgInfo,"color.fg.info"],
     ["toast","toast.soft.success.bg",R.succSub,"color.bg.success-subtle"],
     ["toast","toast.soft.danger.bg",R.dangerSub,"color.bg.danger-subtle"],
     ["toast","toast.soft.warning.bg",R.warnSub,"color.bg.warning-subtle"],
@@ -2046,7 +2046,7 @@ function csBody(k,R,TR){
 function csMode(k,label,R,TR){
   return '<div class="csmode" style="background:'+R.S.page+';border-color:'+R.strokeSubtle+'">'+
     '<div class="csmh" style="background:'+R.S.surface+';color:'+R.fgSecondary+
-    ';border-bottom:1px solid '+R.strokeSubtle+'"><span class="dot" style="background:'+R.ap+'"></span>'+label+'</div>'+
+    ';border-bottom:1px solid '+R.strokeSubtle+'">'+label+'</div>'+
     '<div class="csbody">'+csBody(k,R,TR)+'</div></div>';
 }
 /* 컴포넌트별 토큰 사용표 — ③ 계층에서 이름이 "<comp>." 로 시작하는 것 전부.
