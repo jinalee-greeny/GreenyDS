@@ -26,9 +26,17 @@
      인스펙터를 떠 있는 패널이 아니라 그리드 열로 둔 이유: 시안 C의 가장 큰 약점이
      "인스펙터가 미리보기를 가린다" 였고, 열로 두면 원리적으로 가릴 수 없다.
      접기는 열 폭을 0 으로 만드는 방식이라 접었을 때는 진짜 전면 캔버스가 된다. */
-  .layout{display:grid;grid-template-columns:56px var(--inspw) 1fr;gap:0;align-items:start;--inspw:320px;
+  /* 진아 요청(2026-07-30) — 인스펙터를 오른쪽으로. 열 순서만 바꾸고 #31 의 근거는 유지한다:
+     여전히 "떠 있는 패널이 아니라 그리드 열"이라 미리보기를 가릴 수 없다.
+     접기는 --inspw 가 아니라 grid-template-columns 를 통째로 덮는 방식으로 바꿨다 —
+     드래그 리사이즈가 --inspw 를 인라인으로 쓰기 때문에, 변수로 접으면 인라인이 이겨서 안 접힌다. */
+  .layout{display:grid;grid-template-columns:56px 1fr var(--inspw);gap:0;align-items:start;--inspw:320px;
           transition:grid-template-columns .18s cubic-bezier(.22,.61,.36,1)}
-  body.insp-off .layout{--inspw:0px}
+  .rail{grid-column:1}
+  .stageWrap{grid-column:2}
+  .panel,.rsz{grid-column:3;grid-row:1}
+  body.insp-off .layout{grid-template-columns:56px 1fr 0px}
+  .layout.resizing{transition:none;user-select:none;cursor:col-resize}
   /* ── 아이콘 레일 ── */
   .rail{background:#fcfcfd;border-right:1px solid var(--line);height:calc(100vh - 53px);
         position:sticky;top:53px;padding-top:8px;display:flex;flex-direction:column}
@@ -39,12 +47,24 @@
   .ri:hover{color:var(--muted);background:#f5f6f8}
   .ri.on{color:var(--fg);background:#fff;box-shadow:inset 2px 0 0 var(--brand)}
   .ri.on i{color:var(--brand)}
-  @media(max-width:920px){.layout{grid-template-columns:1fr}}
+  @media(max-width:920px){.layout,body.insp-off .layout{grid-template-columns:1fr}
+    .rail,.stageWrap,.panel{grid-column:1;grid-row:auto}}
   /* padding-top 을 0 으로 내린 이유: .sech 가 sticky 로 패널 상단에 붙을 때
      위쪽 여백이 남으면 스크롤된 내용이 그 틈으로 비쳐 보인다. */
-  .panel{background:#fff;border-right:1px solid var(--line);padding:0 18px 18px;height:calc(100vh - 53px);overflow-y:auto;position:sticky;top:53px}
-  body.insp-off .panel{padding-left:0;padding-right:0;overflow:hidden;border-right:none}
-  @media(max-width:920px){.panel{height:auto;position:static;border-right:none;border-bottom:1px solid var(--line)}}
+  .panel{background:#fff;border-left:1px solid var(--line);padding:0 18px 18px;height:calc(100vh - 53px);overflow-y:auto;position:sticky;top:53px;min-width:0}
+  body.insp-off .panel{padding-left:0;padding-right:0;overflow:hidden;border-left:none}
+  @media(max-width:920px){.panel{height:auto;position:static;border-left:none;border-bottom:1px solid var(--line)}}
+  /* ── 폭 드래그 핸들 (진아 요청 2026-07-30) ──
+     패널과 같은 그리드 칸에 겹쳐 두고 왼쪽 끝에 붙인다. 패널 안에 넣지 않은 이유:
+     .panel 은 overflow-y:auto 라서 내부 절대배치 요소는 내용과 같이 스크롤돼 버린다. */
+  .rsz{justify-self:start;align-self:start;position:sticky;top:53px;z-index:6;
+       width:11px;height:calc(100vh - 53px);margin-left:-5px;
+       border:0;padding:0;background:transparent;cursor:col-resize;touch-action:none}
+  .rsz::after{content:"";position:absolute;left:5px;top:0;bottom:0;width:1px;background:transparent;transition:background .12s}
+  .rsz:hover::after,.rsz:focus-visible::after,.layout.resizing .rsz::after{background:var(--brand)}
+  .rsz:focus-visible{outline:none}
+  body.insp-off .rsz{display:none}
+  @media(max-width:920px){.rsz{display:none}}
   /* 결정 #30 (B안) — 자율성 표기 단위를 그룹 배지에서 컨트롤별 낱말로 내렸다.
      .grp/.gh/.gn/.p1~.p4/.gt/.ghint 는 이 개편으로 참조가 사라져 삭제. */
   /* 한 번에 한 섹션만. 레일 클릭이 곧 섹션 전환이라 접근은 1클릭이다(2클릭이 아니다). */
@@ -234,7 +254,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.7 — 캔버스 레이아웃 · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.8 — 인스펙터 우측 · 폭 조절 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -250,12 +270,15 @@
     <button class="ri" data-sec="S4" aria-pressed="false"><i>☰</i>프리셋</button>
   </nav>
 
-  <!-- INSPECTOR -->
+  <!-- INSPECTOR (우측) -->
+  <div class="rsz" id="inspRsz" role="separator" aria-orientation="vertical"
+       tabindex="0" aria-label="인스펙터 폭 조절 — 좌우 화살표로 조절, 더블클릭으로 초기화"
+       aria-valuemin="260" aria-valuemax="560" aria-valuenow="320"></div>
   <div class="panel">
 
     <!-- ══ S1 · 색 ══ -->
     <div class="sec on" data-sec="S1">
-      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">설정 5개</span><button class="inspx" id="inspXS1" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
+      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">설정 5개</span><button class="inspx" id="inspXS1" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">시드</span><span class="mk you">직접</span><button class="ghelp" data-guide="#ref-color" title="개념 가이드: 브랜드색이 램프로 퍼지는 방식" aria-label="개념 가이드에서 보기">?</button></div>
@@ -304,7 +327,7 @@
 
     <!-- ══ S2 · 글자 ══ -->
     <div class="sec" data-sec="S2">
-      <div class="sech"><span class="sn">S2</span><span>글자</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS2" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
+      <div class="sech"><span class="sn">S2</span><span>글자</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS2" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">서체</span><button class="ghelp" data-guide="#ref-type" title="개념 가이드: typo · 글자 — 서체 슬롯" aria-label="개념 가이드에서 보기">?</button></div>
@@ -367,7 +390,7 @@
 
     <!-- ══ S3 · 형태 ══ -->
     <div class="sec" data-sec="S3">
-      <div class="sech"><span class="sn">S3</span><span>형태</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS3" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
+      <div class="sech"><span class="sn">S3</span><span>형태</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS3" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">간격 · 모서리</span><button class="ghelp" data-guide="#ref-space" title="개념 가이드: spatial · 여백 스케일" aria-label="개념 가이드에서 보기">?</button></div>
@@ -439,7 +462,7 @@
 
     <!-- ══ S4 · 프리셋 ══ -->
     <div class="sec" data-sec="S4">
-      <div class="sech"><span class="sn">S4</span><span>프리셋</span><span class="sc">설정 1개</span><button class="inspx" id="inspXS4" title="인스펙터 접기" aria-label="인스펙터 접기">‹</button></div>
+      <div class="sech"><span class="sn">S4</span><span>프리셋</span><span class="sc">설정 1개</span><button class="inspx" id="inspXS4" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">저장 · 갤러리 · 가져오기</span><button class="ghelp" data-guide="#s2" title="개념 가이드: 값이 아니라 값을 만드는 엔진" aria-label="개념 가이드에서 보기">?</button></div>
@@ -454,7 +477,6 @@
   <!-- PREVIEW -->
   <div class="stageWrap">
     <div class="cvtop">
-      <button class="inspx" id="inspOpen" title="인스펙터 열기" aria-label="인스펙터 열기" style="display:none">›</button>
       <div class="vseg" id="viewSeg">
         <button data-view="light" class="on">라이트</button>
         <button data-view="dark">다크</button>
@@ -466,6 +488,7 @@
         <span class="share" id="shareStr" title="클릭해 복사"></span>
         <button class="shc" id="shareCopy">복사</button>
       </div>
+      <button class="inspx" id="inspOpen" title="인스펙터 열기" aria-label="인스펙터 열기" style="display:none">‹</button>
     </div>
     <div class="canvas">
       <div class="stages" id="stages"></div>
@@ -500,6 +523,38 @@
     b.addEventListener('click',function(){body.classList.add('insp-off');syncOpenBtn();});
   });
   if(openBtn) openBtn.addEventListener('click',function(){body.classList.remove('insp-off');syncOpenBtn();});
+
+  /* ── 인스펙터 폭 드래그 (진아 요청 2026-07-30) ──
+     폭은 메모리에만 둔다. 이 파일은 Cowork 아티팩트로도 배포되는데
+     아티팩트 환경에서는 localStorage 계열이 동작하지 않는다. */
+  (function(){
+    var layout=document.querySelector('.layout'), rsz=document.getElementById('inspRsz');
+    if(!layout||!rsz) return;
+    var MIN=260, MAX=560, w=320, dragging=false;
+    function set(px){
+      w=Math.max(MIN,Math.min(MAX,Math.round(px)));
+      layout.style.setProperty('--inspw',w+'px');
+      rsz.setAttribute('aria-valuenow',String(w));
+    }
+    rsz.addEventListener('pointerdown',function(e){
+      dragging=true; layout.classList.add('resizing');
+      if(rsz.setPointerCapture) rsz.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    rsz.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      set(document.documentElement.clientWidth - e.clientX);
+    });
+    function end(){ if(!dragging) return; dragging=false; layout.classList.remove('resizing'); }
+    rsz.addEventListener('pointerup',end);
+    rsz.addEventListener('pointercancel',end);
+    rsz.addEventListener('dblclick',function(){ set(320); });
+    rsz.addEventListener('keydown',function(e){
+      if(e.key==='ArrowLeft'){ set(w+16); e.preventDefault(); }
+      else if(e.key==='ArrowRight'){ set(w-16); e.preventDefault(); }
+      else if(e.key==='Home'){ set(320); e.preventDefault(); }
+    });
+  })();
 
   /* 3) 라이트 / 다크 / 나란히 */
   var seg=document.getElementById('viewSeg');
