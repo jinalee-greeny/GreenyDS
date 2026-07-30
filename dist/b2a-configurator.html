@@ -30,33 +30,52 @@
      여전히 "떠 있는 패널이 아니라 그리드 열"이라 미리보기를 가릴 수 없다.
      접기는 --inspw 가 아니라 grid-template-columns 를 통째로 덮는 방식으로 바꿨다 —
      드래그 리사이즈가 --inspw 를 인라인으로 쓰기 때문에, 변수로 접으면 인라인이 이겨서 안 접힌다. */
-  .layout{display:grid;grid-template-columns:56px 1fr var(--inspw);gap:0;align-items:start;--inspw:320px;
+  /* 진아 지적(2026-07-30) — 레일(탭)이 왼쪽 끝, 그 내용인 인스펙터가 오른쪽 끝에 있어
+     "탭과 내용이 화면 양 끝으로 갈라져" 있었다. 레일을 인스펙터 바로 왼쪽으로 옮겨
+     [캔버스 | 레일 | 인스펙터] 한 덩어리로 붙인다. 접었을 때도 레일은 남아
+     레일 자체가 다시 여는 손잡이가 된다. */
+  .layout{display:grid;grid-template-columns:1fr 56px var(--inspw);gap:0;align-items:start;--inspw:320px;
           transition:grid-template-columns .18s cubic-bezier(.22,.61,.36,1)}
-  .rail{grid-column:1}
-  .stageWrap{grid-column:2}
-  .panel,.rsz{grid-column:3;grid-row:1}
-  body.insp-off .layout{grid-template-columns:56px 1fr 0px}
+  /* grid-row:1 을 넷 다 명시한다 — DOM 순서(레일·핸들·패널·캔버스)와 열 순서가
+     어긋나 있어서, 하나라도 빠지면 자동배치가 캔버스를 2행으로 밀어낸다. */
+  .stageWrap{grid-column:1;grid-row:1}
+  .rail,.rsz{grid-column:2;grid-row:1}
+  .panel{grid-column:3;grid-row:1}
+  body.insp-off .layout{grid-template-columns:1fr 56px 0px}
   .layout.resizing{transition:none;user-select:none;cursor:col-resize}
   /* ── 아이콘 레일 ── */
-  .rail{background:#fcfcfd;border-right:1px solid var(--line);height:calc(100vh - 53px);
+  .rail{background:#f7f8fa;border-left:1px solid var(--line);height:calc(100vh - 53px);
         position:sticky;top:53px;padding-top:8px;display:flex;flex-direction:column}
   .ri{height:56px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
       font-size:9.5px;font-weight:600;color:var(--faint);cursor:pointer;border:0;background:none;padding:0;
       width:100%;font-family:inherit}
   .ri i{font-style:normal;font-size:16px;line-height:1}
   .ri:hover{color:var(--muted);background:#f5f6f8}
-  .ri.on{color:var(--fg);background:#fff;box-shadow:inset 2px 0 0 var(--brand)}
+  /* 선택된 탭은 패널과 같은 흰 바닥을 공유해 오른쪽으로 이어진다. 강조 막대는
+     탭과 패널 사이가 아니라 바깥(왼쪽) 모서리에 둔다 — 사이에 두면 둘이 다시 갈라져 보인다. */
+  .ri.on{color:var(--fg);background:#fff;box-shadow:inset 3px 0 0 var(--brand)}
+  .rtog{margin-top:auto;flex:none;height:38px;width:100%;border:0;border-top:1px solid var(--line);
+        background:none;color:var(--faint);font-size:12px;cursor:pointer;font-family:inherit}
+  .rtog:hover{color:var(--brand);background:#fff}
   .ri.on i{color:var(--brand)}
   @media(max-width:920px){.layout,body.insp-off .layout{grid-template-columns:1fr}
-    .rail,.stageWrap,.panel{grid-column:1;grid-row:auto}}
+    .rail,.stageWrap,.panel{grid-column:1;grid-row:auto}
+    /* v0.8 까지 모바일에서 레일이 화면 전체 높이를 세로로 차지하던 결함도 함께 해소 */
+    .rail{flex-direction:row;height:auto;position:static;padding-top:0;
+          border-left:none;border-bottom:1px solid var(--line)}
+    .ri{width:auto;flex:1;height:48px}
+    .ri.on{box-shadow:inset 0 -3px 0 var(--brand)}
+    .rtog{display:none}}
   /* padding-top 을 0 으로 내린 이유: .sech 가 sticky 로 패널 상단에 붙을 때
      위쪽 여백이 남으면 스크롤된 내용이 그 틈으로 비쳐 보인다. */
-  .panel{background:#fff;border-left:1px solid var(--line);padding:0 18px 18px;height:calc(100vh - 53px);overflow-y:auto;position:sticky;top:53px;min-width:0}
-  body.insp-off .panel{padding-left:0;padding-right:0;overflow:hidden;border-left:none}
+  .panel{background:#fff;padding:0 18px 18px;height:calc(100vh - 53px);overflow-y:auto;position:sticky;top:53px;min-width:0}
+  body.insp-off .panel{padding-left:0;padding-right:0;overflow:hidden}
   @media(max-width:920px){.panel{height:auto;position:static;border-left:none;border-bottom:1px solid var(--line)}}
   /* ── 폭 드래그 핸들 (진아 요청 2026-07-30) ──
      패널과 같은 그리드 칸에 겹쳐 두고 왼쪽 끝에 붙인다. 패널 안에 넣지 않은 이유:
      .panel 은 overflow-y:auto 라서 내부 절대배치 요소는 내용과 같이 스크롤돼 버린다. */
+  /* 핸들은 레일 바깥 모서리에 둔다 — 끌어서 조절되는 것은 "인스펙터 덩어리 전체"의 폭이고,
+     레일과 패널 사이에 두면 레일을 덩어리에서 떼어놓는 선처럼 읽힌다. */
   .rsz{justify-self:start;align-self:start;position:sticky;top:53px;z-index:6;
        width:11px;height:calc(100vh - 53px);margin-left:-5px;
        border:0;padding:0;background:transparent;cursor:col-resize;touch-action:none}
@@ -254,7 +273,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.8 — 인스펙터 우측 · 폭 조절 · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.9 — 레일·인스펙터 결합 · 색/조건 분리 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -265,9 +284,10 @@
   <!-- SECTION RAIL (결정 #31) -->
   <nav class="rail" aria-label="설정 섹션">
     <button class="ri on" data-sec="S1" aria-pressed="true"><i>◕</i>색</button>
-    <button class="ri" data-sec="S2" aria-pressed="false"><i>Aa</i>글자</button>
-    <button class="ri" data-sec="S3" aria-pressed="false"><i>▣</i>형태</button>
-    <button class="ri" data-sec="S4" aria-pressed="false"><i>☰</i>프리셋</button>
+    <button class="ri" data-sec="S2" aria-pressed="false"><i>☾</i>조건</button>
+    <button class="ri" data-sec="S3" aria-pressed="false"><i>Aa</i>글자</button>
+    <button class="ri" data-sec="S4" aria-pressed="false"><i>▣</i>형태</button>
+    <button class="rtog" id="inspTog" title="인스펙터 접기" aria-label="인스펙터 접기" aria-expanded="true">›</button>
   </nav>
 
   <!-- INSPECTOR (우측) -->
@@ -278,7 +298,7 @@
 
     <!-- ══ S1 · 색 ══ -->
     <div class="sec on" data-sec="S1">
-      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">설정 5개</span><button class="inspx" id="inspXS1" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
+      <div class="sech"><span class="sn">S1</span><span>색</span><span class="sc">설정 4개</span></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">시드</span><span class="mk you">직접</span><button class="ghelp" data-guide="#ref-color" title="개념 가이드: 브랜드색이 램프로 퍼지는 방식" aria-label="개념 가이드에서 보기">?</button></div>
@@ -292,6 +312,28 @@
         <div class="ramp" id="ramp"></div>
         <div class="roN">읽기 전용 — 시드를 바꾸면 함께 바뀝니다</div>
       </div>
+
+      <div class="blk">
+        <div class="bh"><span class="bt">프리셋</span><span class="mx">— 저장 · 갤러리 · 가져오기</span><button class="ghelp" data-guide="#s2" title="개념 가이드: 값이 아니라 값을 만드는 엔진" aria-label="개념 가이드에서 보기">?</button></div>
+        <div class="saverow"><input type="text" id="presetName" placeholder="현재 테마를 프리셋으로 저장 — 이름"><button class="loadbtn" id="presetSave" style="flex:none">저장</button></div>
+        <div class="gallery" id="gallery"></div>
+        <div class="improw"><input type="text" id="themeIn" placeholder="테마 문자열 붙여넣기 (theme:…)"><button class="loadbtn" id="themeApply" style="flex:none">적용</button></div>
+        <div class="why">💡 프리셋은 <b>색뿐 아니라 조건·글자·형태까지 테마 전체</b>를 담습니다 — 색 안에 둔 것은 "무엇부터 정하나"의 출발점이기 때문입니다. 저장은 이 세션 안에서 유지 — 영구 저장·공유는 B1 익스포트 연결에서. 테마 문자열로는 지금도 주고받을 수 있어요.</div>
+      </div>
+
+      <div class="blk">
+        <div class="bh"><span class="bt">상태색</span><button class="ghelp" data-guide="#s10" title="개념 가이드: Semantic 사전 — 색 역할 목록" aria-label="개념 가이드에서 보기">?</button></div>
+        <div class="mrow"><span class="ml">역할별 신호색 <span class="mx">— 위험·경고·성공·정보</span></span><span class="mk def">기본값</span></div>
+        <div id="statusRows"></div>
+        <div class="mrow"><span class="ml">그 위의 글자 단계 <span class="mx">— 대비에 맞춰 재선택</span></span><span class="mk auto">자동</span></div>
+        <div class="why">💡 기본값은 접근성 검증된 표준 신호색. 바꿔도 글자 단계는 대비에 맞게 자동 재선택됩니다.</div>
+      </div>
+
+    </div>
+
+    <!-- ══ S2 · 조건 ══ -->
+    <div class="sec" data-sec="S2">
+      <div class="sech"><span class="sn">S2</span><span>조건</span><span class="sc">설정 2개</span></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">다크 · 회색 톤</span><button class="ghelp" data-guide="#s6" title="개념 가이드: 다크 모드가 생기는 방식" aria-label="개념 가이드에서 보기">?</button></div>
@@ -316,18 +358,11 @@
         <div class="why">💡 기본 AAA — 가독성 바닥 보장. 검증 게이트도 이 기준을 따름.</div>
       </div>
 
-      <div class="blk">
-        <div class="bh"><span class="bt">상태색</span><button class="ghelp" data-guide="#s10" title="개념 가이드: Semantic 사전 — 색 역할 목록" aria-label="개념 가이드에서 보기">?</button></div>
-        <div class="mrow"><span class="ml">역할별 신호색 <span class="mx">— 위험·경고·성공·정보</span></span><span class="mk def">기본값</span></div>
-        <div id="statusRows"></div>
-        <div class="mrow"><span class="ml">그 위의 글자 단계 <span class="mx">— 대비에 맞춰 재선택</span></span><span class="mk auto">자동</span></div>
-        <div class="why">💡 기본값은 접근성 검증된 표준 신호색. 바꿔도 글자 단계는 대비에 맞게 자동 재선택됩니다.</div>
-      </div>
     </div>
 
-    <!-- ══ S2 · 글자 ══ -->
-    <div class="sec" data-sec="S2">
-      <div class="sech"><span class="sn">S2</span><span>글자</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS2" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
+    <!-- ══ S3 · 글자 ══ -->
+    <div class="sec" data-sec="S3">
+      <div class="sech"><span class="sn">S3</span><span>글자</span><span class="sc">설정 2개</span></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">서체</span><button class="ghelp" data-guide="#ref-type" title="개념 가이드: typo · 글자 — 서체 슬롯" aria-label="개념 가이드에서 보기">?</button></div>
@@ -386,11 +421,12 @@
         </div>
         <div class="why">💡 크기·비율에서 6역할이 자동으로 만들어지고, 필요한 역할만 개별로 덮어쓸 수 있습니다(↺로 복원). Caption은 12px 아래로 내려가지 않아요(가독성 바닥).</div>
       </div>
+
     </div>
 
-    <!-- ══ S3 · 형태 ══ -->
-    <div class="sec" data-sec="S3">
-      <div class="sech"><span class="sn">S3</span><span>형태</span><span class="sc">설정 2개</span><button class="inspx" id="inspXS3" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
+    <!-- ══ S4 · 형태 ══ -->
+    <div class="sec" data-sec="S4">
+      <div class="sech"><span class="sn">S4</span><span>형태</span><span class="sc">설정 2개</span></div>
 
       <div class="blk">
         <div class="bh"><span class="bt">간격 · 모서리</span><button class="ghelp" data-guide="#ref-space" title="개념 가이드: spatial · 여백 스케일" aria-label="개념 가이드에서 보기">?</button></div>
@@ -458,19 +494,7 @@
         </div>
         <div class="why">💡 그림자=elevation dp 사다리(다중 레이어) · 모션=duration 6단+easing. 미리보기 <b>Elevation</b>·<b>Motion</b> 셀에서 확인.</div>
       </div>
-    </div>
 
-    <!-- ══ S4 · 프리셋 ══ -->
-    <div class="sec" data-sec="S4">
-      <div class="sech"><span class="sn">S4</span><span>프리셋</span><span class="sc">설정 1개</span><button class="inspx" id="inspXS4" title="인스펙터 접기" aria-label="인스펙터 접기">›</button></div>
-
-      <div class="blk">
-        <div class="bh"><span class="bt">저장 · 갤러리 · 가져오기</span><button class="ghelp" data-guide="#s2" title="개념 가이드: 값이 아니라 값을 만드는 엔진" aria-label="개념 가이드에서 보기">?</button></div>
-        <div class="saverow"><input type="text" id="presetName" placeholder="현재 테마를 프리셋으로 저장 — 이름"><button class="loadbtn" id="presetSave" style="flex:none">저장</button></div>
-        <div class="gallery" id="gallery"></div>
-        <div class="improw"><input type="text" id="themeIn" placeholder="테마 문자열 붙여넣기 (theme:…)"><button class="loadbtn" id="themeApply" style="flex:none">적용</button></div>
-        <div class="why">💡 저장은 이 세션 안에서 유지 — 영구 저장·공유는 B1 익스포트 연결에서. 테마 문자열로는 지금도 주고받을 수 있어요.</div>
-      </div>
     </div>
   </div>
 
@@ -488,7 +512,6 @@
         <span class="share" id="shareStr" title="클릭해 복사"></span>
         <button class="shc" id="shareCopy">복사</button>
       </div>
-      <button class="inspx" id="inspOpen" title="인스펙터 열기" aria-label="인스펙터 열기" style="display:none">‹</button>
     </div>
     <div class="canvas">
       <div class="stages" id="stages"></div>
@@ -512,17 +535,26 @@
     secs.forEach(function(v){v.classList.toggle('on',v.dataset.sec===key);});
     body.classList.remove('insp-off');
     var p=document.querySelector('.panel'); if(p) p.scrollTop=0;
-    syncOpenBtn();
+    syncTog();
   }
+  /* 접힌 상태에서 탭을 누르면 그 섹션으로 다시 열린다 — 레일이 곧 손잡이다. */
   rails.forEach(function(r){r.addEventListener('click',function(){showSec(r.dataset.sec);});});
 
-  /* 2) 인스펙터 접기 / 열기 */
-  var openBtn=document.getElementById('inspOpen');
-  function syncOpenBtn(){ if(openBtn) openBtn.style.display=body.classList.contains('insp-off')?'inline-flex':'none'; }
-  [].slice.call(document.querySelectorAll('.inspx[id^="inspX"]')).forEach(function(b){
-    b.addEventListener('click',function(){body.classList.add('insp-off');syncOpenBtn();});
-  });
-  if(openBtn) openBtn.addEventListener('click',function(){body.classList.remove('insp-off');syncOpenBtn();});
+  /* 2) 인스펙터 접기 / 열기 — 컨트롤을 레일 하단 하나로 통합.
+     v0.8 까지는 섹션 머리 4개(‹)와 상단 바 1개(›)로 5개였고, 상태에 따라 나타나는
+     위치가 달라 "지금 어느 화살표를 눌러야 하는지"를 매번 다시 찾아야 했다. */
+  var tog=document.getElementById('inspTog');
+  function syncTog(){
+    if(!tog) return;
+    var off=body.classList.contains('insp-off');
+    var lab=off?'인스펙터 열기':'인스펙터 접기';
+    tog.textContent=off?'‹':'›';
+    tog.title=lab;
+    tog.setAttribute('aria-label',lab);
+    tog.setAttribute('aria-expanded',off?'false':'true');
+  }
+  if(tog) tog.addEventListener('click',function(){body.classList.toggle('insp-off');syncTog();});
+  syncTog();
 
   /* ── 인스펙터 폭 드래그 (진아 요청 2026-07-30) ──
      폭은 메모리에만 둔다. 이 파일은 Cowork 아티팩트로도 배포되는데
@@ -543,7 +575,7 @@
     });
     rsz.addEventListener('pointermove',function(e){
       if(!dragging) return;
-      set(document.documentElement.clientWidth - e.clientX);
+      set(document.documentElement.clientWidth - e.clientX - 56);   /* 56 = 레일 폭 */
     });
     function end(){ if(!dragging) return; dragging=false; layout.classList.remove('resizing'); }
     rsz.addEventListener('pointerup',end);
