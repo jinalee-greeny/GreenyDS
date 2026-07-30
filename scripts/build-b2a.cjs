@@ -65,8 +65,8 @@ function build() {
 
   // T2 — 미러임을 상단 태그에 표시
   s = swap(s,
-    '<span class="tag">내부 베타 v0.9 — 레일·인스펙터 결합 · 색/조건 분리</span>',
-    '<span class="tag">내부 베타 v0.9 — 레일·인스펙터 결합 · 색/조건 분리 · B2a 미러</span>',
+    '<span class="tag">내부 베타 v1.0 — 레일 최우측 · 좌측 기록 독(검증·이력)</span>',
+    '<span class="tag">내부 베타 v1.0 — 레일 최우측 · 좌측 기록 독(검증·이력) · B2a 미러</span>',
     'T2 미러 태그');
 
   // T3 — 폴백/새 탭 링크 CSS

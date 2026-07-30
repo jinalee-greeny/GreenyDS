@@ -19,6 +19,15 @@
      이를 받는 규칙이 없어, 통과/미통과가 눌러보기 전까지 화면에 표시되지 않았다. */
   .tbtn.pri[data-ok="0"]{background:#fff;color:var(--muted);border-color:var(--line)}
   .tbtn.pri[data-ok="0"]::before{content:"⚠ ";color:#b06a12}
+  /* 모바일에서 상단바가 한 줄을 고집하다 보니 버튼 글자가 세로로 쪼개졌다
+     ("토 큰 내 보 내 기"). 줄바꿈을 허용하고 버튼 내부만 줄바꿈을 막는다 —
+     늘어나야 할 건 줄 수지, 글자를 세로로 접는 게 아니다. */
+  .top{flex-wrap:wrap}
+  .tbtn{white-space:nowrap}
+  .top .tag{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  @media(max-width:920px){.top{gap:8px;padding:10px 14px}
+    .top .tag{order:3;flex-basis:100%;margin-left:0}
+    .top .sp{gap:6px}.tbtn{padding:6px 10px;font-size:11.5px}}
 
   /* 결정 #31 (시안 C · 캔버스) — 3열: 아이콘 레일 · 인스펙터 · 전면 캔버스.
      인스펙터를 떠 있는 패널이 아니라 그리드 열로 둔 이유: 시안 C의 가장 큰 약점이
@@ -28,39 +37,55 @@
      여전히 "떠 있는 패널이 아니라 그리드 열"이라 미리보기를 가릴 수 없다.
      접기는 --inspw 가 아니라 grid-template-columns 를 통째로 덮는 방식으로 바꿨다 —
      드래그 리사이즈가 --inspw 를 인라인으로 쓰기 때문에, 변수로 접으면 인라인이 이겨서 안 접힌다. */
-  /* 진아 지적(2026-07-30) — 레일(탭)이 왼쪽 끝, 그 내용인 인스펙터가 오른쪽 끝에 있어
-     "탭과 내용이 화면 양 끝으로 갈라져" 있었다. 레일을 인스펙터 바로 왼쪽으로 옮겨
-     [캔버스 | 레일 | 인스펙터] 한 덩어리로 붙인다. 접었을 때도 레일은 남아
-     레일 자체가 다시 여는 손잡이가 된다. */
-  .layout{display:grid;grid-template-columns:1fr 56px var(--inspw);gap:0;align-items:start;--inspw:320px;
+  /* 진아 지적(2026-07-30, 2차) — "저 탭이 제일 우측으로 가는게 좋을거 같아.
+     접근성 검증 게이트 처럼 뭔가 결과값이나 히스토리같은 내용들이 쌓이는게 좌측에 있었으면 좋겠어."
+     v0.9 의 [캔버스 | 레일 | 인스펙터] 를 [기록 | 캔버스 | 인스펙터 | 레일] 로 바꾼다.
+     결정 #33 의 근거("탭과 그 내용은 붙어 있어야 한다")는 뒤집히지 않는다 — 레일은
+     여전히 인스펙터에 맞붙어 있고, 붙는 면이 안쪽에서 바깥쪽으로 옮겨갔을 뿐이다.
+     읽는 방향도 정돈된다: 왼쪽은 "지금까지 무슨 일이 있었나"(결과·이력), 가운데는
+     "지금 어떻게 보이나"(캔버스), 오른쪽은 "무엇을 바꾸나"(인스펙터·레일). */
+  .layout{display:grid;grid-template-columns:var(--dockw) 1fr var(--inspw) 56px;gap:0;align-items:start;
+          --inspw:320px;--dockw:264px;
           transition:grid-template-columns .18s cubic-bezier(.22,.61,.36,1)}
-  /* grid-row:1 을 넷 다 명시한다 — DOM 순서(레일·핸들·패널·캔버스)와 열 순서가
-     어긋나 있어서, 하나라도 빠지면 자동배치가 캔버스를 2행으로 밀어낸다. */
-  .stageWrap{grid-column:1;grid-row:1}
-  .rail,.rsz{grid-column:2;grid-row:1}
-  .panel{grid-column:3;grid-row:1}
-  body.insp-off .layout{grid-template-columns:1fr 56px 0px}
+  /* grid-row:1 을 다섯 다 명시한다 — v0.9 에서 하나가 빠지자 자동배치가 캔버스를 2행으로
+     밀어내 화면이 백지가 됐고, 가로 치수 검사는 전부 통과했다(스크린샷으로만 잡혔다).
+     이번에는 DOM 순서(독·캔버스·핸들·패널·레일)까지 열 순서와 맞춰 두었다 —
+     탭 이동 순서가 보이는 순서와 같아지고, 자동배치가 어긋날 여지도 사라진다. */
+  .stageWrap{grid-column:2;grid-row:1}
+  .panel,.rsz{grid-column:3;grid-row:1}
+  .rail{grid-column:4;grid-row:1}
+  /* 접기는 --inspw 를 덮지 않고 grid-template-columns 를 통째로 다시 쓴다 —
+     드래그가 --inspw 를 인라인으로 쓰기 때문에 변수로 접으면 인라인이 이긴다.
+     독은 드래그가 없어 인라인 값이 없으므로 변수로 접어도 안전하다. */
+  body.insp-off .layout{grid-template-columns:var(--dockw) 1fr 0px 56px}
+  body.dock-off .layout{--dockw:0px}
   .layout.resizing{transition:none;user-select:none;cursor:col-resize}
   /* ── 아이콘 레일 ── */
-  .rail{background:#f7f8fa;border-left:1px solid var(--line);height:calc(100vh - 53px);
+  /* border-left 를 뺐다 — 레일의 왼쪽 이웃이 이제 캔버스가 아니라 인스펙터다.
+     그 사이에 선을 그으면 결정 #33 이 없앤 "탭과 내용의 분리"가 되살아난다. */
+  .rail{background:#f7f8fa;height:calc(100vh - 53px);
         position:sticky;top:53px;padding-top:8px;display:flex;flex-direction:column}
   .ri{height:56px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
       font-size:9.5px;font-weight:600;color:var(--faint);cursor:pointer;border:0;background:none;padding:0;
       width:100%;font-family:inherit}
   .ri i{font-style:normal;font-size:16px;line-height:1}
   .ri:hover{color:var(--muted);background:#f5f6f8}
-  /* 선택된 탭은 패널과 같은 흰 바닥을 공유해 오른쪽으로 이어진다. 강조 막대는
-     탭과 패널 사이가 아니라 바깥(왼쪽) 모서리에 둔다 — 사이에 두면 둘이 다시 갈라져 보인다. */
-  .ri.on{color:var(--fg);background:#fff;box-shadow:inset 3px 0 0 var(--brand)}
+  /* 선택된 탭은 패널과 같은 흰 바닥을 공유해 왼쪽으로 이어진다. 강조 막대는
+     탭과 패널 사이가 아니라 바깥(오른쪽) 모서리에 둔다 — 사이에 두면 둘이 다시 갈라져 보인다.
+     레일이 반대편으로 갔으므로 막대도 inset 3px → -3px 로 함께 뒤집는다. */
+  .ri.on{color:var(--fg);background:#fff;box-shadow:inset -3px 0 0 var(--brand)}
   .rtog{margin-top:auto;flex:none;height:38px;width:100%;border:0;border-top:1px solid var(--line);
         background:none;color:var(--faint);font-size:12px;cursor:pointer;font-family:inherit}
   .rtog:hover{color:var(--brand);background:#fff}
   .ri.on i{color:var(--brand)}
   @media(max-width:920px){.layout,body.insp-off .layout{grid-template-columns:1fr}
-    .rail,.stageWrap,.panel{grid-column:1;grid-row:auto}
+    .dock,.rail,.stageWrap,.panel{grid-column:1;grid-row:auto}
+    /* 세로로 쌓일 때는 DOM 순서 대신 order 로 읽는 순서를 정한다:
+       탭 → 인스펙터 → 캔버스 → 기록. 기록은 참고용이라 맨 아래가 맞다. */
+    .rail{order:-1}.panel{order:0}.stageWrap{order:1}.dock{order:2}
     /* v0.8 까지 모바일에서 레일이 화면 전체 높이를 세로로 차지하던 결함도 함께 해소 */
     .rail{flex-direction:row;height:auto;position:static;padding-top:0;
-          border-left:none;border-bottom:1px solid var(--line)}
+          border-bottom:1px solid var(--line)}
     .ri{width:auto;flex:1;height:48px}
     .ri.on{box-shadow:inset 0 -3px 0 var(--brand)}
     .rtog{display:none}}
@@ -184,17 +209,22 @@
   .cvtop{position:sticky;top:53px;z-index:5;display:flex;align-items:center;gap:12px;
          padding:9px 22px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
          border-bottom:1px solid var(--line)}
-  .cvtop h2{font-size:12.5px;margin:0;font-weight:700;color:var(--muted)}
-  .vseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  /* 독이 열리면 캔버스 폭이 800px 대로 좁아져 상단 바가 눌린다(v1.0 스크린샷에서
+     "라 이 트"처럼 세로로 쪼개졌다). 조작 요소(뷰 토글·기록 버튼)는 절대 줄이지 않고,
+     설명 문구인 h2 만 말줄임으로 양보시킨다 — 줄어도 뜻이 남는 쪽만 줄인다. */
+  .cvtop h2{font-size:12.5px;margin:0;font-weight:700;color:var(--muted);
+            flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;flex:none}
   .vseg button{border:0;border-right:1px solid var(--line);background:#fff;color:var(--muted);
-               font-family:inherit;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer}
+               font-family:inherit;font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;
+               white-space:nowrap}
   .vseg button:last-child{border-right:0}
   .vseg button.on{background:var(--fg);color:#fff}
   .vseg button[disabled]{opacity:.4;cursor:not-allowed}
   /* 결함 3 — theme: 문자열이 화면 끝에 잘려 디버그 출력처럼 보였다.
      라벨 + 값 + 복사 버튼을 갖춘 정식 필드로 승격한다. */
   .shfield{margin-left:auto;display:flex;align-items:center;gap:0;border:1px solid var(--line);
-           border-radius:8px;background:#fff;overflow:hidden;max-width:420px;min-width:0}
+           border-radius:8px;background:#fff;overflow:hidden;flex:0 1 360px;min-width:0}
   .shfield .shl{font-size:10.5px;font-weight:700;color:var(--muted);padding:5px 8px;
                 border-right:1px solid var(--line);background:#fbfbfc;flex:none}
   .shfield .share{font-family:var(--mono);font-size:10.5px;color:var(--fg);padding:5px 9px;
@@ -207,7 +237,6 @@
   body[data-view="both"] .stages{grid-template-columns:1fr 1fr;max-width:1400px}
   body[data-view="light"] .stages .stage:nth-child(2){display:none}
   body[data-view="dark"] .stages .stage:nth-child(1){display:none}
-  .valid{max-width:1080px;margin-left:auto;margin-right:auto}
   @media(max-width:1180px){body[data-view="both"] .stages{grid-template-columns:1fr}}
   /* min-width:0 — 그리드 아이템 기본 min-width:auto 가 내용 폭으로 부풀어 1181~1594px 구간에서
      가로 스크롤을 만들었다(1440px 에서 문서 폭 1594px). 잠금 없이 1fr 1fr 을 지키게 한다. */
@@ -218,9 +247,48 @@
   .cbox{padding:14px;border-radius:11px}
   .clab{font-size:9.5px;font-family:var(--mono);opacity:.5;margin-bottom:9px;text-transform:uppercase}
   .row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-  .valid{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px}
-  .valid h4{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 10px;display:flex}
-  .valid h4 .g{margin-left:auto;font-family:var(--mono)}
+  /* ── 좌측 기록 독 (결정 #34) ──
+     캔버스 하단에 있던 검증 게이트를 여기로 "옮긴다"(복제가 아니다 — 같은 값이 두 곳에
+     있으면 어느 쪽이 최신인지 매번 다시 확인해야 하고, 결국 둘 다 안 믿게 된다).
+     그 아래에 변경 이력을 쌓는다: 무엇을 바꿨고, 그때 게이트가 몇 개 통과했고,
+     통과/미통과가 뒤집힌 순간이 어디였는지. 각 항목에서 그 시점으로 되돌릴 수 있다.
+     이력은 메모리에만 둔다 — 이 파일은 Cowork 아티팩트로도 배포되고
+     그 환경에서는 localStorage 계열이 동작하지 않는다. */
+  .dock{grid-column:1;grid-row:1;background:#fbfbfc;border-right:1px solid var(--line);
+        height:calc(100vh - 53px);position:sticky;top:53px;display:flex;flex-direction:column;min-width:0}
+  body.dock-off .dock{display:none}
+  .dksec{padding:12px 14px;min-width:0}
+  .dksec+.dksec{border-top:1px solid var(--line);flex:1;min-height:0;overflow-y:auto}
+  .dkh{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);
+       margin:0 0 9px;display:flex;align-items:center}
+  .dkh .g{margin-left:auto;font-family:var(--mono);text-transform:none;letter-spacing:0;font-size:10px}
+  .hlist{display:flex;flex-direction:column;gap:7px}
+  .hitem{border:1px solid var(--line);border-left:3px solid var(--l4);border-radius:9px;background:#fff;padding:8px 10px}
+  .hitem.bad{border-left-color:var(--l3)}
+  .hmeta{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--faint);
+         font-family:var(--mono);margin-bottom:5px}
+  .hmeta .hn{font-weight:700;color:var(--muted)}
+  .hgate{margin-left:auto;font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:5px;color:#fff;flex:none}
+  .gok{background:var(--l4)}.gno{background:var(--l3)}
+  .hrev{border:1px solid var(--line);background:#fff;color:var(--brand);font-family:inherit;
+        font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:5px;cursor:pointer;flex:none}
+  .hrev:hover{background:var(--brand050);border-color:var(--brand)}
+  .hchg{font-size:11.5px;line-height:1.5;word-break:break-word}
+  .hchg s{color:var(--faint)}
+  .hchg em{font-style:normal;font-weight:600;color:var(--brand)}
+  .hflip{font-size:10.5px;font-weight:700;margin-bottom:4px}
+  .hitem .hflip{color:var(--l4)}.hitem.bad .hflip{color:var(--l3)}
+  .hnote{font-size:10.5px;color:var(--muted);margin-bottom:4px}
+  /* 독을 여닫는 컨트롤은 캔버스 상단 왼쪽 하나뿐이다. 독 안에 또 하나를 두면
+     v0.8 의 "화살표가 다섯 개" 문제가 반대편에서 되풀이된다. */
+  .dktog{border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);
+         font-family:inherit;font-size:11px;font-weight:600;padding:5px 10px;cursor:pointer;flex:none}
+  .dktog:hover{color:var(--brand);border-color:var(--brand)}
+  /* .dock{grid-row:1} 이 위 미디어쿼리의 grid-row:auto 를 덮어(선언 순서가 뒤라서)
+     모바일에서 독이 1행에 못박히고 order:2 가 무시됐다 — 실제로 기록이 맨 위에 떴다.
+     여기서 다시 auto 로 풀고 order 를 같이 못박는다. */
+  @media(max-width:920px){.dock{grid-row:auto;order:2;height:auto;position:static;border-right:none;
+    border-bottom:1px solid var(--line)}.dksec+.dksec{max-height:340px}}
   .vrow{display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 0}
   .vb{width:15px;height:15px;border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;flex:none}
   .vok{background:var(--l4)}.vno{background:var(--l3)}
@@ -263,7 +331,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v0.9 — 레일·인스펙터 결합 · 색/조건 분리</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.0 — 레일 최우측 · 좌측 기록 독(검증·이력)</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -271,14 +339,39 @@
   </div>
 </div>
 <div class="layout">
-  <!-- SECTION RAIL (결정 #31) -->
-  <nav class="rail" aria-label="설정 섹션">
-    <button class="ri on" data-sec="S1" aria-pressed="true"><i>◕</i>색</button>
-    <button class="ri" data-sec="S2" aria-pressed="false"><i>☾</i>조건</button>
-    <button class="ri" data-sec="S3" aria-pressed="false"><i>Aa</i>글자</button>
-    <button class="ri" data-sec="S4" aria-pressed="false"><i>▣</i>형태</button>
-    <button class="rtog" id="inspTog" title="인스펙터 접기" aria-label="인스펙터 접기" aria-expanded="true">›</button>
-  </nav>
+  <!-- 기록 독 (결정 #34 — 좌측) -->
+  <aside class="dock" id="dock" aria-label="검증 결과와 변경 이력">
+    <div class="dksec">
+      <h4 class="dkh">검증 게이트 <span class="g" id="vgoal"></span></h4>
+      <div id="vlist"></div>
+    </div>
+    <div class="dksec">
+      <h4 class="dkh">변경 이력 <span class="g" id="histCount"></span></h4>
+      <div class="hlist" id="histList"></div>
+    </div>
+  </aside>
+
+  <!-- PREVIEW -->
+  <div class="stageWrap">
+    <div class="cvtop">
+      <button class="dktog" id="dockTog" title="기록 접기" aria-label="기록 접기"
+              aria-expanded="true" aria-controls="dock">◧ 기록</button>
+      <div class="vseg" id="viewSeg">
+        <button data-view="light" class="on">라이트</button>
+        <button data-view="dark">다크</button>
+        <button data-view="both">나란히</button>
+      </div>
+      <h2>실시간 미리보기 — 컴포넌트 8종</h2>
+      <div class="shfield">
+        <span class="shl">테마 링크</span>
+        <span class="share" id="shareStr" title="클릭해 복사"></span>
+        <button class="shc" id="shareCopy">복사</button>
+      </div>
+    </div>
+    <div class="canvas">
+      <div class="stages" id="stages"></div>
+    </div>
+  </div>
 
   <!-- INSPECTOR (우측) -->
   <div class="rsz" id="inspRsz" role="separator" aria-orientation="vertical"
@@ -488,26 +581,14 @@
     </div>
   </div>
 
-  <!-- PREVIEW -->
-  <div class="stageWrap">
-    <div class="cvtop">
-      <div class="vseg" id="viewSeg">
-        <button data-view="light" class="on">라이트</button>
-        <button data-view="dark">다크</button>
-        <button data-view="both">나란히</button>
-      </div>
-      <h2>실시간 미리보기 — 컴포넌트 8종</h2>
-      <div class="shfield">
-        <span class="shl">테마 링크</span>
-        <span class="share" id="shareStr" title="클릭해 복사"></span>
-        <button class="shc" id="shareCopy">복사</button>
-      </div>
-    </div>
-    <div class="canvas">
-      <div class="stages" id="stages"></div>
-      <div class="valid"><h4>검증 게이트 <span class="g" id="vgoal"></span></h4><div id="vlist"></div></div>
-    </div>
-  </div>
+  <!-- SECTION RAIL (결정 #31 → #34: 인스펙터 바깥, 화면 최우측) -->
+  <nav class="rail" aria-label="설정 섹션">
+    <button class="ri on" data-sec="S1" aria-pressed="true"><i>◕</i>색</button>
+    <button class="ri" data-sec="S2" aria-pressed="false"><i>☾</i>조건</button>
+    <button class="ri" data-sec="S3" aria-pressed="false"><i>Aa</i>글자</button>
+    <button class="ri" data-sec="S4" aria-pressed="false"><i>▣</i>형태</button>
+    <button class="rtog" id="inspTog" title="인스펙터 접기" aria-label="인스펙터 접기" aria-expanded="true">›</button>
+  </nav>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -545,6 +626,18 @@
   }
   if(tog) tog.addEventListener('click',function(){body.classList.toggle('insp-off');syncTog();});
   syncTog();
+
+  /* 2-b) 좌측 기록 독 접기 / 열기 (결정 #34).
+     컨트롤은 캔버스 상단 왼쪽 하나뿐이다 — 독이 접혀도 그 자리에 그대로 남아
+     다시 여는 손잡이가 된다. 독 안쪽에 두면 접힌 순간 손잡이까지 사라진다. */
+  var dtog=document.getElementById('dockTog');
+  if(dtog) dtog.addEventListener('click',function(){
+    body.classList.toggle('dock-off');
+    var off=body.classList.contains('dock-off');
+    var lab=off?'기록 열기':'기록 접기';
+    dtog.setAttribute('aria-expanded',off?'false':'true');
+    dtog.title=lab; dtog.setAttribute('aria-label',lab);
+  });
 
   /* ── 인스펙터 폭 드래그 (진아 요청 2026-07-30) ──
      폭은 메모리에만 둔다. 이 파일은 Cowork 아티팩트로도 배포되는데
@@ -955,6 +1048,109 @@ function updateShadowMotionUI(){
   rm.style.borderColor=state.reducedMotion?"var(--brand)":"var(--line)";
 }
 
+/* ═══ 변경 이력 (결정 #34) ═══
+   진아 요청 — "결과값이나 히스토리같은 내용들이 쌓이는게 좌측에 있었으면 좋겠어."
+   render() 가 끝날 때마다 추적 대상 필드를 직전 스냅샷과 비교해 달라진 것만 쌓는다.
+   슬라이더는 oninput 으로 픽셀마다 render() 를 부르므로, 같은 필드가 900ms 안에
+   연달아 바뀌면 새 줄을 만들지 않고 맨 위 줄의 "→ 값"만 갱신한다.
+   저장은 메모리에만 한다(아티팩트 환경에 localStorage 가 없다). */
+const HIST_FIELDS=[
+  ["seed","시드"],["neutral","회색 톤"],["dark","다크 모드"],["aa","본문 대비 목표"],
+  ["dens","간격 base"],["rad","모서리 base"],["tbase","본문 크기"],["tratio","타입 비율"],
+  ["elev","입체감"],["motion","모션 속도"],["density","간격 밀도"],["easing","이징"],
+  ["shadowTint","그림자 tint"],["reducedMotion","모션 감소"],["statusSeeds","상태색"],
+  ["fdisp","제목용 서체"],["ftext","본문용 서체"],["roleOv","타이포 역할 조정"],
+  ["spRoles","간격 역할"],["radTiers","모서리 티어"],["dpRoles","그림자 dp"]];
+const HIST=[]; let histPrev=null, histSeq=0, histPass=null, histNote="";
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function histSnap(){const o={};HIST_FIELDS.forEach(function(f){o[f[0]]=state[f[0]];});
+  return JSON.parse(JSON.stringify(o));}
+function histVal(v,k){
+  if(v==null||v==="")return "—";
+  if(typeof v==="boolean")return v?"켬":"끔";
+  if(typeof v==="object"){
+    if(k==="fdisp"||k==="ftext")return fontLabel(v);
+    const parts=[];
+    for(const kk in v){const x=v[kk];
+      if(x&&typeof x==="object"){if(Object.keys(x).length)parts.push(kk);}
+      else if(x!==""&&x!=null)parts.push(kk+" "+x);}
+    return parts.length?parts.join(" · "):"기본";
+  }
+  return String(v);
+}
+function histTime(){const d=new Date();
+  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(function(n){return n<10?"0"+n:""+n;}).join(":");}
+function renderHist(){
+  const el=$("histList"); if(!el)return;
+  const c=$("histCount"); if(c)c.textContent=HIST.length+"건";
+  el.innerHTML=HIST.slice().reverse().map(function(h){
+    const ok=h.pass===h.total;
+    const flip=h.flip?'<div class="hflip">'+(ok?"▲ 게이트 통과로 전환":"▼ 게이트 미통과로 전환")+'</div>':"";
+    const note=h.note?'<div class="hnote">'+esc(h.note)+'</div>':"";
+    const bodyHtml=h.init?'<div class="hchg">초기 상태</div>'
+      :h.changes.map(function(x){
+        return '<div class="hchg"><b>'+esc(x.label)+'</b> <s>'+esc(x.from)+'</s> → <em>'+esc(x.to)+'</em></div>';}).join("");
+    return '<div class="hitem'+(ok?"":" bad")+'"><div class="hmeta"><span class="hn">#'+h.n+'</span>'+
+      '<span>'+h.t+'</span><span class="hgate '+(ok?"gok":"gno")+'">'+h.pass+"/"+h.total+'</span>'+
+      '<button class="hrev" data-n="'+h.n+'" title="이 시점의 설정으로 되돌리기">되돌리기</button></div>'+
+      note+flip+bodyHtml+'</div>';
+  }).join("");
+}
+function logHistory(pass,total){
+  const cur=histSnap(), allOK=pass===total, now=Date.now();
+  if(!histPrev){
+    HIST.push({n:++histSeq,t:histTime(),ts:now,init:true,changes:[],pass:pass,total:total,flip:false,snap:cur});
+    histPrev=cur; histPass=allOK; histNote=""; renderHist(); return;
+  }
+  const ch=[];
+  HIST_FIELDS.forEach(function(f){
+    const k=f[0];
+    if(JSON.stringify(histPrev[k])!==JSON.stringify(cur[k]))
+      ch.push({k:k,label:f[1],from:histVal(histPrev[k],k),to:histVal(cur[k],k)});
+  });
+  const flip=histPass!==null&&histPass!==allOK;
+  if(!ch.length){
+    /* 값은 그대로인데 게이트만 다시 계산된 경우 — 새 줄을 만들지 않고 맨 위 줄만 갱신 */
+    const t0=HIST[HIST.length-1];
+    if(t0){t0.pass=pass;t0.total=total;if(flip)t0.flip=true;}
+    histPass=allOK; renderHist(); return;
+  }
+  const top=HIST[HIST.length-1];
+  if(top&&!top.init&&!flip&&!histNote&&!top.note&&top.changes.length===1&&ch.length===1&&
+     top.changes[0].k===ch[0].k&&now-top.ts<900){
+    top.changes[0].to=ch[0].to; top.ts=now; top.t=histTime(); top.pass=pass; top.total=total; top.snap=cur;
+  }else{
+    HIST.push({n:++histSeq,t:histTime(),ts:now,changes:ch,pass:pass,total:total,flip:flip,snap:cur,
+               note:histNote||""});
+    if(HIST.length>60)HIST.shift();
+  }
+  histPrev=cur; histPass=allOK; histNote=""; renderHist();
+}
+/* 되돌리기 — 스냅샷을 state 에 되붓고, 값이 들어 있는 입력 요소를 다시 맞춘다.
+   나머지 컨트롤은 render() 안의 update*UI() 들이 알아서 동기화한다. */
+function applyStateSnapshot(o){
+  const snap=JSON.parse(JSON.stringify(o));
+  Object.keys(snap).forEach(function(k){state[k]=snap[k];});
+  $("seed").value=state.seed; $("seedHex").value=state.seed;
+  setIf("densR",state.dens); setIf("densN",state.dens);
+  setIf("radR",state.rad); setIf("radN",state.rad);
+  setIf("tbaseR",state.tbase); setIf("tbaseN",state.tbase);
+  setIf("tratioR",state.tratio); setIf("tratioN",state.tratio);
+  setIf("elevR",state.elev); setIf("elevN",state.elev);
+  setIf("motR",state.motion); setIf("motN",state.motion);
+  setIf("shTintR",state.shadowTint); setIf("shTintN",state.shadowTint);
+  render();
+}
+document.addEventListener("click",function(e){
+  const b=e.target&&e.target.closest?e.target.closest(".hrev"):null; if(!b)return;
+  const n=+b.dataset.n;
+  const h=HIST.filter(function(x){return x.n===n;})[0]; if(!h)return;
+  histNote="#"+n+" 시점으로 되돌림";
+  applyStateSnapshot(h.snap);
+  toast("↺ #"+n+" 시점의 설정으로 되돌렸습니다");
+});
+
 function render(){
   const NEU=state.neutral==="warm"?WARM:COOL, tgt=state.aa==="AAA"?7:4.5;
   const seed=/^#[0-9a-fA-F]{6}$/.test(state.seed)?state.seed:"#8974f0";
@@ -991,6 +1187,7 @@ function render(){
   $("vlist").innerHTML=checks.map(([nm,ok,r])=>`<div class="vrow"><span class="vb ${ok?'vok':'vno'}">${ok?'✓':'!'}</span><span>${nm}</span><span style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)">${r.toFixed(2)}</span></div>`).join("");
   $("exportBtn").dataset.ok=allOK?"1":"0";
   $("shareStr").textContent=shareString();
+  logHistory(checks.filter(function(c){return c[1];}).length,checks.length);
 }
 
 /* 상태색 행 (v0.2) */
