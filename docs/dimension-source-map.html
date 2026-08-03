@@ -256,15 +256,32 @@
 
   <!-- 6 -->
   <section>
-    <h2>6 · 남은 판단 하나</h2>
+    <h2>6 · 정리된 판단 둘 (2026-08-03)</h2>
     <div class="warn">
-      <b>사다리에 20px(step-6)을 넣을 것인가.</b><br>
-      <span class="mono">size.icon.md = 20</span>은 버튼·토스트·모달 닫기·스위치 트랙 등 <b>가장 많이 쓰이는 아이콘 치수</b>인데,
-      기존 사다리(<span class="mono">…16, 24…</span>)에는 20이 없다. 넣지 않으면 icon은 별도 선형 규칙(<span class="mono">base16 step4</span>)으로
-      남아 <b>원천이 셋</b>이 되고, ④의 <span class="mono">icon.md + 2×step-n</span> 파생도 반쪽이 된다.<br><br>
-      넣으면 원천이 <b>둘</b>로 닫히지만, 레이아웃 역할이 절대 고르지 않을 칸 하나를 사다리가 떠안는다.
-      위 개념도는 <b>넣는 쪽</b>으로 그려져 있다 — 사다리는 “쓸 수 있는 값의 집합”이지 “써야 하는 값의 목록”이 아니므로,
-      아무도 고르지 않는 칸이 있어도 해가 없다는 판단.
+      <b>① 20px(step-6) 포함 — 강제. 판단 여지 없음.</b><br>
+      <span class="mono">size.icon.md = 20</span>은 버튼·토스트·모달 닫기·스위치 트랙 등 <b>가장 많이 쓰이는 아이콘 치수</b>이고
+      9곳 넘게 소비된다. 빼면 icon이 별도 선형 규칙(<span class="mono">base16 step4</span>)으로 남아 <b>원천이 다시 셋</b>이 되고,
+      ④의 <span class="mono">icon.md + 2×step-n</span> 파생도 반쪽이 된다 — <b>통합의 목적 자체가 무너진다.</b>
+      사다리는 “쓸 수 있는 값의 집합”이지 “써야 하는 값의 목록”이 아니므로, 아무도 고르지 않는 칸(40·80·96·128)이 남는 비용은 없다.
+      → <b>미결 아님. 넣는다.</b>
+      <br><br>
+      <b>② 999px — Figma 실측 통과.</b><br>
+      파일 <span class="mono">6rj43tHkCSLaJIxeeXgJPD</span>에 프로브를 찍어 확인(HQ, 2026-08-03).
+      <span class="mono">cornerRadius = 999</span> 저장값 그대로 유지(클램프로 깎이지 않음) ·
+      40×40 정사각 = <b>완전한 원</b> · 120×40 직사각 = <b>pill</b> · 오토레이아웃 프레임도 동일 ·
+      <span class="mono">9999</span>와 렌더 차이 없음. 프로브 노드는 삭제 완료.
+      → <b>⑤의 기술 전제 해소.</b>
+      <div class="note">
+        남은 전제 하나: <span class="mono">50%</span> ≡ <span class="mono">999px</span> 등가는 <b>정사각에서만</b> 성립한다.
+        현행 소비 3곳(Radio 링·점, Slider knob)은 전부 <span class="mono">size.icon.*</span>를 쓰는 정사각이라 안전하지만,
+        향후 비정사각 요소가 <span class="mono">radius.circle</span>을 쓰면 조용히 pill로 렌더된다 →
+        <b>“소비 노드는 width == height” 검사 신설</b>이 필요하다(CDS_Components 몫).
+      </div>
+    </div>
+    <div class="note">
+      두 판단 모두 <b>Q-014</b>(총괄 판정 대기)에 반영됨. 시맨틱 이름 <span class="mono">radius.circle</span>은
+      <b>살리고 원천만 <span class="mono">radius.special.radius-full</span>로 리타깃</b>하는 파급 최소화안이 함께 상신됐다 —
+      채택되면 <span class="mono">component-layer-spec.md</span> 참조 3곳과 <span class="mono">tokens/component/*.json</span> 3건이 바이트 불변으로 남는다.
     </div>
   </section>
 
