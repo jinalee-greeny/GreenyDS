@@ -477,7 +477,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.2.1 — 컴포넌트 스튜디오 · 형태 매트릭스 · 장식 제거 · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.2.2 — 컴포넌트 스튜디오 · 형태 매트릭스 · 2px 간격 그리드 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -675,7 +675,7 @@
       <div class="blk">
         <div class="bh"><span class="bt">간격 · 모서리</span><button class="ghelp" data-guide="#ref-space" title="개념 가이드: spatial · 여백 스케일" aria-label="개념 가이드에서 보기">?</button></div>
 
-        <div class="mrow"><span class="ml">기준 간격 <span class="mx">— 4px 그리드 base</span></span><span class="mk def">기본값</span></div>
+        <div class="mrow"><span class="ml">기준 간격 <span class="mx">— 2px 그리드 base</span></span><span class="mk def">기본값</span></div>
         <div class="f2"><input type="range" id="densR" min="4" max="12" step="2" value="8"><input type="text" class="num" id="densN" value="8"><span class="u">px</span></div>
         <div class="mrow"><span class="ml">space 스케일 <span class="mx">— base×배수</span></span><span class="mk auto">자동</span></div>
         <div class="scalestrip" id="spStrip"></div>
@@ -1015,10 +1015,22 @@ function typeRoles(base,ratio){const sc=typeScale(base,ratio);
 }
 const ty=(r)=>`font-family:${r.fam};font-size:${r.px}px;font-weight:${r.w};line-height:${r.lh};letter-spacing:${r.ls}`;
 
-/* ===== 간격/모서리 엔진 (결정 #9·#10 — 4px 그리드 · 서수 스케일 + 역할/티어) v0.4 ===== */
+/* ===== 간격/모서리 엔진 (결정 #9·#10·#39 — 2px 그리드 · 서수 스케일 + 역할/티어) v0.5 =====
+   v0.5 (결정 #39): 4px 스냅 → 2px 스냅으로 완화.
+   이유 ① 2의 배수가 컴포넌트에 리터럴로 새고 있었다 — input 필드-캡션 간격 6,
+   toast 패딩 10, switch 트랙 34×20 / 42×24. 4px 그리드가 이 값들을 표현하지 못해
+   토큰 밖으로 밀려난 것이다.
+   이유 ② 4px 스냅은 저밀도 구간에서 base×배수를 크게 왜곡했다. base=4일 때 단조
+   보장(prev+4)이 raw 2를 4로, 4를 8로 밀어올려 100% 오차를 냈다. 2px 스냅은
+   base=4에서 raw 값을 그대로 돌려준다.
+   회귀 범위: 밀도 슬라이더는 min 4 / max 12 / step 2라 도달 가능한 base는
+   4·6·8·10·12 다섯 개뿐이고, 그중 기본값 8은 4px 스냅과 결과가 완전히 동일하다.
+   즉 기본 프리셋 · Figma 라이브러리 · 라이브 사이트의 값은 하나도 바뀌지 않는다.
+   바뀌는 것은 base 4(space-1~5) · 6(space-2,4) · 10(space-2,4) · 12(space-1)뿐이며
+   모두 raw 값에 더 가까워지는 방향이다. */
 const SP_MULT=[0,0.5,1,2,3,4,6,8,10]; // space-0…8 배수
-function spaceScale(base){const raw=SP_MULT.map(m=>base*m);let prev=-4;
-  return raw.map(v=>{let s=Math.round(v/4)*4;if(s<=prev)s=prev+4;prev=s;return s;});} // 4px 스냅 + 단조 보장
+function spaceScale(base){const raw=SP_MULT.map(m=>base*m);let prev=-2;
+  return raw.map(v=>{let s=Math.round(v/2)*2;if(s<=prev)s=prev+2;prev=s;return s;});} // 2px 스냅 + 단조 보장
 const DENS_SHIFT={compact:-1,comfortable:0,spacious:1};
 function spIdx(family,size){ // 역할 → 스케일 인덱스
   const dd=DENS_SHIFT[state.density]||0;
@@ -2184,8 +2196,8 @@ function render(){
   const checks=[["채움 위 흰 글자 ≥4.5 (라이트)",L.apRatio>=4.5,L.apRatio],[`본문 대비 ≥${tgt} (라이트)`,L.fgPrimaryR>=tgt,L.fgPrimaryR],["포커스 링 ≥3 (라이트)",L.focusR>=3,L.focusR],["상태색 4종 글자 ≥4.5 (라이트)",L.statusMinR>=4.5,L.statusMinR]];
   if(state.dark==="on")checks.push(["채움 위 흰 글자 ≥4.5 (다크)",D.apRatio>=4.5,D.apRatio],[`본문 대비 ≥${tgt} (다크)`,D.fgPrimaryR>=tgt,D.fgPrimaryR],["상태색 4종 글자 ≥4.5 (다크)",D.statusMinR>=4.5,D.statusMinR]);
   checks.push([`Caption ${Math.round(TR.caption.px)}px ≥ 12 (가독성 바닥)`,TR.caption.px>=12,TR.caption.px]);
-  const scaleArr=spaceScale(state.dens),gridOK=scaleArr.every(v=>v%4===0),monoOK=scaleArr.every((v,i)=>i===0||v>scaleArr[i-1]);
-  checks.push([`간격 스케일 4px 그리드·단조 (space-0…${scaleArr.length-1})`,gridOK&&monoOK,scaleArr[scaleArr.length-1]]);
+  const scaleArr=spaceScale(state.dens),gridOK=scaleArr.every(v=>v%2===0),monoOK=scaleArr.every((v,i)=>i===0||v>scaleArr[i-1]);
+  checks.push([`간격 스케일 2px 그리드·단조 (space-0…${scaleArr.length-1})`,gridOK&&monoOK,scaleArr[scaleArr.length-1]]);
   const tc=radTier('control'),tk=radTier('container'),to=radTier('overlay');
   checks.push([`모서리 티어 단조 (control≤container≤overlay)`,tc<=tk&&tk<=to,to]);
   const dpArr=[state.dpRoles.resting,state.dpRoles.raised,state.dpRoles.overlay,state.dpRoles.spotlight];
