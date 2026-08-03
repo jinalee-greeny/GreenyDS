@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenyDS — 운영 루프 v4</title>
+<style>
+  :root{
+    --brand-100:#eae8ff; --brand-200:#d6d4ff; --brand-500:#8974f0; --brand-600:#725cd3;
+    --brand-700:#5b46af; --brand-900:#332567;
+    --gray-50:#f1f6fe; --gray-100:#e7ebf3; --gray-200:#d4d9e2; --gray-400:#a0a6af;
+    --gray-500:#868c95; --gray-600:#6f747d; --gray-700:#575c64; --gray-900:#30343a;
+    --green-100:#c7f9da; --green-700:#006e42;
+    --amber-100:#ffe7ca; --amber-600:#9e6600; --amber-700:#7e5100;
+    --red-100:#ffe4e2; --red-600:#cb323b; --red-700:#a81b29;
+    --bg-subtle:var(--gray-50); --fg:var(--gray-900); --fg-2:var(--gray-700); --fg-3:var(--gray-500);
+    --stroke:var(--gray-200);
+    --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --r-3:12px;
+    --shadow-1:0 1px 2px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
+    background:var(--bg-subtle); color:var(--fg); line-height:1.6; padding:var(--sp-6) var(--sp-5); font-size:15px;}
+  .wrap{max-width:1020px; margin:0 auto;}
+  header h1{font-size:1.35rem; letter-spacing:-.018em;}
+  header .sub{color:var(--fg-2); font-size:.9rem; margin-top:4px;}
+  header .meta{color:var(--fg-3); font-size:.78rem; margin-top:4px;}
+  .alert{margin-top:var(--sp-4); background:var(--red-100); border:1px solid var(--red-600);
+    border-radius:var(--r-3); padding:10px 16px; font-size:.86rem; color:var(--red-700);}
+  .alert b{font-weight:700;}
+
+  .panel{background:#fff; border:1px solid var(--stroke); border-radius:var(--r-3);
+    box-shadow:var(--shadow-1); padding:var(--sp-4); margin-top:var(--sp-5);}
+  .panel h2{font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-3); margin-bottom:var(--sp-3);}
+  svg{width:100%; height:auto; display:block;}
+  svg text{font-family:inherit;}
+
+  .loop{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap;}
+  .step{flex:1 1 150px; background:var(--gray-50); border:1px solid var(--stroke); border-radius:var(--r-3);
+    padding:10px 12px; font-size:.8rem; color:var(--fg-2);}
+  .step b{display:block; color:var(--fg); font-size:.82rem;}
+  .step .n{display:inline-flex; width:20px; height:20px; border-radius:9999px; background:var(--brand-600);
+    color:#fff; font-size:.7rem; font-weight:700; align-items:center; justify-content:center; margin-bottom:4px;}
+  .arrow{align-self:center; color:var(--gray-400); font-size:1.1rem;}
+  .loopback{margin-top:10px; font-size:.78rem; color:var(--brand-700);}
+
+  .lane{display:flex; align-items:stretch; gap:8px; margin-bottom:8px;}
+  .lane .time{flex:0 0 62px; font-size:.72rem; font-weight:700; color:var(--amber-700);
+    background:var(--amber-100); border-radius:var(--r-3); display:flex; align-items:center;
+    justify-content:center; text-align:center; line-height:1.35; padding:6px 4px;}
+  .lane .lname{flex:0 0 100px; font-size:.78rem; font-weight:700; color:var(--fg);
+    background:var(--gray-50); border:1px solid var(--stroke); border-radius:var(--r-3);
+    display:flex; align-items:center; justify-content:center; text-align:center; line-height:1.4; padding:6px;}
+  .lane .io{flex:1 1 0; font-size:.74rem; line-height:1.45; border-radius:var(--r-3);
+    padding:7px 10px; display:flex; align-items:center;}
+  .lane .in{background:#fff; border:1px dashed var(--gray-400); color:var(--fg-2);}
+  .lane .out{background:var(--brand-100); color:var(--brand-700); border:1px solid var(--brand-200);}
+  .lane .to{background:#fff; border:1px solid var(--stroke); color:var(--fg-2);}
+  .lane .la{align-self:center; color:var(--gray-400); font-size:1rem; flex:0 0 auto;}
+  .lane.dead .time,.lane.dead .lname,.lane.dead .io{opacity:.55; text-decoration:line-through;}
+  @media (max-width:720px){.lane{flex-wrap:wrap;} .lane .la{display:none;}}
+
+  table{width:100%; border-collapse:collapse; font-size:.83rem;}
+  th{color:var(--fg-3); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; text-align:left;
+    padding:6px 10px; border-bottom:1px solid var(--stroke);}
+  td{padding:8px 10px; border-bottom:1px solid var(--gray-100); color:var(--fg-2); vertical-align:top;}
+  td:first-child{font-weight:700; color:var(--fg); white-space:nowrap;}
+  td code{background:var(--gray-100); border-radius:6px; padding:1px 7px; font-size:.78rem; color:var(--brand-700); font-family:inherit;}
+  .badge{display:inline-block; font-size:.68rem; font-weight:600; padding:1px 8px; border-radius:9999px; margin-left:6px;}
+  .badge.auto{background:var(--amber-100); color:var(--amber-700);}
+  .badge.here{background:var(--brand-100); color:var(--brand-700);}
+  .badge.done{background:var(--green-100); color:var(--green-700);}
+  .badge.wait{background:var(--red-100); color:var(--red-700);}
+  .badge.label{background:var(--gray-100); color:var(--gray-600);}
+  .note{margin-top:var(--sp-3); font-size:.78rem; color:var(--fg-2); background:var(--gray-50);
+    border-left:3px solid var(--brand-500); border-radius:0 8px 8px 0; padding:8px 12px;}
+  footer{margin-top:var(--sp-4); color:var(--fg-3); font-size:.74rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>GreenyDS 운영 루프 v4 — 한눈에 보기</h1>
+    <div class="sub">프로젝트 "01. Core System"에 물려 있는 <b>실재 세션 · 역할 라벨 · 자동 루프</b>와 그 사이의 흐름</div>
+    <div class="meta">기준일 2026-08-03 · 원칙: 프로젝트 문서가 유일한 공유 기억(SSOT) · <b>결정 #20</b> 운영 거버넌스 + <b>BC-36</b> 실측 갱신</div>
+  </header>
+
+  <div class="alert">⚠ <b>실측 갱신 (2026-08-03, BC-36)</b> — <code>list_triggers</code> 전수 14건 대조 결과 자동 루프 5행 중 <b>실제로 도는 것은 2개뿐</b>이었습니다. 유령 2건 추가 확인: ⓐ 아침 보고 <code>trig_01B8JB96…</code>는 id 자체가 없었고(살아있던 매일 크론은 다른 프로젝트 "88. 디자인 시스템"의 것) ⓑ 셀프 웨이크는 체인이 끊겨 있었습니다. 세션 표의 B1·CDS_Components "활성" 표기도 같은 표류였습니다. → <b>아침 보고 재신설 · 셀프 웨이크 폐기 · 세션 표를 실체/라벨로 분리.</b></div>
+
+  <section class="panel">
+    <h2>구조 — 누가 무엇과 연결되어 있나 (v4)</h2>
+    <svg viewBox="0 0 1000 700" role="img" aria-label="운영 구조도 v4">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#a0a6af"/>
+        </marker>
+        <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#725cd3"/>
+        </marker>
+      </defs>
+
+      <!-- 연결선 -->
+      <line x1="500" y1="96" x2="500" y2="268" stroke="#a0a6af" stroke-width="1.6" marker-start="url(#ah)" marker-end="url(#ah)"/>
+      <text x="510" y="190" font-size="12" fill="#868c95">보드·상태 열람 / 최종 결정</text>
+
+      <line x1="412" y1="70" x2="266" y2="140" stroke="#725cd3" stroke-width="1.8" marker-start="url(#ahb)" marker-end="url(#ahb)"/>
+      <text x="250" y="86" font-size="12" fill="#5b46af">함께 판정·방향 결정</text>
+
+      <line x1="588" y1="70" x2="734" y2="140" stroke="#725cd3" stroke-width="1.8" marker-start="url(#ahb)" marker-end="url(#ahb)"/>
+      <text x="754" y="86" font-size="12" fill="#5b46af">가이드 본문 작업</text>
+
+      <line x1="250" y1="204" x2="396" y2="292" stroke="#a0a6af" stroke-width="1.6" marker-start="url(#ah)" marker-end="url(#ah)"/>
+      <text x="196" y="262" font-size="12" fill="#868c95">판정 기록 / 갱신·게시</text>
+
+      <line x1="750" y1="204" x2="604" y2="292" stroke="#a0a6af" stroke-width="1.6" marker-start="url(#ah)" marker-end="url(#ah)"/>
+      <text x="700" y="262" font-size="12" fill="#868c95">인계 노트 수신</text>
+
+      <!-- 역할 라벨 → HQ -->
+      <line x1="182" y1="458" x2="172" y2="206" stroke="#a0a6af" stroke-width="1.4" stroke-dasharray="4 5" marker-end="url(#ah)"/>
+      <text x="60" y="330" font-size="12" fill="#868c95">이름만 남고 실행은 HQ가 대행</text>
+
+      <!-- 자동 루프 ↔ hub -->
+      <line x1="700" y1="452" x2="600" y2="404" stroke="#a0a6af" stroke-width="1.6" marker-start="url(#ah)" marker-end="url(#ah)"/>
+      <text x="612" y="440" font-size="12" fill="#868c95">큐·로그 확인 → 초안·기록</text>
+
+      <!-- 자동 루프 ⇢ 진아님 푸시 -->
+      <path d="M 930,470 Q 995,250 592,66" fill="none" stroke="#9e6600" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+      <text x="946" y="300" font-size="12" fill="#9e6600" text-anchor="middle">폰 푸시</text>
+
+      <!-- 중앙 허브 -->
+      <rect x="392" y="270" width="216" height="162" rx="14" fill="#eae8ff" stroke="#8974f0" stroke-width="1.5"/>
+      <text x="500" y="298" text-anchor="middle" font-size="15" font-weight="700" fill="#332567">프로젝트 문서 (SSOT)</text>
+      <text x="500" y="322" text-anchor="middle" font-size="11.5" fill="#5b46af">PROJECT-STATE (운영 레지스트리) · roadmap</text>
+      <text x="500" y="341" text-anchor="middle" font-size="11.5" fill="#a81b29" font-weight="700">CONFIRM-QUEUE — 대기 2건 (Q-006 · Q-014)</text>
+      <text x="500" y="360" text-anchor="middle" font-size="11.5" fill="#5b46af">HANDOFF · 컴포넌트 스펙 · 가이드</text>
+      <text x="500" y="379" text-anchor="middle" font-size="11.5" fill="#5b46af">tokens (primitive · semantic · component)</text>
+      <text x="500" y="398" text-anchor="middle" font-size="11.5" fill="#5b46af">벤치마크 · 상호운용 로그</text>
+      <text x="500" y="420" text-anchor="middle" font-size="10.5" fill="#868c95">모든 세션·자동 루프가 여기서 만난다</text>
+
+      <!-- 진아님 -->
+      <rect x="410" y="32" width="180" height="64" rx="14" fill="#332567"/>
+      <text x="500" y="60" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">진아님</text>
+      <text x="500" y="82" text-anchor="middle" font-size="11.5" fill="#d6d4ff">모든 최종 결정 · 어느 기기서든</text>
+
+      <!-- HQ -->
+      <rect x="82" y="140" width="180" height="66" rx="14" fill="#ffffff" stroke="#8974f0" stroke-width="1.5"/>
+      <text x="172" y="166" text-anchor="middle" font-size="14" font-weight="700" fill="#5b46af">HQ 세션 ✅ (여기)</text>
+      <text x="172" y="186" text-anchor="middle" font-size="11" fill="#6f747d">로드맵 · 게이트 판정 · 컨펌</text>
+      <text x="172" y="200" text-anchor="middle" font-size="11" fill="#6f747d">+ 파이프라인·컴포넌트 실행</text>
+
+      <!-- CDS_Guide -->
+      <rect x="738" y="140" width="180" height="66" rx="14" fill="#ffffff" stroke="#8974f0" stroke-width="1.5"/>
+      <text x="828" y="166" text-anchor="middle" font-size="14" font-weight="700" fill="#5b46af">CDS_Guide ✅</text>
+      <text x="828" y="186" text-anchor="middle" font-size="11" fill="#6f747d">가이드·문서 · 진아님 운영</text>
+      <text x="828" y="200" text-anchor="middle" font-size="11" fill="#6f747d">Q-014 판정 후 7자리 수정</text>
+
+      <!-- 역할 라벨 클러스터 -->
+      <rect x="62" y="458" width="250" height="134" rx="14" fill="#f1f6fe" stroke="#d4d9e2" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="187" y="484" text-anchor="middle" font-size="14" font-weight="700" fill="#868c95">⛳ 역할 라벨 (세션 아님)</text>
+      <text x="187" y="508" text-anchor="middle" font-size="11.5" fill="#a0a6af">B1 파이프라인 · CDS_Components</text>
+      <text x="187" y="528" text-anchor="middle" font-size="11.5" fill="#a0a6af">A1 시맨틱 ✓ · A3 컴포넌트 ✓ · 리서처 ✓</text>
+      <text x="187" y="554" text-anchor="middle" font-size="11" fill="#868c95">결정·브로드캐스트 이력이 참조하는</text>
+      <text x="187" y="571" text-anchor="middle" font-size="11" fill="#868c95">이름일 뿐 — 살아있는 채팅이 아니다</text>
+
+      <!-- 자동 루프 클러스터 -->
+      <rect x="640" y="452" width="300" height="160" rx="14" fill="#fff4e7" stroke="#e09306" stroke-width="1.5"/>
+      <text x="790" y="478" text-anchor="middle" font-size="14" font-weight="700" fill="#7e5100">⏰ 자동 루프 ×3 (08-03 실측)</text>
+      <text x="790" y="502" text-anchor="middle" font-size="11" fill="#9e6600">매일 08:00 — 아침 HQ 보고 ♻ 재신설</text>
+      <text x="790" y="522" text-anchor="middle" font-size="11" fill="#9e6600">월·수·금 09:00 — 상호운용 런</text>
+      <text x="790" y="542" text-anchor="middle" font-size="11" fill="#9e6600">금 11:00 — 벤치마크 통합 런</text>
+      <text x="790" y="568" text-anchor="middle" font-size="11" fill="#cb323b">✕ 셀프 웨이크 폐기 (체인 끊김)</text>
+      <text x="790" y="586" text-anchor="middle" font-size="11" fill="#cb323b">✕ 허브 3시간 갱신 — 애초에 없었음</text>
+    </svg>
+  </section>
+
+  <section class="panel">
+    <h2>컨펌 루프 — 결정이 도는 길 (v4)</h2>
+    <div class="loop">
+      <div class="step"><span class="n">1</span><b>HQ · 자동 루프</b>상위 결정이 걸린 사안을 <code>CONFIRM-QUEUE</code>에 Q-번호로 등록, 해당 항목 일시정지</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="n">2</span><b>매일 아침 보고 (08:00)</b>큐 대기 요청 + 자동 루프 새 발견 + 진아님 손이 필요한 것을 10줄 이내로 요약</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="n">3</span><b>푸시 알림</b>요약이 진아님 폰으로</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="n">4</span><b>HQ 세션에서 판정</b>진아님 + HQ가 승인/반려 확정, 큐·결정 이력에 기록</div>
+      <div class="arrow">→</div>
+      <div class="step"><span class="n">5</span><b>HQ가 직접 반영</b>레포 수정·게이트 재실행·커밋. 가이드 본문만 CDS_Guide 몫</div>
+    </div>
+    <div class="loopback">↺ 5 → 1 순환 · 급하면 언제든 HQ에서 "큐 확인해줘" · <b>v3와 달라진 점:</b> "운영·큐 검토 런(평일 12시)"은 이미 사라졌고, 그 역할을 <b>아침 보고</b>가 흡수합니다. 실무 반영 주체도 실재하지 않는 B1·CDS_Components가 아니라 <b>HQ</b>로 못박았습니다.</div>
+  </section>
+
+  <section class="panel">
+    <h2>자동 루프 — 각각의 배선 (KST 시간순 · 08-03 실측 기준)</h2>
+    <div class="lane">
+      <span class="time">매일<br>08:00</span>
+      <div class="lname">아침 HQ<br>보고 ♻</div>
+      <div class="io in">CONFIRM-QUEUE 대기 요청<br>+ PROJECT-STATE · pipeline/HANDOFF</div>
+      <span class="la">→</span>
+      <div class="io out">10줄 이내 브리핑 (채팅만)<br>문서는 고치지 않는다</div>
+      <span class="la">→</span>
+      <div class="io to">진아님 폰 푸시 → HQ에서 판정. 레지스트리가 실제와 어긋나면 그 사실을 보고 끝에 한 줄 명시<br><code>trig_016cuqqgf7M7sYMbSo7GDeVV</code></div>
+    </div>
+    <div class="lane">
+      <span class="time">월·수·금<br>09:00</span>
+      <div class="lname">B1-리서처<br>상호운용 런</div>
+      <div class="io in">pipeline/HANDOFF<br>레포 HEAD · 게이트 · CI 상태</div>
+      <span class="la">→</span>
+      <div class="io out">왕복 테스트 결과<br><code>pipeline-interop-findings</code></div>
+      <span class="la">→</span>
+      <div class="io to">종료 조건: Q-INTEROP 판정 시 재휴면. <b>주기 현행 유지 확정(진아, 08-03)</b><br><code>trig_014rvmuCqEbEBSNt21mwWycD</code></div>
+    </div>
+    <div class="lane">
+      <span class="time">금<br>11:00</span>
+      <div class="lname">벤치마크<br>통합 런</div>
+      <div class="io in">① 외부 웹 — 도구·표준 동향<br>② 방금 회차 × 우리 결정<br>③ 수집분의 스킬화 후보</div>
+      <span class="la">→</span>
+      <div class="io out">① benchmark-log + 회차 보고서<br>② review 보고서 + 큐 제안<br>③ 스킬 제안</div>
+      <span class="la">→</span>
+      <div class="io to">제안 → 컨펌 큐 → 다음 아침 보고가 수신<br><code>trig_01M3H7scawNeUqMyad2Yic3M</code></div>
+    </div>
+    <div class="lane dead">
+      <span class="time">월·목<br>10:00</span>
+      <div class="lname">HQ 종합<br>셀프 웨이크</div>
+      <div class="io in">send_later 수동 체인</div>
+      <span class="la">→</span>
+      <div class="io out">—</div>
+      <span class="la">→</span>
+      <div class="io to">폐기 (진아 확정, 08-03) — 체인 9건 전부 소진, 자동 재생성 없음</div>
+    </div>
+    <div class="note"><b>실측 원칙 (BC-36):</b> 이 표는 <b>트리거를 손댈 때마다</b> <code>list_triggers</code> 전수 대조로 검증합니다. 응답이 토큰 한도를 넘으므로(BC-32) 툴 결과 파일을 파서로 읽습니다. 유령이 두 번 연속 나왔기 때문에 생긴 규칙입니다.</div>
+  </section>
+
+  <section class="panel">
+    <h2>세션 현황 — 실체와 라벨을 나눈다</h2>
+    <table>
+      <tr><th>이름</th><th>실체</th><th>상태</th><th>비고</th></tr>
+      <tr><td>HQ<span class="badge here">이 세션</span></td><td>✅ 실재 세션</td><td>활성 — 능동 운영(#22)</td><td>판정·거버넌스 + <b>아래 역할 라벨 몫을 전부 직접 실행</b></td></tr>
+      <tr><td>CDS_Guide</td><td>✅ 실재 세션</td><td>활성 — 진아님 운영</td><td>Q-014 판정 후 <code>public/guide.html</code> 7자리 수정</td></tr>
+      <tr><td>B1 파이프라인</td><td><span class="badge label">⛳ 역할 라벨</span></td><td>실행자 = HQ</td><td>게이트 재실행·미러 재생성·커밋·리네임</td></tr>
+      <tr><td>CDS_Components</td><td><span class="badge label">⛳ 역할 라벨</span></td><td>실행자 = HQ</td><td>Wave 3 7종 검증·합류 완료 · §3 착수 시 실제 세션 개설 여부는 진아님 지정</td></tr>
+      <tr><td>A1 시맨틱</td><td><span class="badge label">⛳ 역할 라벨</span></td><td><span class="badge done">완료·휴면</span></td><td>시맨틱 123토큰 · A2 게이트 통과</td></tr>
+      <tr><td>A3 컴포넌트</td><td><span class="badge label">⛳ 역할 라벨</span></td><td><span class="badge done">완전 종결</span></td><td>Q-008, 2026-07-24</td></tr>
+      <tr><td>리서처</td><td><span class="badge label">⛳ 역할 라벨</span></td><td>실행자 = 상호운용 자동 런</td><td>경쟁 보고서 완료 · 남은 리서치 몫은 자동 런이 승계</td></tr>
+    </table>
+    <div class="note"><b>표기 규칙 (BC-36):</b> '실재 세션'은 진아님이 실제로 열어 대화하는 채팅만을 가리킵니다. '역할 라벨'은 이력이 참조하는 이름일 뿐이며, <b>라벨을 '활성'으로 적지 않습니다</b> — 이 혼동이 존재하지 않는 세션 앞으로 작업을 배정하는 사고를 낳았습니다.</div>
+  </section>
+
+  <footer>이 보드는 PROJECT-STATE "운영 레지스트리"(SSOT)의 뷰 · 프로젝트 primitive 토큰으로 스타일링 · 구조가 바뀌면 HQ에서 갱신 · v4 (2026-08-03, BC-36 실측 갱신 — v3는 2026-07-10)</footer>
+</div>
+</body>
+</html>
