@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>원천 값 개념도 — 사다리 하나 · 역할이 칸을 고른다</title>
+<style>
+  :root{
+    --ink:#16161a; --mid:#5a5a66; --mut:#8a8a96; --line:#e3e3ea; --bg:#fff;
+    --soft:#f7f7fa; --brand:#8974f0; --brand050:#f4f1fe;
+    --spatial:#2f7d6e; --spatial050:#eef7f5;
+    --visual:#b06a2c; --visual050:#fbf3ea;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:40px 32px 64px;background:var(--bg);color:var(--ink);
+    font:14px/1.6 "Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+  .sub{font-size:13px;color:var(--mut);margin:0 0 36px}
+  h2{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--mut);
+    text-transform:uppercase;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  section{margin-bottom:44px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  /* ---- 사다리 ---- */
+  .lad{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin:0 0 2px}
+  .rung{border:1px solid var(--line);border-radius:6px;background:var(--soft);
+    padding:9px 2px 8px;text-align:center}
+  .rung .px{font-size:14px;font-weight:700;font-family:ui-monospace,Menlo,monospace;letter-spacing:-.03em}
+  .rung .ix{font-size:9.5px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:1px}
+  .rung.used{background:#fff;border-color:var(--ink)}
+  .marks{display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
+  .mcell{min-height:8px;display:flex;flex-direction:column;gap:3px;padding:5px 0 0}
+  .chip{font-size:9.5px;line-height:1.35;border-radius:4px;padding:2px 3px;text-align:center;
+    font-family:ui-monospace,Menlo,monospace;letter-spacing:-.02em;word-break:break-all}
+  .sp{background:var(--spatial050);color:var(--spatial);border:1px solid #cfe6e0}
+  .vi{background:var(--visual050);color:var(--visual);border:1px solid #f0dcc4}
+  .legend{display:flex;gap:16px;align-items:center;font-size:11.5px;color:var(--mid);margin:16px 0 0}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:10px}
+
+  /* ---- 3열 ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:16px 16px 14px;background:#fff}
+  .card h3{margin:0 0 3px;font-size:13.5px;font-weight:700}
+  .card .cap{font-size:11px;color:var(--mut);margin:0 0 12px}
+  .card ul{margin:0;padding:0;list-style:none}
+  .card li{font-size:12px;padding:6px 0;border-top:1px dashed var(--line);color:var(--mid)}
+  .card li:first-child{border-top:0}
+  .card li b{color:var(--ink);font-weight:600}
+  .tag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.04em;
+    padding:2px 6px;border-radius:4px;margin-bottom:9px}
+  .t-pick{background:#eef0fb;color:#4a45a8}
+  .t-calc{background:#f1eefb;color:#6a4aa8}
+  .t-set{background:#f2f2f5;color:#5a5a66}
+
+  /* ---- 파생식 ---- */
+  .eq{border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:0 8px 8px 0;
+    padding:12px 16px;margin-bottom:8px;background:var(--brand050)}
+  .eq .f{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:600;color:var(--ink)}
+  .eq .n{font-size:11.5px;color:var(--mid);margin-top:4px}
+
+  /* ---- 층 ---- */
+  .layer{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:start;
+    padding:16px 0;border-top:1px solid var(--line)}
+  .layer:first-child{border-top:0}
+  .lname{font-size:12px;font-weight:700;color:var(--ink);padding-top:2px}
+  .lname span{display:block;font-weight:400;font-size:10.5px;color:var(--mut);margin-top:2px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11.5px;font-family:ui-monospace,Menlo,monospace;border:1px solid var(--line);
+    border-radius:999px;padding:4px 11px;background:#fff;color:var(--mid)}
+  .pill.on{border-color:var(--ink);color:var(--ink);font-weight:600}
+  .note{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.65}
+  .note b{color:var(--mid)}
+</style>
+<div class="wrap">
+
+  <h1>원천 값 개념도</h1>
+  <p class="sub">사다리는 하나. spatial과 visual은 <b>그 위에서 서로 다른 칸을 고를 뿐</b> 원천을 나누지 않는다.</p>
+
+  <!-- ============ 1. 사다리 ============ -->
+  <section>
+    <h2>1 · 하나의 사다리 &nbsp;—&nbsp; step-0…12 &nbsp;(단위 2px)</h2>
+
+    <div class="lad">
+      <div class="rung used"><div class="px">0</div><div class="ix">0</div></div>
+      <div class="rung used"><div class="px">4</div><div class="ix">1</div></div>
+      <div class="rung used"><div class="px">8</div><div class="ix">2</div></div>
+      <div class="rung used"><div class="px">12</div><div class="ix">3</div></div>
+      <div class="rung used"><div class="px">16</div><div class="ix">4</div></div>
+      <div class="rung used"><div class="px">24</div><div class="ix">5</div></div>
+      <div class="rung used"><div class="px">32</div><div class="ix">6</div></div>
+      <div class="rung"><div class="px">40</div><div class="ix">7</div></div>
+      <div class="rung used"><div class="px">48</div><div class="ix">8</div></div>
+      <div class="rung used"><div class="px">64</div><div class="ix">9</div></div>
+      <div class="rung"><div class="px">80</div><div class="ix">10</div></div>
+      <div class="rung"><div class="px">96</div><div class="ix">11</div></div>
+      <div class="rung"><div class="px">128</div><div class="ix">12</div></div>
+    </div>
+
+    <div class="marks">
+      <div class="mcell"></div>
+      <div class="mcell"><div class="chip sp">inline·sm</div></div>
+      <div class="mcell">
+        <div class="chip sp">inset·sm</div><div class="chip sp">stack·sm</div><div class="chip sp">inline·md</div>
+        <div class="chip vi">radius<br>control</div>
+      </div>
+      <div class="mcell"><div class="chip vi">radius<br>container</div></div>
+      <div class="mcell">
+        <div class="chip sp">inset·md</div><div class="chip sp">stack·md</div><div class="chip sp">inline·lg</div>
+        <div class="chip vi">radius<br>overlay</div>
+      </div>
+      <div class="mcell"><div class="chip sp">inset·lg</div></div>
+      <div class="mcell"><div class="chip sp">stack·lg</div></div>
+      <div class="mcell"></div>
+      <div class="mcell"><div class="chip sp">section<br>mobile</div></div>
+      <div class="mcell"><div class="chip sp">section<br>tablet·desktop</div></div>
+      <div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+    </div>
+
+    <div class="axis"><span>촘촘 — 컴포넌트 내부</span><span>성김 — 레이아웃 구조</span></div>
+
+    <div class="legend">
+      <span><i class="dot" style="background:var(--spatial050);border:1px solid #cfe6e0"></i>spatial — 얼마의 공간</span>
+      <span><i class="dot" style="background:var(--visual050);border:1px solid #f0dcc4"></i>visual — 어떤 표면</span>
+      <span style="color:var(--mut)">두 색이 같은 칸에 겹치는 것이 핵심 — 원천은 하나다</span>
+    </div>
+  </section>
+
+  <!-- ============ 2. 원천 3종 ============ -->
+  <section>
+    <h2>2 · 원천은 세 덩어리뿐</h2>
+    <div class="cols">
+      <div class="card">
+        <span class="tag t-pick">사다리</span>
+        <h3>step-0…12</h3>
+        <p class="cap">13칸 · 8 × [0, .5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16]</p>
+        <ul>
+          <li><b>spatial</b> 이 고르는 칸 — 여백·간격</li>
+          <li><b>visual</b> 이 고르는 칸 — 모서리</li>
+          <li>base를 바꾸면 <b>전부 함께</b> 움직인다</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag t-set">선택 집합</span>
+        <h3>border-width</h3>
+        <p class="cap">0 · 1 · 2 · 4 &nbsp;— 사다리 밖</p>
+        <ul>
+          <li>1px은 <b>기기 픽셀에 묶인 값</b> — 배수로 유도되지 않는다</li>
+          <li>base를 바꿔도 <b>따라 움직이지 않는다</b></li>
+          <li>“파생 아닌 선택” — 코드에 이미 선언됨</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag t-set">선택 집합</span>
+        <h3>radius.special</h3>
+        <p class="cap">9999px · 50% &nbsp;— 사다리 밖</p>
+        <ul>
+          <li><b>pill</b> = 9999px — 길이가 아니라 “끝까지”</li>
+          <li><b>circle</b> = 50% — px가 아니라 비율</li>
+          <li>사다리로 표현 불가능하므로 별도</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note"><b>원천을 나누는 기준은 spatial / visual 이 아니다.</b> “사다리 위인가, 밖인가” 하나뿐이다.
+      spacing·radius·size는 전부 사다리 위에 있고, border-width와 special만 밖에 있다.</p>
+  </section>
+
+  <!-- ============ 3. 파생 ============ -->
+  <section>
+    <h2>3 · 원천이 아닌 것 &nbsp;—&nbsp; 사다리 칸끼리의 산술</h2>
+
+    <div class="eq">
+      <div class="f">size.control{sm,md,lg} = icon.md + 2 × step-{2,3,4} &nbsp;→&nbsp; 36 · 44 · 52</div>
+      <div class="n">20 + 2×8 = 36 · 20 + 2×12 = 44 · 20 + 2×16 = 52.
+        지금은 <span class="mono">{type:"linear", base:36, step:8}</span> 독립 규칙으로 선언돼 원천처럼 보이지만,
+        실제로는 <b>아이콘 슬롯 + 좌우 inset</b> 이다. 규칙을 이렇게 바꾸면 원천이 하나 줄어든다.</div>
+    </div>
+
+    <div class="eq">
+      <div class="f">child.radius = max(0, radius.container − inset.sm) &nbsp;→&nbsp; 12 − 8 = 4</div>
+      <div class="n">중첩 정합(#10). <b>visual 값에서 spatial 값을 뺀다</b> — 두 원천이 같은 격자 위에 있어야만 성립하는 식.
+        원천을 나누면 이 규칙(R-2)이 먼저 깨진다.</div>
+    </div>
+
+    <div class="eq">
+      <div class="f">switch.knob = track − 2 × 2px &nbsp;/&nbsp; focus.offset = 2px</div>
+      <div class="n">헤어라인 정밀값. 사다리 단위(2px)와 같으므로 별도 원천이 필요 없다.</div>
+    </div>
+  </section>
+
+  <!-- ============ 4. 층 ============ -->
+  <section>
+    <h2>4 · 층별로 보면</h2>
+
+    <div class="layer">
+      <div class="lname">원천<span>Source</span></div>
+      <div>
+        <div class="pills">
+          <span class="pill on">step-0…12</span>
+          <span class="pill on">border-width</span>
+          <span class="pill on">radius.special</span>
+        </div>
+        <p class="note">이름에 spatial / visual 이 들어가지 않는다. <b>재료는 용도를 모른다.</b></p>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="lname" style="color:var(--spatial)">spatial<span>얼마의 공간</span></div>
+      <div>
+        <div class="pills">
+          <span class="pill on">spacing.inset</span><span class="pill on">spacing.stack</span>
+          <span class="pill on">spacing.inline</span><span class="pill on">spacing.section-gap</span>
+          <span class="pill">size.control</span><span class="pill">size.icon</span>
+        </div>
+        <p class="note">앞 넷은 <b>칸 고르기</b>, 뒤 둘은 <b>산술 파생</b>.</p>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="lname" style="color:var(--visual)">visual<span>어떤 표면</span></div>
+      <div>
+        <div class="pills">
+          <span class="pill on">radius.control</span><span class="pill on">radius.container</span>
+          <span class="pill on">radius.overlay</span>
+          <span class="pill">radius.pill</span><span class="pill">radius.circle</span>
+          <span class="pill">border.default / selected / focus</span>
+        </div>
+        <p class="note">앞 셋은 <b>칸 고르기</b>, 뒤는 <b>선택 집합 직결</b>.</p>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:18px">
+      <b>결론.</b> spatial / visual 분리는 이 층 — 시맨틱 — 에서만 일어난다.
+      원천 층에는 그 단어가 등장하지 않으며, 따라서 <span class="mono">dimension</span> 같은 상위 묶음 이름도 필요 없다.
+      묶을 것이 없기 때문이다.
+    </p>
+  </section>
+
+</div>
