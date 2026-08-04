@@ -71,25 +71,25 @@ function buildColor(mode){
     "subtle": ctok(NEUTRAL,light?"50":"800",{type:"ladder",why:light?"중립 저단":"surface보다 1단 밝게"}),
     "brand": ctok("brand",bgBrand.step,{type:"contrast",against:"fg.on-brand(white)",target:TARGETS.onFill,anchor:"fg",why:"fg 앵커형 (결정 #17)"},{contrast:con("#ffffff",bgBrand.hex)}),
     "brand-subtle": ctok("brand",light?"50":"950",{type:"ladder"}),
-    "danger-subtle": ctok("red",light?"50":"950",{type:"ladder"}),
+    "error-subtle": ctok("red",light?"50":"950",{type:"ladder"}),
     "warning-subtle": ctok("amber",light?"50":"950",{type:"ladder"}),
     "success-subtle": ctok("green",light?"50":"950",{type:"ladder"}),
     "info-subtle": ctok("blue",light?"50":"950",{type:"ladder"}),
     "action-primary": {
       "default": ctok("brand",apStep,{type:"contrast",against:"fg.on-action(white)",target:TARGETS.onFill,anchor:"fg"},{contrast:con("#ffffff",RAMPS.brand[apStep])}),
       "hover":   ctok("brand",apH,{type:"state",shift:"+1",why:"fg 앵커형은 모드 무관 어둡게 (결정 #17)"},{contrast:con("#ffffff",RAMPS.brand[apH])}),
-      "active":  ctok("brand",apA,{type:"state",shift:"+2"},{contrast:con("#ffffff",RAMPS.brand[apA])}),
+      "pressed":  ctok("brand",apA,{type:"state",shift:"+2"},{contrast:con("#ffffff",RAMPS.brand[apA])}),
       "disabled":ctok(NEUTRAL,light?"100":"800",{type:"fixed",why:"disabled는 WCAG 대비 예외"})
     },
     "action-secondary": {
       "default": ctok(NEUTRAL,light?"100":"800",{type:"ladder"}),
       "hover":   ctok(NEUTRAL,light?"200":"700",{type:"state",shift:light?"+1":"-1"}),
-      "active":  ctok(NEUTRAL,light?"300":"600",{type:"state",shift:light?"+2":"-2"})
+      "pressed":  ctok(NEUTRAL,light?"300":"600",{type:"state",shift:light?"+2":"-2"})
     },
     "action-ghost": {
       "default": fixed("transparent",{type:"fixed"}),
       "hover":   {"$value":alias(`color.alpha.${light?"black":"white"}.a8`),"$type":"color","$extensions":{rule:{type:"alpha"}}},
-      "active":  {"$value":alias(`color.alpha.${light?"black":"white"}.a12`),"$type":"color","$extensions":{rule:{type:"alpha"}}}
+      "pressed":  {"$value":alias(`color.alpha.${light?"black":"white"}.a12`),"$type":"color","$extensions":{rule:{type:"alpha"}}}
     }
   };
   const sub=(rp)=>({[`${rp}-subtle`]:RAMPS[rp==="brand"?"brand":rp][light?"50":"950"]});
@@ -99,32 +99,32 @@ function buildColor(mode){
   const fg={
     "primary": R(NEUTRAL,TARGETS.fgPrimary,"fg.primary"),
     "secondary": R(NEUTRAL,TARGETS.fgSecondary,"fg.secondary"),
-    "subtle": R(NEUTRAL,TARGETS.fgSubtle,"fg.subtle","≥3:1 — 대형 텍스트·보조 전용"),
+    "tertiary": R(NEUTRAL,TARGETS.fgSubtle,"fg.tertiary","≥3:1 — 대형 텍스트·보조 전용"),
     "disabled": ctok(NEUTRAL,light?"400":"600",{type:"fixed",why:"WCAG 대비 예외"}),
     "on-brand": fixed("#ffffff",{type:"fixed",why:"bg.brand이 이 대비를 보장하도록 resolve됨"},{contrast:con("#ffffff",bgBrand.hex)}),
     "on-action": fixed("#ffffff",{type:"fixed"},{contrast:con("#ffffff",RAMPS.brand[apStep])}),
     "brand": R("brand",TARGETS.fgSecondary,"fg.brand",null,sub("brand")),
-    "danger": R("red",TARGETS.fgStatus,"fg.danger",null,sub("red")),
+    "error": R("red",TARGETS.fgStatus,"fg.error",null,sub("red")),
     "warning": R("amber",TARGETS.fgStatus,"fg.warning",null,sub("amber")),
     "success": R("green",TARGETS.fgStatus,"fg.success",null,sub("green")),
     "info": R("blue",TARGETS.fgStatus,"fg.info",null,sub("blue")),
     "link": {
       "default": ctok("blue",link.step,{type:"contrast",against:"worst-case(표면+info-subtle)",target:TARGETS.fgStatus},{contrastMin:round2(link.ratio),worstSurface:link.worst}),
       "hover": ctok("blue",lkH,{type:"state",shift:light?"+1":"-1",why:"표면 앵커형"},{contrastMin:conW(RAMPS.blue[lkH],SURF)}),
-      "active": ctok("blue",lkA,{type:"state",shift:light?"+2":"-2"},{contrastMin:conW(RAMPS.blue[lkA],SURF)})
+      "pressed": ctok("blue",lkA,{type:"state",shift:light?"+2":"-2"},{contrastMin:conW(RAMPS.blue[lkA],SURF)})
     }
   };
-  const st=resolveW(NEUTRAL,SURF,TARGETS.strokeStrong,`${mode} stroke.strong`);
-  const sd=resolveW("red",{...SURF,...sub("red")},TARGETS.strokeDanger,`${mode} stroke.danger`);
-  const fc=resolveW("brand",SURF,TARGETS.focus,`${mode} stroke.focus`);
-  const stroke={
+  const st=resolveW(NEUTRAL,SURF,TARGETS.strokeStrong,`${mode} bdr.strong`);
+  const sd=resolveW("red",{...SURF,...sub("red")},TARGETS.strokeDanger,`${mode} bdr.error`);
+  const fc=resolveW("brand",SURF,TARGETS.focus,`${mode} bdr.focused`);
+  const bdr={
     "default": ctok(NEUTRAL,light?"300":"700",{type:"fixed",advisory:"장식 보더"},{contrastMin:conW(RAMPS[NEUTRAL][light?"300":"700"],SURF)}),
     "subtle": ctok(NEUTRAL,light?"200":"800",{type:"fixed"}),
     "strong": ctok(NEUTRAL,st.step,{type:"contrast",against:"worst-case",target:TARGETS.strokeStrong,why:"비텍스트 UI 경계 (WCAG 1.4.11)"},{contrastMin:round2(st.ratio),worstSurface:st.worst}),
-    "focus": ctok("brand",fc.step,{type:"contrast",against:"worst-case",target:TARGETS.focus,why:"포커스 가시성 (WCAG 2.4.13)"},{contrastMin:round2(fc.ratio),worstSurface:fc.worst}),
-    "danger": ctok("red",sd.step,{type:"contrast",against:"worst-case(표면+danger-subtle)",target:TARGETS.strokeDanger},{contrastMin:round2(sd.ratio),worstSurface:sd.worst})
+    "focused": ctok("brand",fc.step,{type:"contrast",against:"worst-case",target:TARGETS.focus,why:"포커스 가시성 (WCAG 2.4.13)"},{contrastMin:round2(fc.ratio),worstSurface:fc.worst}),
+    "error": ctok("red",sd.step,{type:"contrast",against:"worst-case(표면+error-subtle)",target:TARGETS.strokeDanger},{contrastMin:round2(sd.ratio),worstSurface:sd.worst})
   };
-  return {"$description":`${mode} 모드 색 역할`,bg,fg,stroke};
+  return {"$description":`${mode} 모드 색 역할`,bg,fg,bdr};
 }
 const TYPE_ROLES={
   display:{steps:["3xl","4xl","5xl"],weight:"bold",why:"히어로"},
@@ -145,14 +145,15 @@ function buildTypography(){
   return out;
 }
 const dim=(p,extra={})=>({"$value":alias(p),"$type":"dimension","$extensions":extra});
-function buildSpacing(){return {"$description":"간격 역할",
-  "inset":{"$extensions":{why:"컴포넌트 내부 padding"},"sm":dim("spacing.rem.space-2"),"md":dim("spacing.rem.space-4"),"lg":dim("spacing.rem.space-5")},
-  "stack":{"$extensions":{why:"수직 흐름 간격"},"sm":dim("spacing.rem.space-2"),"md":dim("spacing.rem.space-4"),"lg":dim("spacing.rem.space-6")},
-  "inline":{"$extensions":{why:"수평 인라인 간격"},"sm":dim("spacing.rem.space-1"),"md":dim("spacing.rem.space-2"),"lg":dim("spacing.rem.space-4")},
-  "section-gap":{"$extensions":{why:"페이지 섹션 분리",rule:{type:"breakpoint-binding"}},"mobile":dim("spacing.rem.space-8"),"tablet":dim("spacing.rem.space-9"),"desktop":dim("spacing.rem.space-9")}};}
-function buildRadius(){return {"$description":"radius 역할",
-  "control":dim("radius.rem.radius-2",{why:"버튼·인풋"}),"container":dim("radius.rem.radius-3",{why:"카드·패널"}),
-  "overlay":dim("radius.rem.radius-4",{why:"모달·팝오버"}),"pill":dim("radius.special.radius-full"),"circle":dim("radius.special.radius-circle")};}
+function buildSpacing(){return {"$description":"간격 역할 (결정 #40 KDX 정렬 — padding/gap/margin)",
+  "padding":{"$extensions":{why:"컴포넌트 안쪽 여백"},"sm":dim("dimension.rem.step-3"),"md":dim("dimension.rem.step-5"),"lg":dim("dimension.rem.step-7")},
+  "gap":{"$extensions":{why:"요소 사이 간격 — y=수직, x=수평, section=페이지 섹션"},
+    "y":{"sm":dim("dimension.rem.step-3"),"md":dim("dimension.rem.step-5"),"lg":dim("dimension.rem.step-8")},
+    "x":{"sm":dim("dimension.rem.step-2"),"md":dim("dimension.rem.step-3"),"lg":dim("dimension.rem.step-5")},
+    "section":{"$extensions":{rule:{type:"breakpoint-binding"}},"mobile":dim("dimension.rem.step-10"),"tablet":dim("dimension.rem.step-11"),"desktop":dim("dimension.rem.step-11")}}};}
+function buildRadius(){return {"$description":"radius 역할 — dimension 사다리 칸 배정 (결정 #40 · Q-014)",
+  "control":dim("dimension.rem.step-3",{why:"버튼·인풋"}),"container":dim("dimension.rem.step-4",{why:"카드·패널"}),
+  "overlay":dim("dimension.rem.step-5",{why:"모달·팝오버"}),"pill":dim("dimension.special.full"),"circle":dim("dimension.special.full",{why:"결정 #40 — special.full로 리타깃(50% 폐지, Figma 호환)"})};}
 function buildElevation(){
   const pair=(n,why)=>({"$extensions":{why},"light":{"$value":alias(`elevation.light.elevation-${n}`),"$type":"shadow"},"dark":{"$value":alias(`elevation.dark.elevation-${n}`),"$type":"shadow","$extensions":{note:"δ는 bg.surface-* 합성에 반영"}}});
   return {"$description":"elevation 역할","resting":pair(0,"평면"),"raised":pair(1,"카드·드롭다운"),"overlay":pair(3,"모달·팝오버"),"spotlight":pair(5,"최상위 강조")};}

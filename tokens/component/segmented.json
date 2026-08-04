@@ -12,8 +12,8 @@
           "ref": "radius.pill"
         },
         "padding": {
-          "$value": "{semantic.spacing.inset.sm}",
-          "ref": "spacing.inset.sm"
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
         }
       },
       "segment": {
@@ -82,8 +82,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.stroke.focus}",
-        "ref": "color.stroke.focus"
+        "$value": "{semantic.color.bdr.focused}",
+        "ref": "color.bdr.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

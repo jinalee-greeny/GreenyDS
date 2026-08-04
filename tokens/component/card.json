@@ -10,9 +10,9 @@
         "$value": "{semantic.color.bg.surface-raised}",
         "ref": "color.bg.surface-raised"
       },
-      "stroke": {
-        "$value": "{semantic.color.stroke.subtle}",
-        "ref": "color.stroke.subtle"
+      "bdr": {
+        "$value": "{semantic.color.bdr.subtle}",
+        "ref": "color.bdr.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.container}",
@@ -28,13 +28,13 @@
           "ref": "elevation.raised"
         }
       },
-      "inset": {
-        "$value": "{semantic.spacing.inset.lg}",
-        "ref": "spacing.inset.lg"
+      "padding": {
+        "$value": "{semantic.spacing.padding.lg}",
+        "ref": "spacing.padding.lg"
       },
       "gap": {
-        "$value": "{semantic.spacing.stack.md}",
-        "ref": "spacing.stack.md"
+        "$value": "{semantic.spacing.gap.y.md}",
+        "ref": "spacing.gap.y.md"
       },
       "child-radius": {
         "$value": "0rem",
@@ -43,8 +43,8 @@
           "px": 0,
           "rule": {
             "type": "nesting",
-            "formula": "max(0, radius.container − inset.lg)",
-            "why": "중첩 정합(#10)·inset 인자 호출(§5.2)"
+            "formula": "max(0, radius.container − padding.lg)",
+            "why": "중첩 정합(#10)·padding 인자 호출(§5.2)"
           }
         }
       },

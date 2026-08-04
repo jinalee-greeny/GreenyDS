@@ -14,21 +14,21 @@
         "$value": "{semantic.elevation.overlay}",
         "ref": "elevation.overlay"
       },
-      "stroke": {
-        "$value": "{semantic.color.stroke.subtle}",
-        "ref": "color.stroke.subtle"
+      "bdr": {
+        "$value": "{semantic.color.bdr.subtle}",
+        "ref": "color.bdr.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.overlay}",
         "ref": "radius.overlay"
       },
-      "inset": {
-        "$value": "{semantic.spacing.inset.lg}",
-        "ref": "spacing.inset.lg"
+      "padding": {
+        "$value": "{semantic.spacing.padding.lg}",
+        "ref": "spacing.padding.lg"
       },
       "gap": {
-        "$value": "{semantic.spacing.stack.md}",
-        "ref": "spacing.stack.md"
+        "$value": "{semantic.spacing.gap.y.md}",
+        "ref": "spacing.gap.y.md"
       },
       "close-icon": {
         "$value": "{semantic.size.icon.md}",

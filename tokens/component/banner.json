@@ -1,7 +1,7 @@
 {
   "component": {
     "banner": {
-      "$description": "Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — stroke는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 stroke.subtle로 통일(Toast와 동일 절제).",
+      "$description": "Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — bdr는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 bdr.subtle로 통일(Toast와 동일 절제).",
       "base": {
         "bg": {
           "$value": "{semantic.color.bg.subtle}",
@@ -11,9 +11,9 @@
           "$value": "{semantic.color.fg.primary}",
           "ref": "color.fg.primary"
         },
-        "stroke": {
-          "$value": "{semantic.color.stroke.subtle}",
-          "ref": "color.stroke.subtle"
+        "bdr": {
+          "$value": "{semantic.color.bdr.subtle}",
+          "ref": "color.bdr.subtle"
         }
       },
       "status": {
@@ -26,23 +26,23 @@
             "$value": "{semantic.color.fg.success}",
             "ref": "color.fg.success"
           },
-          "stroke": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+          "bdr": {
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         },
-        "danger": {
+        "error": {
           "bg": {
-            "$value": "{semantic.color.bg.danger-subtle}",
-            "ref": "color.bg.danger-subtle"
+            "$value": "{semantic.color.bg.error-subtle}",
+            "ref": "color.bg.error-subtle"
           },
           "fg": {
-            "$value": "{semantic.color.fg.danger}",
-            "ref": "color.fg.danger"
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
           },
-          "stroke": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+          "bdr": {
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         },
         "warning": {
@@ -54,9 +54,9 @@
             "$value": "{semantic.color.fg.warning}",
             "ref": "color.fg.warning"
           },
-          "stroke": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+          "bdr": {
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         },
         "info": {
@@ -68,9 +68,9 @@
             "$value": "{semantic.color.fg.info}",
             "ref": "color.fg.info"
           },
-          "stroke": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+          "bdr": {
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         }
       },
@@ -78,13 +78,13 @@
         "$value": "{semantic.radius.container}",
         "ref": "radius.container"
       },
-      "inset": {
-        "$value": "{semantic.spacing.inset.md}",
-        "ref": "spacing.inset.md"
+      "padding": {
+        "$value": "{semantic.spacing.padding.md}",
+        "ref": "spacing.padding.md"
       },
       "gap": {
-        "$value": "{semantic.spacing.inline.md}",
-        "ref": "spacing.inline.md"
+        "$value": "{semantic.spacing.gap.x.md}",
+        "ref": "spacing.gap.x.md"
       },
       "icon": {
         "$value": "{semantic.size.icon.md}",

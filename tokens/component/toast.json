@@ -1,7 +1,7 @@
 {
   "component": {
     "toast": {
-      "$description": "Toast — 중립 base + 상태 4계열(success/danger/warning/info), raised 쌍 + 모션",
+      "$description": "Toast — 중립 base + 상태 4계열(success/error/warning/info), raised 쌍 + 모션",
       "bg": {
         "$value": "{semantic.color.bg.surface-raised}",
         "ref": "color.bg.surface-raised"
@@ -10,21 +10,21 @@
         "$value": "{semantic.elevation.raised}",
         "ref": "elevation.raised"
       },
-      "stroke": {
-        "$value": "{semantic.color.stroke.subtle}",
-        "ref": "color.stroke.subtle"
+      "bdr": {
+        "$value": "{semantic.color.bdr.subtle}",
+        "ref": "color.bdr.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.container}",
         "ref": "radius.container"
       },
-      "inset": {
-        "$value": "{semantic.spacing.inset.md}",
-        "ref": "spacing.inset.md"
+      "padding": {
+        "$value": "{semantic.spacing.padding.md}",
+        "ref": "spacing.padding.md"
       },
       "gap": {
-        "$value": "{semantic.spacing.inline.md}",
-        "ref": "spacing.inline.md"
+        "$value": "{semantic.spacing.gap.x.md}",
+        "ref": "spacing.gap.x.md"
       },
       "fg": {
         "$value": "{semantic.color.fg.primary}",
@@ -45,14 +45,14 @@
             "ref": "color.bg.success-subtle"
           }
         },
-        "danger": {
+        "error": {
           "accent-fg": {
-            "$value": "{semantic.color.fg.danger}",
-            "ref": "color.fg.danger"
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
           },
           "accent-bg": {
-            "$value": "{semantic.color.bg.danger-subtle}",
-            "ref": "color.bg.danger-subtle"
+            "$value": "{semantic.color.bg.error-subtle}",
+            "ref": "color.bg.error-subtle"
           }
         },
         "warning": {

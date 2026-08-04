@@ -42,8 +42,8 @@
           "ref": "color.fg.brand"
         },
         "thickness": {
-          "$value": "{semantic.stroke-width.selected}",
-          "ref": "stroke-width.selected"
+          "$value": "{semantic.border.selected}",
+          "ref": "border.selected"
         },
         "motion": {
           "$value": "{semantic.motion.control}",
@@ -58,8 +58,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.stroke.focus}",
-        "ref": "color.stroke.focus"
+        "$value": "{semantic.color.bdr.focused}",
+        "ref": "color.bdr.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

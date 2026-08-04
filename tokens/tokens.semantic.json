@@ -81,7 +81,7 @@
               }
             }
           },
-          "danger-subtle": {
+          "error-subtle": {
             "$value": "{color.red.50}",
             "$type": "color",
             "$extensions": {
@@ -149,7 +149,7 @@
                 "contrast": 7.14
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.brand.800}",
               "$type": "color",
               "$extensions": {
@@ -195,7 +195,7 @@
                 }
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.cool-gray.300}",
               "$type": "color",
               "$extensions": {
@@ -226,7 +226,7 @@
                 }
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.alpha.black.a12}",
               "$type": "color",
               "$extensions": {
@@ -266,7 +266,7 @@
               "worstSurface": "subtle"
             }
           },
-          "subtle": {
+          "tertiary": {
             "$value": "{color.cool-gray.500}",
             "$type": "color",
             "$extensions": {
@@ -327,7 +327,7 @@
               "worstSurface": "brand-subtle"
             }
           },
-          "danger": {
+          "error": {
             "$value": "{color.red.600}",
             "$type": "color",
             "$extensions": {
@@ -411,7 +411,7 @@
                 "contrastMin": 8.86
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.blue.900}",
               "$type": "color",
               "$extensions": {
@@ -425,7 +425,7 @@
             }
           }
         },
-        "stroke": {
+        "bdr": {
           "default": {
             "$value": "{color.cool-gray.300}",
             "$type": "color",
@@ -463,7 +463,7 @@
               "worstSurface": "subtle"
             }
           },
-          "focus": {
+          "focused": {
             "$value": "{color.brand.500}",
             "$type": "color",
             "$extensions": {
@@ -478,14 +478,14 @@
               "worstSurface": "subtle"
             }
           },
-          "danger": {
+          "error": {
             "$value": "{color.red.500}",
             "$type": "color",
             "$extensions": {
               "resolved": "#e94c50",
               "rule": {
                 "type": "contrast",
-                "against": "worst-case(표면+danger-subtle)",
+                "against": "worst-case(표면+error-subtle)",
                 "target": 3
               },
               "contrastMin": 3.42,
@@ -582,7 +582,7 @@
               }
             }
           },
-          "danger-subtle": {
+          "error-subtle": {
             "$value": "{color.red.950}",
             "$type": "color",
             "$extensions": {
@@ -650,7 +650,7 @@
                 "contrast": 7.14
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.brand.800}",
               "$type": "color",
               "$extensions": {
@@ -696,7 +696,7 @@
                 }
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.cool-gray.600}",
               "$type": "color",
               "$extensions": {
@@ -727,7 +727,7 @@
                 }
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.alpha.white.a12}",
               "$type": "color",
               "$extensions": {
@@ -767,7 +767,7 @@
               "worstSurface": "overlay"
             }
           },
-          "subtle": {
+          "tertiary": {
             "$value": "{color.cool-gray.400}",
             "$type": "color",
             "$extensions": {
@@ -828,7 +828,7 @@
               "worstSurface": "overlay"
             }
           },
-          "danger": {
+          "error": {
             "$value": "{color.red.200}",
             "$type": "color",
             "$extensions": {
@@ -912,7 +912,7 @@
                 "contrastMin": 6.81
               }
             },
-            "active": {
+            "pressed": {
               "$value": "{color.blue.50}",
               "$type": "color",
               "$extensions": {
@@ -926,7 +926,7 @@
             }
           }
         },
-        "stroke": {
+        "bdr": {
           "default": {
             "$value": "{color.cool-gray.700}",
             "$type": "color",
@@ -964,7 +964,7 @@
               "worstSurface": "overlay"
             }
           },
-          "focus": {
+          "focused": {
             "$value": "{color.brand.400}",
             "$type": "color",
             "$extensions": {
@@ -979,14 +979,14 @@
               "worstSurface": "overlay"
             }
           },
-          "danger": {
+          "error": {
             "$value": "{color.red.400}",
             "$type": "color",
             "$extensions": {
               "resolved": "#ff7372",
               "rule": {
                 "type": "contrast",
-                "against": "worst-case(표면+danger-subtle)",
+                "against": "worst-case(표면+error-subtle)",
                 "target": 3
               },
               "contrastMin": 3.07,
@@ -1289,123 +1289,123 @@
       }
     },
     "spacing": {
-      "$description": "간격 역할",
-      "inset": {
+      "$description": "간격 역할 (결정 #40 KDX 정렬 — padding/gap/margin)",
+      "padding": {
         "$extensions": {
-          "why": "컴포넌트 내부 padding"
+          "why": "컴포넌트 안쪽 여백"
         },
         "sm": {
-          "$value": "{spacing.rem.space-2}",
+          "$value": "{dimension.rem.step-3}",
           "$type": "dimension",
           "$extensions": {}
         },
         "md": {
-          "$value": "{spacing.rem.space-4}",
+          "$value": "{dimension.rem.step-5}",
           "$type": "dimension",
           "$extensions": {}
         },
         "lg": {
-          "$value": "{spacing.rem.space-5}",
+          "$value": "{dimension.rem.step-7}",
           "$type": "dimension",
           "$extensions": {}
         }
       },
-      "stack": {
+      "gap": {
         "$extensions": {
-          "why": "수직 흐름 간격"
+          "why": "요소 사이 간격 — y=수직, x=수평, section=페이지 섹션"
         },
-        "sm": {
-          "$value": "{spacing.rem.space-2}",
-          "$type": "dimension",
-          "$extensions": {}
-        },
-        "md": {
-          "$value": "{spacing.rem.space-4}",
-          "$type": "dimension",
-          "$extensions": {}
-        },
-        "lg": {
-          "$value": "{spacing.rem.space-6}",
-          "$type": "dimension",
-          "$extensions": {}
-        }
-      },
-      "inline": {
-        "$extensions": {
-          "why": "수평 인라인 간격"
-        },
-        "sm": {
-          "$value": "{spacing.rem.space-1}",
-          "$type": "dimension",
-          "$extensions": {}
-        },
-        "md": {
-          "$value": "{spacing.rem.space-2}",
-          "$type": "dimension",
-          "$extensions": {}
-        },
-        "lg": {
-          "$value": "{spacing.rem.space-4}",
-          "$type": "dimension",
-          "$extensions": {}
-        }
-      },
-      "section-gap": {
-        "$extensions": {
-          "why": "페이지 섹션 분리",
-          "rule": {
-            "type": "breakpoint-binding"
+        "y": {
+          "sm": {
+            "$value": "{dimension.rem.step-3}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "md": {
+            "$value": "{dimension.rem.step-5}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "lg": {
+            "$value": "{dimension.rem.step-8}",
+            "$type": "dimension",
+            "$extensions": {}
           }
         },
-        "mobile": {
-          "$value": "{spacing.rem.space-8}",
-          "$type": "dimension",
-          "$extensions": {}
+        "x": {
+          "sm": {
+            "$value": "{dimension.rem.step-2}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "md": {
+            "$value": "{dimension.rem.step-3}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "lg": {
+            "$value": "{dimension.rem.step-5}",
+            "$type": "dimension",
+            "$extensions": {}
+          }
         },
-        "tablet": {
-          "$value": "{spacing.rem.space-9}",
-          "$type": "dimension",
-          "$extensions": {}
-        },
-        "desktop": {
-          "$value": "{spacing.rem.space-9}",
-          "$type": "dimension",
-          "$extensions": {}
+        "section": {
+          "$extensions": {
+            "rule": {
+              "type": "breakpoint-binding"
+            }
+          },
+          "mobile": {
+            "$value": "{dimension.rem.step-10}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "tablet": {
+            "$value": "{dimension.rem.step-11}",
+            "$type": "dimension",
+            "$extensions": {}
+          },
+          "desktop": {
+            "$value": "{dimension.rem.step-11}",
+            "$type": "dimension",
+            "$extensions": {}
+          }
         }
       }
     },
     "radius": {
-      "$description": "radius 역할",
+      "$description": "radius 역할 — dimension 사다리 칸 배정 (결정 #40 · Q-014)",
       "control": {
-        "$value": "{radius.rem.radius-2}",
+        "$value": "{dimension.rem.step-3}",
         "$type": "dimension",
         "$extensions": {
           "why": "버튼·인풋"
         }
       },
       "container": {
-        "$value": "{radius.rem.radius-3}",
+        "$value": "{dimension.rem.step-4}",
         "$type": "dimension",
         "$extensions": {
           "why": "카드·패널"
         }
       },
       "overlay": {
-        "$value": "{radius.rem.radius-4}",
+        "$value": "{dimension.rem.step-5}",
         "$type": "dimension",
         "$extensions": {
           "why": "모달·팝오버"
         }
       },
       "pill": {
-        "$value": "{radius.special.radius-full}",
+        "$value": "{dimension.special.full}",
         "$type": "dimension",
         "$extensions": {}
       },
       "circle": {
-        "$value": "{radius.special.radius-circle}",
+        "$value": "{dimension.special.full}",
         "$type": "dimension",
-        "$extensions": {}
+        "$extensions": {
+          "why": "결정 #40 — special.full로 리타깃(50% 폐지, Figma 호환)"
+        }
       }
     },
     "elevation": {

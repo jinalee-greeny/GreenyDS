@@ -1,7 +1,7 @@
 {
   "component": {
     "radio": {
-      "$description": "Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 stroke.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
+      "$description": "Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 bdr.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
       "control": {
         "bg": {
           "default": {
@@ -13,40 +13,40 @@
             "ref": "color.bg.subtle"
           }
         },
-        "stroke": {
+        "bdr": {
           "default": {
-            "$value": "{semantic.color.stroke.default}",
-            "ref": "color.stroke.default"
+            "$value": "{semantic.color.bdr.default}",
+            "ref": "color.bdr.default"
           },
           "hover": {
-            "$value": "{semantic.color.stroke.strong}",
-            "ref": "color.stroke.strong"
+            "$value": "{semantic.color.bdr.strong}",
+            "ref": "color.bdr.strong"
           },
-          "focus": {
-            "$value": "{semantic.color.stroke.focus}",
-            "ref": "color.stroke.focus"
+          "focused": {
+            "$value": "{semantic.color.bdr.focused}",
+            "ref": "color.bdr.focused"
           },
           "checked": {
             "$value": "{semantic.color.fg.brand}",
             "ref": "color.fg.brand"
           },
           "disabled": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         },
-        "stroke-width": {
+        "border": {
           "default": {
-            "$value": "{semantic.stroke-width.default}",
-            "ref": "stroke-width.default"
+            "$value": "{semantic.border.default}",
+            "ref": "border.default"
           },
           "checked": {
-            "$value": "{semantic.stroke-width.selected}",
-            "ref": "stroke-width.selected"
+            "$value": "{semantic.border.selected}",
+            "ref": "border.selected"
           },
-          "focus": {
-            "$value": "{semantic.stroke-width.focus}",
-            "ref": "stroke-width.focus"
+          "focused": {
+            "$value": "{semantic.border.focused}",
+            "ref": "border.focused"
           }
         },
         "radius": {
@@ -136,13 +136,13 @@
           "ref": "typography.label"
         },
         "gap": {
-          "$value": "{semantic.spacing.inline.sm}",
-          "ref": "spacing.inline.sm"
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.stroke.focus}",
-        "ref": "color.stroke.focus"
+        "$value": "{semantic.color.bdr.focused}",
+        "ref": "color.bdr.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

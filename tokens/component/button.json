@@ -12,9 +12,9 @@
             "$value": "{semantic.color.bg.action-primary.hover}",
             "ref": "color.bg.action-primary.hover"
           },
-          "active": {
-            "$value": "{semantic.color.bg.action-primary.active}",
-            "ref": "color.bg.action-primary.active"
+          "pressed": {
+            "$value": "{semantic.color.bg.action-primary.pressed}",
+            "ref": "color.bg.action-primary.pressed"
           },
           "disabled": {
             "$value": "{semantic.color.bg.action-disabled}",
@@ -40,9 +40,9 @@
             "$value": "{semantic.color.bg.action-secondary.hover}",
             "ref": "color.bg.action-secondary.hover"
           },
-          "active": {
-            "$value": "{semantic.color.bg.action-secondary.active}",
-            "ref": "color.bg.action-secondary.active"
+          "pressed": {
+            "$value": "{semantic.color.bg.action-secondary.pressed}",
+            "ref": "color.bg.action-secondary.pressed"
           },
           "disabled": {
             "$value": "{semantic.color.bg.action-disabled}",
@@ -57,9 +57,9 @@
           "$value": "{semantic.color.fg.disabled}",
           "ref": "color.fg.disabled"
         },
-        "stroke": {
-          "$value": "{semantic.color.stroke.default}",
-          "ref": "color.stroke.default"
+        "bdr": {
+          "$value": "{semantic.color.bdr.default}",
+          "ref": "color.bdr.default"
         }
       },
       "ghost": {
@@ -72,9 +72,9 @@
             "$value": "{semantic.color.bg.action-ghost.hover}",
             "ref": "color.bg.action-ghost.hover"
           },
-          "active": {
-            "$value": "{semantic.color.bg.action-ghost.active}",
-            "ref": "color.bg.action-ghost.active"
+          "pressed": {
+            "$value": "{semantic.color.bg.action-ghost.pressed}",
+            "ref": "color.bg.action-ghost.pressed"
           },
           "disabled": {
             "$value": "{semantic.color.bg.action-disabled}",
@@ -124,35 +124,35 @@
       },
       "padding-x": {
         "sm": {
-          "$value": "{semantic.spacing.inline.md}",
-          "ref": "spacing.inline.md"
+          "$value": "{semantic.spacing.gap.x.md}",
+          "ref": "spacing.gap.x.md"
         },
         "md": {
-          "$value": "{semantic.spacing.inline.lg}",
-          "ref": "spacing.inline.lg"
+          "$value": "{semantic.spacing.gap.x.lg}",
+          "ref": "spacing.gap.x.lg"
         },
         "lg": {
-          "$value": "{semantic.spacing.inline.lg}",
-          "ref": "spacing.inline.lg"
+          "$value": "{semantic.spacing.gap.x.lg}",
+          "ref": "spacing.gap.x.lg"
         }
       },
       "gap": {
-        "$value": "{semantic.spacing.inline.sm}",
-        "ref": "spacing.inline.sm"
+        "$value": "{semantic.spacing.gap.x.sm}",
+        "ref": "spacing.gap.x.sm"
       },
       "typography": {
         "$value": "{semantic.typography.label}",
         "ref": "typography.label"
       },
-      "stroke-width": {
-        "focus": {
-          "$value": "{semantic.stroke-width.focus}",
-          "ref": "stroke-width.focus"
+      "border": {
+        "focused": {
+          "$value": "{semantic.border.focused}",
+          "ref": "border.focused"
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.stroke.focus}",
-        "ref": "color.stroke.focus"
+        "$value": "{semantic.color.bdr.focused}",
+        "ref": "color.bdr.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

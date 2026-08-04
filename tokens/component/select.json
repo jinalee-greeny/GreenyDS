@@ -27,22 +27,22 @@
             "ref": "color.fg.disabled"
           }
         },
-        "stroke": {
+        "bdr": {
           "default": {
-            "$value": "{semantic.color.stroke.default}",
-            "ref": "color.stroke.default"
+            "$value": "{semantic.color.bdr.default}",
+            "ref": "color.bdr.default"
           },
           "hover": {
-            "$value": "{semantic.color.stroke.strong}",
-            "ref": "color.stroke.strong"
+            "$value": "{semantic.color.bdr.strong}",
+            "ref": "color.bdr.strong"
           },
-          "focus": {
-            "$value": "{semantic.color.stroke.focus}",
-            "ref": "color.stroke.focus"
+          "focused": {
+            "$value": "{semantic.color.bdr.focused}",
+            "ref": "color.bdr.focused"
           },
           "disabled": {
-            "$value": "{semantic.color.stroke.subtle}",
-            "ref": "color.stroke.subtle"
+            "$value": "{semantic.color.bdr.subtle}",
+            "ref": "color.bdr.subtle"
           }
         },
         "height": {
@@ -82,12 +82,12 @@
           "ref": "radius.container"
         },
         "padding": {
-          "$value": "{semantic.spacing.inset.sm}",
-          "ref": "spacing.inset.sm"
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
         },
-        "stroke": {
-          "$value": "{semantic.color.stroke.subtle}",
-          "ref": "color.stroke.subtle"
+        "bdr": {
+          "$value": "{semantic.color.bdr.subtle}",
+          "ref": "color.bdr.subtle"
         }
       },
       "item": {
@@ -106,8 +106,8 @@
             "px": 4,
             "rule": {
               "type": "nesting",
-              "formula": "max(0, radius.container − inset.sm)",
-              "why": "중첩 정합(#10)·inset 인자 호출(§5.2)"
+              "formula": "max(0, radius.container − padding.sm)",
+              "why": "중첩 정합(#10)·padding 인자 호출(§5.2)"
             }
           }
         },
@@ -130,8 +130,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.stroke.focus}",
-        "ref": "color.stroke.focus"
+        "$value": "{semantic.color.bdr.focused}",
+        "ref": "color.bdr.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

@@ -1,5 +1,5 @@
 {
-  "$description": "디자인 시스템 마스터 프리셋 — primitive 토큰 (5 레이어). SSOT 실체화. 단위(결정 #12): elevation=rem, spacing·radius·typography 크기=rem·px 병기.",
+  "$description": "디자인 시스템 마스터 프리셋 — primitive 토큰 (4 그룹, 결정 #40 KDX 정렬). SSOT 실체화. 단위(결정 #12): elevation=rem, dimension·typography 크기=rem·px 병기.",
   "color": {
     "$description": "Primitive 색 램프 (OKLCH 파생, sRGB, even anchoring, taper 1.0). 역할 없음.",
     "brand": {
@@ -693,83 +693,95 @@
       }
     }
   },
-  "spacing": {
-    "$description": "Primitive 간격. base 8px + half 4px 그리드. 단위 rem·px 병기(둘다, 결정 #12). 값과 분리된 서수 id.",
+  "dimension": {
+    "$description": "Primitive 치수 사다리 — 간격·모서리·테두리 굵기의 단일 원천 (결정 #40 · Q-014). base 8px, 2px 그리드(결정 #39). 단위 rem·px 병기(결정 #12). 값과 분리된 서수 id.",
     "rem": {
       "$type": "dimension",
-      "space-0": {
+      "step-0": {
         "$value": "0rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-1": {
-        "$value": "0.25rem",
+      "step-1": {
+        "$value": "0.125rem",
         "$extensions": {
-          "onGrid": false
+          "onGrid": true
         }
       },
-      "space-2": {
+      "step-2": {
+        "$value": "0.25rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "step-3": {
         "$value": "0.5rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-3": {
+      "step-4": {
         "$value": "0.75rem",
         "$extensions": {
-          "onGrid": false
+          "onGrid": true
         }
       },
-      "space-4": {
+      "step-5": {
         "$value": "1rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-5": {
+      "step-6": {
+        "$value": "1.25rem",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "step-7": {
         "$value": "1.5rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-6": {
+      "step-8": {
         "$value": "2rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-7": {
+      "step-9": {
         "$value": "2.5rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-8": {
+      "step-10": {
         "$value": "3rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-9": {
+      "step-11": {
         "$value": "4rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-10": {
+      "step-12": {
         "$value": "5rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-11": {
+      "step-13": {
         "$value": "6rem",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-12": {
+      "step-14": {
         "$value": "8rem",
         "$extensions": {
           "onGrid": true
@@ -778,146 +790,107 @@
     },
     "px": {
       "$type": "dimension",
-      "space-0": {
+      "step-0": {
         "$value": "0px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-1": {
-        "$value": "4px",
+      "step-1": {
+        "$value": "2px",
         "$extensions": {
-          "onGrid": false
+          "onGrid": true
         }
       },
-      "space-2": {
+      "step-2": {
+        "$value": "4px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "step-3": {
         "$value": "8px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-3": {
+      "step-4": {
         "$value": "12px",
         "$extensions": {
-          "onGrid": false
+          "onGrid": true
         }
       },
-      "space-4": {
+      "step-5": {
         "$value": "16px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-5": {
+      "step-6": {
+        "$value": "20px",
+        "$extensions": {
+          "onGrid": true
+        }
+      },
+      "step-7": {
         "$value": "24px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-6": {
+      "step-8": {
         "$value": "32px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-7": {
+      "step-9": {
         "$value": "40px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-8": {
+      "step-10": {
         "$value": "48px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-9": {
+      "step-11": {
         "$value": "64px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-10": {
+      "step-12": {
         "$value": "80px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-11": {
+      "step-13": {
         "$value": "96px",
         "$extensions": {
           "onGrid": true
         }
       },
-      "space-12": {
+      "step-14": {
         "$value": "128px",
         "$extensions": {
           "onGrid": true
         }
       }
-    }
-  },
-  "radius": {
-    "$description": "Primitive radius. base 4px, 간격 그리드 정렬. 단위 rem·px 병기(둘다, 결정 #12).",
-    "rem": {
-      "$type": "dimension",
-      "radius-0": {
-        "$value": "0rem"
-      },
-      "radius-1": {
-        "$value": "0.25rem"
-      },
-      "radius-2": {
-        "$value": "0.5rem"
-      },
-      "radius-3": {
-        "$value": "0.75rem"
-      },
-      "radius-4": {
-        "$value": "1rem"
-      },
-      "radius-5": {
-        "$value": "1.5rem"
-      },
-      "radius-6": {
-        "$value": "2rem"
-      }
-    },
-    "px": {
-      "$type": "dimension",
-      "radius-0": {
-        "$value": "0px"
-      },
-      "radius-1": {
-        "$value": "4px"
-      },
-      "radius-2": {
-        "$value": "8px"
-      },
-      "radius-3": {
-        "$value": "12px"
-      },
-      "radius-4": {
-        "$value": "16px"
-      },
-      "radius-5": {
-        "$value": "24px"
-      },
-      "radius-6": {
-        "$value": "32px"
-      }
     },
     "special": {
       "$type": "dimension",
-      "$description": "센티넬(단위 무관)",
-      "radius-full": {
-        "$value": "9999px",
-        "$description": "pill"
+      "$description": "센티널 2개 — 사다리 밖 특수값(결정 #40)",
+      "hairline": {
+        "$value": "1px",
+        "$description": "헤어라인 정밀 선 — px 고정"
       },
-      "radius-circle": {
-        "$value": "50%",
-        "$description": "원형"
+      "full": {
+        "$value": "999px",
+        "$description": "알약·원 (Figma 실측 검증)"
       }
     }
   },

@@ -17,59 +17,41 @@ const near = (a, b) => Math.abs(a - b) < 1e-6;
 const nearRounded = (a, b) => Math.abs(a - b) < 0.002;
 const nearMultiple = (v, step) => step > 0 && Math.abs(v / step - Math.round(v / step)) < 1e-6;
 
-/* ------------------------------- spacing ------------------------------- */
+/* ------------------------- dimension 사다리 (결정 #40) ------------------------- */
 {
-  const BASE = 8, HALF = 4;
-  const px = Object.entries(T.spacing.px).filter(([k]) => !k.startsWith('$'))
+  const GRID = 2; // 결정 #39 — 2px 그리드
+  const px = Object.entries(T.dimension.px).filter(([k]) => !k.startsWith('$'))
     .map(([k, v]) => ({ id: k, px: pxNum(v.$value) }));
-  const rem = Object.fromEntries(Object.entries(T.spacing.rem).filter(([k]) => !k.startsWith('$'))
+  const rem = Object.fromEntries(Object.entries(T.dimension.rem).filter(([k]) => !k.startsWith('$'))
     .map(([k, v]) => [k, pxNum(v.$value)]));
   const nz = px.filter((d) => d.px > 0);
 
-  push(nearMultiple(BASE, HALF) ? 'pass' : 'fail', 'spacing',
-    `그리드 일관성 — base(${BASE}) = half(${HALF}) × ${Math.round(BASE / HALF)}`);
-  const off = nz.filter((d) => !nearMultiple(d.px, HALF));
-  push(off.length === 0 ? 'pass' : 'fail', 'spacing',
-    off.length === 0 ? `그리드 무결성 — 모든 값이 ${HALF}px 배수` : `그리드 이탈: ${off.map((d) => d.id).join(', ')}`);
+  push(px.length === 15 ? 'pass' : 'fail', 'dimension',
+    `사다리 칸 수 ${px.length} — 15칸(step-0…14, 결정 #40 · Q-014) ${px.length === 15 ? '일치' : '불일치'}`);
+  const off = nz.filter((d) => !nearMultiple(d.px, GRID));
+  push(off.length === 0 ? 'pass' : 'fail', 'dimension',
+    off.length === 0 ? `그리드 무결성 — 모든 값이 ${GRID}px 배수(결정 #39)` : `그리드 이탈: ${off.map((d) => d.id).join(', ')}`);
   let mono = true;
   for (let i = 1; i < px.length; i++) if (px[i].px <= px[i - 1].px) mono = false;
-  push(mono ? 'pass' : 'fail', 'spacing', mono ? '스케일 단조 증가' : '인접 단계 값 역전/정체');
+  push(mono ? 'pass' : 'fail', 'dimension', mono ? '스케일 단조 증가' : '인접 단계 값 역전/정체');
   const dup = nz.length !== new Set(nz.map((d) => d.px)).size;
-  push(dup ? 'fail' : 'pass', 'spacing', dup ? '중복 값 존재' : '중복 없음');
-  const smallest = Math.min(...nz.map((d) => d.px));
-  push(smallest >= HALF ? 'pass' : 'warn', 'spacing', `최소 비영 간격 ${smallest}px ${smallest >= HALF ? '≥' : '<'} 하프스텝`);
+  push(dup ? 'fail' : 'pass', 'dimension', dup ? '중복 값 존재' : '중복 없음');
   const maxPx = Math.max(...px.map((d) => d.px));
-  push(maxPx >= 44 ? 'pass' : 'warn', 'spacing', `최대 간격 ${maxPx}px — 터치 타깃(44px, WCAG 2.5.5) ${maxPx >= 44 ? '구성 가능' : '구성 어려움'}`);
+  push(maxPx >= 44 ? 'pass' : 'warn', 'dimension', `최대 간격 ${maxPx}px — 터치 타깃(44px, WCAG 2.5.5) ${maxPx >= 44 ? '구성 가능' : '구성 어려움'}`);
   const drift = px.filter((d) => !near(rem[d.id], d.px));
-  push(drift.length === 0 ? 'pass' : 'fail', 'spacing',
+  push(drift.length === 0 ? 'pass' : 'fail', 'dimension',
     drift.length === 0 ? 'rem·px 병기 정합(rem×16 == px)' : `rem/px 드리프트: ${drift.map((d) => d.id).join(', ')}`);
-}
 
-/* -------------------------------- radius -------------------------------- */
-{
-  const BASE = 4;
-  const px = Object.entries(T.radius.px).filter(([k]) => !k.startsWith('$'))
-    .map(([k, v]) => ({ id: k, px: pxNum(v.$value) }));
-  const rem = Object.fromEntries(Object.entries(T.radius.rem).filter(([k]) => !k.startsWith('$'))
-    .map(([k, v]) => [k, pxNum(v.$value)]));
-  const nz = px.filter((d) => d.px > 0);
+  // 센티널 2종 (결정 #40): hairline 1px · full 999px — 50%·9999px 금지(Figma 호환)
+  const sp = T.dimension.special;
+  const hasSpecial = sp && sp['hairline']?.$value === '1px' && sp['full']?.$value === '999px';
+  push(hasSpecial ? 'pass' : 'fail', 'dimension', hasSpecial ? '센티널 — hairline(1px)·full(999px) 제공' : '센티널 누락/값 불일치');
+  const banned = sp && Object.values(sp).some((v) => v && (v.$value === '50%' || v.$value === '9999px'));
+  push(banned ? 'fail' : 'pass', 'dimension', banned ? '금지값 검출 — 50%/9999px (결정 #40 위반)' : '금지값(50%·9999px) 없음');
 
-  const off = nz.filter((d) => !nearMultiple(d.px, BASE));
-  push(off.length === 0 ? 'pass' : 'fail', 'radius',
-    off.length === 0 ? `그리드 무결성 — 모든 값이 ${BASE}px 배수(간격 그리드 정렬)` : `그리드 이탈: ${off.map((d) => d.id).join(', ')}`);
-  let mono = true;
-  for (let i = 1; i < px.length; i++) if (px[i].px <= px[i - 1].px) mono = false;
-  push(mono ? 'pass' : 'fail', 'radius', mono ? '스케일 단조 증가' : '인접 단계 값 역전/정체');
-  const dup = nz.length !== new Set(nz.map((d) => d.px)).size;
-  push(dup ? 'fail' : 'pass', 'radius', dup ? '중복 값 존재' : '중복 없음');
-  const sp = T.radius.special;
-  const hasSpecial = sp && sp['radius-full']?.$value === '9999px' && sp['radius-circle']?.$value === '50%';
-  push(hasSpecial ? 'pass' : 'fail', 'radius', hasSpecial ? '특수 토큰 — full(9999px)·circle(50%) 제공' : '특수 토큰 누락');
-  const outer = px.find((d) => d.id === 'radius-5')?.px ?? 0, PAD = 12;
-  push(outer - PAD >= 0 ? 'pass' : 'warn', 'radius', `중첩 공식 — inner = ${outer}−${PAD} = ${outer - PAD}px ${outer - PAD >= 0 ? '≥ 0' : '< 0 (sharp 처리)'}`);
-  const drift = px.filter((d) => !near(rem[d.id], d.px));
-  push(drift.length === 0 ? 'pass' : 'fail', 'radius',
-    drift.length === 0 ? 'rem·px 병기 정합' : `rem/px 드리프트: ${drift.map((d) => d.id).join(', ')}`);
+  // 중첩 모서리 공식 — overlay 후보(step-7=24) − padding.md(16)
+  const outer = px.find((d) => d.id === 'step-7')?.px ?? 0, PAD = 12;
+  push(outer - PAD >= 0 ? 'pass' : 'warn', 'dimension', `중첩 공식 — inner = ${outer}−${PAD} = ${outer - PAD}px ${outer - PAD >= 0 ? '≥ 0' : '< 0 (sharp 처리)'}`);
 }
 
 /* ------------------------------ typography ------------------------------ */

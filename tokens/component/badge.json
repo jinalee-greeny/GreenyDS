@@ -23,14 +23,14 @@
             "ref": "color.fg.success"
           }
         },
-        "danger": {
+        "error": {
           "bg": {
-            "$value": "{semantic.color.bg.danger-subtle}",
-            "ref": "color.bg.danger-subtle"
+            "$value": "{semantic.color.bg.error-subtle}",
+            "ref": "color.bg.error-subtle"
           },
           "fg": {
-            "$value": "{semantic.color.fg.danger}",
-            "ref": "color.fg.danger"
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
           }
         },
         "warning": {
@@ -59,8 +59,8 @@
         "ref": "radius.pill"
       },
       "padding": {
-        "$value": "{semantic.spacing.inset.sm}",
-        "ref": "spacing.inset.sm"
+        "$value": "{semantic.spacing.padding.sm}",
+        "ref": "spacing.padding.sm"
       },
       "icon": {
         "$value": "{semantic.size.icon.sm}",

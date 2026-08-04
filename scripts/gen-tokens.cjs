@@ -46,13 +46,10 @@ const DEFAULT_PARAMS = {
       mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
     },
   },
-  spacing: {
+  dimension: {
     basePx: 8,
-    multipliers: [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16],
-  },
-  radius: {
-    basePx: 4,
-    multipliers: [0, 1, 2, 3, 4, 6, 8],
+    // 사다리 15칸 (결정 #40 · Q-014): 0·2·4·8·12·16·20·24·32·40·48·64·80·96·128
+    multipliers: [0, 0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16],
   },
   elevation: {
     levels: [0, 2, 4, 8, 16, 24],
@@ -211,42 +208,28 @@ function genTypography(p) {
   };
 }
 
-/* ============================== 간격 · radius ============================== */
-function genSpacing(p) {
-  const values = p.multipliers.map((m, i) => ({ id: `space-${i}`, px: p.basePx * m }));
+/* ============================== dimension 사다리 (결정 #40 · Q-014) ============================== */
+function genDimension(p) {
+  const values = p.multipliers.map((m, i) => ({ id: `step-${i}`, px: p.basePx * m }));
   const node = (unit) => {
     const o = { $type: 'dimension' };
     for (const v of values) {
       o[v.id] = {
         $value: unit === 'rem' ? remStr(v.px) : pxStr(v.px),
-        $extensions: { onGrid: v.px % p.basePx === 0 },
+        $extensions: { onGrid: v.px % 2 === 0 },
       };
     }
     return o;
   };
   return {
-    $description: 'Primitive 간격. base 8px + half 4px 그리드. 단위 rem·px 병기(둘다, 결정 #12). 값과 분리된 서수 id.',
-    rem: node('rem'),
-    px: node('px'),
-  };
-}
-
-function genRadius(p) {
-  const values = p.multipliers.map((m, i) => ({ id: `radius-${i}`, px: p.basePx * m }));
-  const node = (unit) => {
-    const o = { $type: 'dimension' };
-    for (const v of values) o[v.id] = { $value: unit === 'rem' ? remStr(v.px) : pxStr(v.px) };
-    return o;
-  };
-  return {
-    $description: 'Primitive radius. base 4px, 간격 그리드 정렬. 단위 rem·px 병기(둘다, 결정 #12).',
+    $description: 'Primitive 치수 사다리 — 간격·모서리·테두리 굵기의 단일 원천 (결정 #40 · Q-014). base 8px, 2px 그리드(결정 #39). 단위 rem·px 병기(결정 #12). 값과 분리된 서수 id.',
     rem: node('rem'),
     px: node('px'),
     special: {
       $type: 'dimension',
-      $description: '센티넬(단위 무관)',
-      'radius-full': { $value: '9999px', $description: 'pill' },
-      'radius-circle': { $value: '50%', $description: '원형' },
+      $description: '센티널 2개 — 사다리 밖 특수값(결정 #40)',
+      'hairline': { $value: '1px', $description: '헤어라인 정밀 선 — px 고정' },
+      'full': { $value: '999px', $description: '알약·원 (Figma 실측 검증)' },
     },
   };
 }
@@ -303,11 +286,10 @@ function genElevation(p) {
 /* ================================== 조립 ================================== */
 function generate(params = DEFAULT_PARAMS) {
   return {
-    $description: '디자인 시스템 마스터 프리셋 — primitive 토큰 (5 레이어). SSOT 실체화. 단위(결정 #12): elevation=rem, spacing·radius·typography 크기=rem·px 병기.',
+    $description: '디자인 시스템 마스터 프리셋 — primitive 토큰 (4 그룹, 결정 #40 KDX 정렬). SSOT 실체화. 단위(결정 #12): elevation=rem, dimension·typography 크기=rem·px 병기.',
     color: genColor(params.color),
     typography: genTypography(params.typography),
-    spacing: genSpacing(params.spacing),
-    radius: genRadius(params.radius),
+    dimension: genDimension(params.dimension),
     elevation: genElevation(params.elevation),
   };
 }

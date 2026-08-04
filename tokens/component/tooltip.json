@@ -10,9 +10,9 @@
         "$value": "{semantic.elevation.overlay}",
         "ref": "elevation.overlay"
       },
-      "stroke": {
-        "$value": "{semantic.color.stroke.subtle}",
-        "ref": "color.stroke.subtle"
+      "bdr": {
+        "$value": "{semantic.color.bdr.subtle}",
+        "ref": "color.bdr.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.control}",
@@ -23,8 +23,8 @@
         "ref": "color.fg.primary"
       },
       "padding": {
-        "$value": "{semantic.spacing.inset.sm}",
-        "ref": "spacing.inset.sm"
+        "$value": "{semantic.spacing.padding.sm}",
+        "ref": "spacing.padding.sm"
       },
       "typography": {
         "$value": "{semantic.typography.caption}",
