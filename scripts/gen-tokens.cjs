@@ -15,8 +15,9 @@ const DEFAULT_PARAMS = {
     ramps: [
       { id: 'brand', type: 'color', seed: '#6E56CF' },
       // 중립 틴트 (BC-11, 진아 확정 2026-07-24 → A안 엔진기준 2026-07-27):
-      // 채도 감쇠 계수 chromaScale — 쿨 = 구값 대비 −50%(×0.5) · 웜 = −80%(×0.2). L·H 불변.
-      { id: 'warm-gray', type: 'gray', temp: 'warm', chromaScale: 0.2 },
+      // 채도 감쇠 계수 chromaScale — 쿨 = 구값 대비 −50%(×0.5) · 웜 = −95%(×0.05). L·H 불변.
+      // 웜은 Q-013 (C) 확정(진아 2026-07-29, BC-23) — 재-eyeball "웜은 진짜 컬러를 거의 빼줘".
+      { id: 'warm-gray', type: 'gray', temp: 'warm', chromaScale: 0.05 },
       { id: 'cool-gray', type: 'gray', temp: 'cool', chromaScale: 0.5 },
       { id: 'red', type: 'color', seed: '#E5484D' },
       { id: 'amber', type: 'color', seed: '#F5A524' },

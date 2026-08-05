@@ -1,0 +1,1512 @@
+{
+  "$generatedBy": "scripts/figma-rename-map.cjs",
+  "$why": "KDX 표준 정렬 Phase ④ — Figma 변수를 삭제·재생성이 아니라 리네임으로 옮기기 위한 대조표(결정 #28 실행 조건 ②).",
+  "source": {
+    "oldTokensFrom": "/tmp/old"
+  },
+  "counts": {
+    "total": 199,
+    "changed": 55,
+    "unchanged": 144,
+    "unmatched": 0,
+    "merges": 8
+  },
+  "merges": [
+    {
+      "target": "dimension/step/0",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/0",
+        "visual/radius/0",
+        "visual/borderWidth/0"
+      ],
+      "keep": "spatial/space/0",
+      "retargetThenDelete": [
+        "visual/radius/0",
+        "visual/borderWidth/0"
+      ]
+    },
+    {
+      "target": "dimension/step/2",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/1",
+        "visual/radius/1",
+        "visual/borderWidth/4"
+      ],
+      "keep": "spatial/space/1",
+      "retargetThenDelete": [
+        "visual/radius/1",
+        "visual/borderWidth/4"
+      ]
+    },
+    {
+      "target": "dimension/step/3",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/2",
+        "visual/radius/2"
+      ],
+      "keep": "spatial/space/2",
+      "retargetThenDelete": [
+        "visual/radius/2"
+      ]
+    },
+    {
+      "target": "dimension/step/4",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/3",
+        "visual/radius/3"
+      ],
+      "keep": "spatial/space/3",
+      "retargetThenDelete": [
+        "visual/radius/3"
+      ]
+    },
+    {
+      "target": "dimension/step/5",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/4",
+        "visual/radius/4"
+      ],
+      "keep": "spatial/space/4",
+      "retargetThenDelete": [
+        "visual/radius/4"
+      ]
+    },
+    {
+      "target": "dimension/step/7",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/5",
+        "visual/radius/5"
+      ],
+      "keep": "spatial/space/5",
+      "retargetThenDelete": [
+        "visual/radius/5"
+      ]
+    },
+    {
+      "target": "dimension/step/8",
+      "collection": "Primitive",
+      "sources": [
+        "spatial/space/6",
+        "visual/radius/6"
+      ],
+      "keep": "spatial/space/6",
+      "retargetThenDelete": [
+        "visual/radius/6"
+      ]
+    },
+    {
+      "target": "dimension/special/full",
+      "collection": "Primitive",
+      "sources": [
+        "visual/radius/full",
+        "visual/radius/circle"
+      ],
+      "keep": "visual/radius/full",
+      "retargetThenDelete": [
+        "visual/radius/circle"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "collection": "Primitive",
+      "old": "color/brand/50",
+      "new": "color/brand/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/100",
+      "new": "color/brand/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/200",
+      "new": "color/brand/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/300",
+      "new": "color/brand/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/400",
+      "new": "color/brand/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/500",
+      "new": "color/brand/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/600",
+      "new": "color/brand/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/700",
+      "new": "color/brand/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/800",
+      "new": "color/brand/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/900",
+      "new": "color/brand/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/brand/950",
+      "new": "color/brand/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/50",
+      "new": "color/warmGray/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/100",
+      "new": "color/warmGray/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/200",
+      "new": "color/warmGray/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/300",
+      "new": "color/warmGray/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/400",
+      "new": "color/warmGray/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/500",
+      "new": "color/warmGray/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/600",
+      "new": "color/warmGray/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/700",
+      "new": "color/warmGray/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/800",
+      "new": "color/warmGray/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/900",
+      "new": "color/warmGray/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/warmGray/950",
+      "new": "color/warmGray/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/50",
+      "new": "color/coolGray/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/100",
+      "new": "color/coolGray/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/200",
+      "new": "color/coolGray/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/300",
+      "new": "color/coolGray/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/400",
+      "new": "color/coolGray/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/500",
+      "new": "color/coolGray/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/600",
+      "new": "color/coolGray/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/700",
+      "new": "color/coolGray/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/800",
+      "new": "color/coolGray/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/900",
+      "new": "color/coolGray/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/coolGray/950",
+      "new": "color/coolGray/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/50",
+      "new": "color/red/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/100",
+      "new": "color/red/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/200",
+      "new": "color/red/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/300",
+      "new": "color/red/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/400",
+      "new": "color/red/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/500",
+      "new": "color/red/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/600",
+      "new": "color/red/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/700",
+      "new": "color/red/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/800",
+      "new": "color/red/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/900",
+      "new": "color/red/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/red/950",
+      "new": "color/red/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/50",
+      "new": "color/amber/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/100",
+      "new": "color/amber/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/200",
+      "new": "color/amber/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/300",
+      "new": "color/amber/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/400",
+      "new": "color/amber/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/500",
+      "new": "color/amber/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/600",
+      "new": "color/amber/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/700",
+      "new": "color/amber/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/800",
+      "new": "color/amber/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/900",
+      "new": "color/amber/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/amber/950",
+      "new": "color/amber/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/50",
+      "new": "color/green/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/100",
+      "new": "color/green/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/200",
+      "new": "color/green/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/300",
+      "new": "color/green/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/400",
+      "new": "color/green/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/500",
+      "new": "color/green/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/600",
+      "new": "color/green/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/700",
+      "new": "color/green/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/800",
+      "new": "color/green/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/900",
+      "new": "color/green/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/green/950",
+      "new": "color/green/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/50",
+      "new": "color/blue/50",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/100",
+      "new": "color/blue/100",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/200",
+      "new": "color/blue/200",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/300",
+      "new": "color/blue/300",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/400",
+      "new": "color/blue/400",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/500",
+      "new": "color/blue/500",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/600",
+      "new": "color/blue/600",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/700",
+      "new": "color/blue/700",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/800",
+      "new": "color/blue/800",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/900",
+      "new": "color/blue/900",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/blue/950",
+      "new": "color/blue/950",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a4",
+      "new": "color/alpha/black/a4",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a8",
+      "new": "color/alpha/black/a8",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a12",
+      "new": "color/alpha/black/a12",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a16",
+      "new": "color/alpha/black/a16",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a24",
+      "new": "color/alpha/black/a24",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a36",
+      "new": "color/alpha/black/a36",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a48",
+      "new": "color/alpha/black/a48",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a64",
+      "new": "color/alpha/black/a64",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a80",
+      "new": "color/alpha/black/a80",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/black/a92",
+      "new": "color/alpha/black/a92",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a4",
+      "new": "color/alpha/white/a4",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a8",
+      "new": "color/alpha/white/a8",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a12",
+      "new": "color/alpha/white/a12",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a16",
+      "new": "color/alpha/white/a16",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a24",
+      "new": "color/alpha/white/a24",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a36",
+      "new": "color/alpha/white/a36",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a48",
+      "new": "color/alpha/white/a48",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a64",
+      "new": "color/alpha/white/a64",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a80",
+      "new": "color/alpha/white/a80",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/white/a92",
+      "new": "color/alpha/white/a92",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a4",
+      "new": "color/alpha/brand/a4",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a8",
+      "new": "color/alpha/brand/a8",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a12",
+      "new": "color/alpha/brand/a12",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a16",
+      "new": "color/alpha/brand/a16",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a24",
+      "new": "color/alpha/brand/a24",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a36",
+      "new": "color/alpha/brand/a36",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a48",
+      "new": "color/alpha/brand/a48",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a64",
+      "new": "color/alpha/brand/a64",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a80",
+      "new": "color/alpha/brand/a80",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "color/alpha/brand/a92",
+      "new": "color/alpha/brand/a92",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/0",
+      "new": "dimension/step/0",
+      "changed": true,
+      "why": "값 0px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/1",
+      "new": "dimension/step/2",
+      "changed": true,
+      "why": "값 4px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/2",
+      "new": "dimension/step/3",
+      "changed": true,
+      "why": "값 8px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/3",
+      "new": "dimension/step/4",
+      "changed": true,
+      "why": "값 12px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/4",
+      "new": "dimension/step/5",
+      "changed": true,
+      "why": "값 16px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/5",
+      "new": "dimension/step/7",
+      "changed": true,
+      "why": "값 24px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/6",
+      "new": "dimension/step/8",
+      "changed": true,
+      "why": "값 32px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/7",
+      "new": "dimension/step/9",
+      "changed": true,
+      "why": "값 40px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/8",
+      "new": "dimension/step/10",
+      "changed": true,
+      "why": "값 48px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/9",
+      "new": "dimension/step/11",
+      "changed": true,
+      "why": "값 64px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/10",
+      "new": "dimension/step/12",
+      "changed": true,
+      "why": "값 80px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/11",
+      "new": "dimension/step/13",
+      "changed": true,
+      "why": "값 96px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "spatial/space/12",
+      "new": "dimension/step/14",
+      "changed": true,
+      "why": "값 128px 일치 — 사다리 통합(§4). rem·px 두 가지가 한 칸으로 접힌다"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/0",
+      "new": "dimension/step/0",
+      "changed": true,
+      "why": "값 0px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/1",
+      "new": "dimension/step/2",
+      "changed": true,
+      "why": "값 4px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/2",
+      "new": "dimension/step/3",
+      "changed": true,
+      "why": "값 8px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/3",
+      "new": "dimension/step/4",
+      "changed": true,
+      "why": "값 12px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/4",
+      "new": "dimension/step/5",
+      "changed": true,
+      "why": "값 16px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/5",
+      "new": "dimension/step/7",
+      "changed": true,
+      "why": "값 24px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/6",
+      "new": "dimension/step/8",
+      "changed": true,
+      "why": "값 32px 일치 — 사다리 통합(§4)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/full",
+      "new": "dimension/special/full",
+      "changed": true,
+      "why": "9999px → 999px (결정 #40 — Figma 호환 센티널)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/radius/circle",
+      "new": "dimension/special/full",
+      "changed": true,
+      "why": "50% → 999px 리타깃 (Q-014 실행 — 50% 폐지)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/borderWidth/0",
+      "new": "dimension/step/0",
+      "changed": true,
+      "why": "값 0px 일치 — 사다리 통합(§2)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/borderWidth/1",
+      "new": "dimension/special/hairline",
+      "changed": true,
+      "why": "1px → special.hairline (센티널)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/borderWidth/2",
+      "new": "dimension/step/1",
+      "changed": true,
+      "why": "값 2px 일치 — 사다리 통합(§2)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "visual/borderWidth/4",
+      "new": "dimension/step/2",
+      "changed": true,
+      "why": "값 4px 일치 — 사다리 통합(§2)"
+    },
+    {
+      "collection": "Primitive",
+      "old": "typography/font-size/…",
+      "new": "typo/font/size/…",
+      "changed": true,
+      "why": "패밀리 그룹 typography→typo · 복합어 세칙(§4.2c) 적용"
+    },
+    {
+      "collection": "Primitive",
+      "old": "typography/line-height/…",
+      "new": "typo/lineHeight/…",
+      "changed": true,
+      "why": "패밀리 그룹 typography→typo · 복합어 세칙(§4.2c) 적용"
+    },
+    {
+      "collection": "Primitive",
+      "old": "typography/letter-spacing/…",
+      "new": "typo/letterSpacing/…",
+      "changed": true,
+      "why": "패밀리 그룹 typography→typo · 복합어 세칙(§4.2c) 적용"
+    },
+    {
+      "collection": "Primitive",
+      "old": "typography/font-weight/…",
+      "new": "typo/font/weight/…",
+      "changed": true,
+      "why": "패밀리 그룹 typography→typo · 복합어 세칙(§4.2c) 적용"
+    },
+    {
+      "collection": "Primitive",
+      "old": "typography/font-family/…",
+      "new": "typo/font/family/…",
+      "changed": true,
+      "why": "패밀리 그룹 typography→typo · 복합어 세칙(§4.2c) 적용"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/page",
+      "new": "color/bg/page",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/surface",
+      "new": "color/bg/surface",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/surfaceRaised",
+      "new": "color/bg/surfaceRaised",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/surfaceOverlay",
+      "new": "color/bg/surfaceOverlay",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/subtle",
+      "new": "color/bg/subtle",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/brand",
+      "new": "color/bg/brand",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/brandSubtle",
+      "new": "color/bg/brandSubtle",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/dangerSubtle",
+      "new": "color/bg/errorSubtle",
+      "changed": true,
+      "why": "어휘 교체(§2): bg.danger-subtle → bg.error-subtle"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/warningSubtle",
+      "new": "color/bg/warningSubtle",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/successSubtle",
+      "new": "color/bg/successSubtle",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/infoSubtle",
+      "new": "color/bg/infoSubtle",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/primary",
+      "new": "color/bg/action/primary",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/primary/default",
+      "new": "color/bg/action/primary/default",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/primary/hover",
+      "new": "color/bg/action/primary/hover",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/primary/active",
+      "new": "color/bg/action/primary/pressed",
+      "changed": true,
+      "why": "상태 어휘 교체(§2): active → pressed"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/primary/disabled",
+      "new": "color/bg/action/primary/disabled",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/secondary",
+      "new": "color/bg/action/secondary",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/secondary/default",
+      "new": "color/bg/action/secondary/default",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/secondary/hover",
+      "new": "color/bg/action/secondary/hover",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/secondary/active",
+      "new": "color/bg/action/secondary/pressed",
+      "changed": true,
+      "why": "상태 어휘 교체(§2): active → pressed"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/ghost",
+      "new": "color/bg/action/ghost",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/ghost/default",
+      "new": "color/bg/action/ghost/default",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/ghost/hover",
+      "new": "color/bg/action/ghost/hover",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/bg/action/ghost/active",
+      "new": "color/bg/action/ghost/pressed",
+      "changed": true,
+      "why": "상태 어휘 교체(§2): active → pressed"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/primary",
+      "new": "color/fg/primary",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/secondary",
+      "new": "color/fg/secondary",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/subtle",
+      "new": "color/fg/tertiary",
+      "changed": true,
+      "why": "어휘 교체(§2): fg.subtle → fg.tertiary"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/disabled",
+      "new": "color/fg/disabled",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/onBrand",
+      "new": "color/fg/onBrand",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/onAction",
+      "new": "color/fg/onAction",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/brand",
+      "new": "color/fg/brand",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/danger",
+      "new": "color/fg/error",
+      "changed": true,
+      "why": "어휘 교체(§2): fg.danger → fg.error"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/warning",
+      "new": "color/fg/warning",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/success",
+      "new": "color/fg/success",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/info",
+      "new": "color/fg/info",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/link",
+      "new": "color/fg/link",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/link/default",
+      "new": "color/fg/link/default",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/link/hover",
+      "new": "color/fg/link/hover",
+      "changed": false,
+      "why": "변경 없음"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/fg/link/active",
+      "new": "color/fg/link/pressed",
+      "changed": true,
+      "why": "상태 어휘 교체(§2): active → pressed"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/stroke/default",
+      "new": "color/bdr/default",
+      "changed": true,
+      "why": "어휘 교체(§2): stroke.default → bdr.default"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/stroke/subtle",
+      "new": "color/bdr/subtle",
+      "changed": true,
+      "why": "어휘 교체(§2): stroke.subtle → bdr.subtle"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/stroke/strong",
+      "new": "color/bdr/strong",
+      "changed": true,
+      "why": "어휘 교체(§2): stroke.strong → bdr.strong"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/stroke/focus",
+      "new": "color/bdr/focused",
+      "changed": true,
+      "why": "어휘 교체(§2): stroke.focus → bdr.focused"
+    },
+    {
+      "collection": "Semantic",
+      "old": "color/stroke/danger",
+      "new": "color/bdr/error",
+      "changed": true,
+      "why": "어휘 교체(§2): stroke.danger → bdr.error"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inset/sm",
+      "new": "spatial/padding/sm",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inset → padding"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inset/md",
+      "new": "spatial/padding/md",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inset → padding"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inset/lg",
+      "new": "spatial/padding/lg",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inset → padding"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/stack/sm",
+      "new": "spatial/gap/y/sm",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): stack → gap.y"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/stack/md",
+      "new": "spatial/gap/y/md",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): stack → gap.y"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/stack/lg",
+      "new": "spatial/gap/y/lg",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): stack → gap.y"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inline/sm",
+      "new": "spatial/gap/x/sm",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inline → gap.x"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inline/md",
+      "new": "spatial/gap/x/md",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inline → gap.x"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/inline/lg",
+      "new": "spatial/gap/x/lg",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): inline → gap.x"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/sectionGap/mobile",
+      "new": "spatial/gap/section/mobile",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): section-gap → gap.section"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/sectionGap/tablet",
+      "new": "spatial/gap/section/tablet",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): section-gap → gap.section"
+    },
+    {
+      "collection": "Semantic",
+      "old": "spatial/sectionGap/desktop",
+      "new": "spatial/gap/section/desktop",
+      "changed": true,
+      "why": "여백 어휘 교체(§2): section-gap → gap.section"
+    },
+    {
+      "collection": "Semantic",
+      "old": "visual/radius/control",
+      "new": "visual/radius/control",
+      "changed": false,
+      "why": "변경 없음 — 역할명 유지, 참조 대상만 사다리로 리타깃"
+    },
+    {
+      "collection": "Semantic",
+      "old": "visual/radius/container",
+      "new": "visual/radius/container",
+      "changed": false,
+      "why": "변경 없음 — 역할명 유지, 참조 대상만 사다리로 리타깃"
+    },
+    {
+      "collection": "Semantic",
+      "old": "visual/radius/overlay",
+      "new": "visual/radius/overlay",
+      "changed": false,
+      "why": "변경 없음 — 역할명 유지, 참조 대상만 사다리로 리타깃"
+    },
+    {
+      "collection": "Semantic",
+      "old": "visual/radius/pill",
+      "new": "visual/radius/pill",
+      "changed": false,
+      "why": "변경 없음 — 역할명 유지, 참조 대상만 사다리로 리타깃"
+    },
+    {
+      "collection": "Semantic",
+      "old": "visual/radius/circle",
+      "new": "visual/radius/circle",
+      "changed": false,
+      "why": "변경 없음 — 역할명 유지, 참조 대상만 사다리로 리타깃"
+    }
+  ],
+  "unmatched": []
+}
