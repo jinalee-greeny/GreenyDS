@@ -9,7 +9,7 @@
  * 사용: node scripts/apply-config.cjs --config <config.json> [--out build/config-out]
  *
  * config 형식:
- *   { "primitive": { ...gen-tokens 파라미터 override (color.ramps[brand].seed, typography.breakpoints, radius.basePx, elevation.tint, ...) },
+ *   { "primitive": { ...gen-tokens 파라미터 override (color.ramps[brand].seed, typography.breakpoints, dimension.basePx, elevation.tint, ...) },
  *     "semantic":  { "neutral": "cool-gray"|"warm-gray", "targets": { fgSecondary:7, ... }, "darkLadder": {...} },
  *     "meta":      { ...정보... } }
  */

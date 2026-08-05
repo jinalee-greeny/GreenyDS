@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>프리셋 컨피규레이터 — 내부 베타 v1.3</title>
+<title>프리셋 컨피규레이터 — 내부 베타 v1.3.1</title>
 <style>
   /* ═══ Apple 워싱 토큰 레이어 (v1.3) ═══
      GreenyDS 아키텍처 그대로 빌드한 하나의 프리셋:
@@ -516,7 +516,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.3 — Apple 워싱 · 컴포넌트 스튜디오 · 2px 간격 그리드</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.3.1 — Apple 워싱 · KDX 어휘 정렬 · 컴포넌트 스튜디오</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -741,7 +741,7 @@
           <div class="rfield"><span class="rl" style="width:64px">overlay</span><input type="text" id="rt-overlay" style="width:52px"><span class="u" style="font-size:10px;color:var(--faint)">px</span><button class="rst" id="rz-overlay" style="margin-left:auto">↺</button></div>
           <div class="why" style="margin-top:2px">💡 버튼·입력=control · 카드·메뉴=container · 모달=overlay. 비우면(↺) base 파생(control=base·container=+4·overlay=+8). Switch·pill은 항상 999px.</div>
         </div>
-        <div class="why">💡 간격은 base×배수로 space 스케일을 만들고, 컴포넌트는 역할(inset/stack/inline/section-gap)로 그 스케일을 물어감. 밀도 프리셋은 역할 매핑을 한 단계씩 민다.</div>
+        <div class="why">💡 간격은 base×배수로 space 스케일을 만들고, 컴포넌트는 역할(padding/gap.x/gap.y/gap.section)로 그 스케일을 물어감. 밀도 프리셋은 역할 매핑을 한 단계씩 민다.</div>
       </div>
 
       <div class="blk">
@@ -973,8 +973,8 @@ const GREEN={"50":"#dfffeb","100":"#c7f9da","200":"#a5ecc1","300":"#7bd8a3","400
 const BLUE={"50":"#f1f6ff","100":"#e0ecff","200":"#c4dbff","300":"#9dc2ff","400":"#6fa5ff","500":"#3f86fb","600":"#296edd","700":"#1655b9","800":"#0b4193","900":"#072f6d","950":"#031f4f"};
 
 /* 상태색 개별 조정 (v0.2) */
-const STATUS_DEF={danger:RED,warning:AMBER,success:GREEN,info:BLUE};
-const STATUS_META=[["danger","위험"],["warning","경고"],["success","성공"],["info","정보"]];
+const STATUS_DEF={error:RED,warning:AMBER,success:GREEN,info:BLUE};
+const STATUS_META=[["error","위험"],["warning","경고"],["success","성공"],["info","정보"]];
 function statusRamps(){const o={};for(const [k] of STATUS_META){const s=state.statusSeeds[k];
   o[k]=(s&&/^#[0-9a-fA-F]{6}$/.test(s))?genRamp(s):STATUS_DEF[k];}return o;}
 
@@ -996,7 +996,7 @@ function surfaces(mode,NEU){if(mode==="light")return{page:"#ffffff",surface:"#ff
 /* 8종에 필요한 전 역할 해결 */
 function roles(BR,NEU,tgt,mode,ST){
   ST=ST||STATUS_DEF;
-  const DG=ST.danger,WN=ST.warning,SC=ST.success,IF=ST.info;
+  const DG=ST.error,WN=ST.warning,SC=ST.success,IF=ST.info;
   const S=surfaces(mode,NEU),SURF=[S.surface,S.raised,S.overlay,S.subtle],light=mode==="light";
   const apStep=resolveStep(BR,"#ffffff",4.5).s, apH=shift(apStep,1), apA=shift(apStep,2);
   const sub=(R)=>R[light?"50":"950"];
@@ -1007,7 +1007,7 @@ function roles(BR,NEU,tgt,mode,ST){
     ap:BR[apStep],apHover:BR[apH],apActive:BR[apA],onAction:"#ffffff",apStep,apRatio:contrast("#ffffff",BR[apStep]),
     asDef:NEU[light?"100":"800"],asHover:NEU[light?"200":"700"],disabled:NEU[light?"100":"800"],
     knob:light?"#ffffff":NEU["200"],brandSub:BR[light?"50":"950"],
-    dangerSub:sub(DG),warnSub:sub(WN),succSub:sub(SC),infoSub:sub(IF),
+    errorSub:sub(DG),warnSub:sub(WN),succSub:sub(SC),infoSub:sub(IF),
     fgPrimary:NEU[fgP.s],fgPrimaryR:fgP.r,fgSecondary:NEU[fgS.s],fgPlaceholder:NEU[fgS.s],fgDisabled:NEU[light?"400":"600"],
     fgBrand:BR[resolveW(BR,[...SURF,sub(BR)],4.5).s],
     fgDanger:DG[fgDangerRes.s],fgWarn:WN[fgWarnRes.s],
@@ -1097,7 +1097,7 @@ function radTier(t){const b=state.rad,def={control:b,container:b+4,overlay:b+8}[
 const F_H={sm:36,md:44,lg:52};                              // 컨트롤 높이 (프리뷰 고정값)
 const F_MODALW={sm:320,md:440,lg:560};                      // 모달 폭 (프리뷰 고정값)
 const F_SWT={sm:{w:34,h:20,k:16},md:{w:42,h:24,k:20}};      // 스위치 기하 (프리뷰 고정값)
-const F_ST={success:["success","fgSucc","succSub"],danger:["danger","fgDanger","dangerSub"],
+const F_ST={success:["success","fgSucc","succSub"],error:["error","fgDanger","errorSub"],
             warning:["warning","fgWarn","warnSub"],info:["info","fgInfo","infoSub"]};
 function fFs(TR,sz){const b=TR.label.px;return sz==="sm"?Math.max(11,+(b-1).toFixed(1)):sz==="lg"?+(b+1).toFixed(1):b;}
 function fRing(R){return "0 0 0 2px "+R.S.page+",0 0 0 4px "+R.focus;}
@@ -1106,11 +1106,11 @@ function fBtn(R,TR,o){
   o=o||{}; const v=o.v||"primary", sz=o.sz||"md", st=o.st||"default";
   const h=F_H[sz], px=spx("inline",sz), rc=radTier("control");
   let bg,fg,bd="1px solid transparent";
-  if(v==="secondary"){bg=(st==="hover"||st==="active")?R.asHover:R.asDef;fg=R.fgPrimary;bd="1px solid "+R.strokeDefault;}
-  else if(v==="ghost"){bg=(st==="hover"||st==="active")?R.asDef:"transparent";fg=R.fgPrimary;}
-  else{bg=st==="hover"?R.apHover:st==="active"?R.apActive:R.ap;fg=R.onAction;}
+  if(v==="secondary"){bg=(st==="hover"||st==="pressed")?R.asHover:R.asDef;fg=R.fgPrimary;bd="1px solid "+R.strokeDefault;}
+  else if(v==="ghost"){bg=(st==="hover"||st==="pressed")?R.asDef:"transparent";fg=R.fgPrimary;}
+  else{bg=st==="hover"?R.apHover:st==="pressed"?R.apActive:R.ap;fg=R.onAction;}
   if(st==="disabled"){bg=R.disabled;fg=R.fgDisabled;bd="1px solid transparent";}
-  const ring=(st==="focus")?"box-shadow:"+fRing(R)+";":"";
+  const ring=(st==="focused")?"box-shadow:"+fRing(R)+";":"";
   return '<button style="height:'+h+"px;padding:0 "+px+"px;background:"+bg+";color:"+fg+";border:"+bd+
     ";border-radius:"+rc+"px;"+ty(TR.label)+";font-size:"+fFs(TR,sz)+"px;"+ring+
     'cursor:default;flex:none">'+(o.t||"Button")+"</button>";
@@ -1121,7 +1121,7 @@ function fFld(R,TR,o){
   let bg=R.light?"#ffffff":R.S.raised, fg=(st==="empty")?R.fgPlaceholder:R.fgPrimary,
       bd="1px solid "+R.strokeDefault, extra="";
   const txt=o.t||((st==="empty")?"placeholder…":"입력값");
-  if(st==="focus"){bd="2px solid "+R.focus;extra="box-shadow:"+fRing(R)+";";}
+  if(st==="focused"){bd="2px solid "+R.focus;extra="box-shadow:"+fRing(R)+";";}
   else if(st==="error"){bd="1px solid "+R.strokeDanger;}
   else if(st==="disabled"){bg=R.disabled;fg=R.fgDisabled;bd="1px solid "+R.strokeSubtle;}
   const box='<div style="width:'+(o.w||160)+"px;height:"+h+"px;display:flex;align-items:center;padding:0 12px;background:"+
@@ -1135,7 +1135,7 @@ function fFld(R,TR,o){
 function fSel(R,TR,o){
   o=o||{}; const st=o.st||"closed", rc=radTier("control"), rcont=radTier("container");
   let bd="1px solid "+R.strokeDefault, bg=R.S.surface, fg=R.fgPrimary, extra="";
-  if(st==="focus"){bd="2px solid "+R.focus;extra="box-shadow:"+fRing(R)+";";}
+  if(st==="focused"){bd="2px solid "+R.focus;extra="box-shadow:"+fRing(R)+";";}
   if(st==="disabled"){bg=R.disabled;fg=R.fgDisabled;bd="1px solid "+R.strokeSubtle;}
   const trig='<div style="height:'+F_H.md+"px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px;background:"+
     bg+";color:"+fg+";border:"+bd+";border-radius:"+rc+"px;"+ty(TR.body)+";"+extra+'">옵션 B <span style="opacity:.6">▾</span></div>';
@@ -1160,12 +1160,12 @@ function fSwitch(R,o){
 }
 function fTabs(R,TR,o){
   o=o||{};
-  const items=o.items||[["Overview","active"],["Activity","rest"],["Settings","rest"],["Billing","disabled"]];
+  const items=o.items||[["Overview","selected"],["Activity","rest"],["Settings","rest"],["Billing","disabled"]];
   return '<div style="display:inline-flex;border-bottom:1px solid '+R.strokeSubtle+';max-width:100%">'+
     items.map(function(it){
-      const st=it[1], c=st==="active"?R.fgBrand:st==="disabled"?R.fgDisabled:R.fgSecondary;
+      const st=it[1], c=st==="selected"?R.fgBrand:st==="disabled"?R.fgDisabled:R.fgSecondary;
       return '<div style="padding:9px 15px;'+ty(TR.label)+";color:"+c+";border-bottom:2px solid "+
-        (st==="active"?R.fgBrand:"transparent")+';margin-bottom:-1px;white-space:nowrap">'+it[0]+"</div>";
+        (st==="selected"?R.fgBrand:"transparent")+';margin-bottom:-1px;white-space:nowrap">'+it[0]+"</div>";
     }).join("")+"</div>";
 }
 function fCard(R,TR,o){
@@ -1178,7 +1178,7 @@ function fCard(R,TR,o){
 /* v1.2.1 — 좌측 액센트 바와 상태 점을 뺐다.
    상태 하나를 말하려고 바·점·테두리·라벨 색까지 네 겹을 쓰고 있었다.
    이제 한 겹이다 — soft 는 배경으로, 기본은 라벨 색으로. 테두리는
-   두 변형 모두 stroke.subtle 로 통일한다. */
+   두 변형 모두 bdr.subtle 로 통일한다. */
 function fToast(R,TR,o){
   o=o||{}; const k=o.status||"success", m=F_ST[k], fg=R[m[1]], rcont=radTier("container"), soft=o.v==="soft";
   return '<div style="display:flex;align-items:center;background:'+(soft?R[m[2]]:R.S.raised)+
@@ -1220,10 +1220,10 @@ function comps(R,st,TR){
   const buttons=stk([
     grp("변형 3",'<div class="row">'+[["primary","Primary"],["secondary","Secondary"],["ghost","Ghost"]].map(a=>fBtn(R,TR,{v:a[0],t:a[1]})).join("")+"</div>"),
     grp("크기 3",'<div class="row">'+["sm","md","lg"].map(z=>fBtn(R,TR,{sz:z,t:z+" · "+F_H[z]})).join("")+"</div>"),
-    grp("상태 5",'<div class="row">'+["default","hover","active","focus","disabled"].map(x=>fBtn(R,TR,{st:x,t:x})).join("")+"</div>")
+    grp("상태 5",'<div class="row">'+["default","hover","pressed","focused","disabled"].map(x=>fBtn(R,TR,{st:x,t:x})).join("")+"</div>")
   ]);
   const inputs=stk([
-    grp("상태 5",'<div class="row" style="gap:10px;align-items:flex-start">'+[["empty","placeholder…"],["default","입력값"],["focus","포커스"],["error","오류"],["disabled","비활성"]].map(a=>fFld(R,TR,{st:a[0],t:a[1],w:140})).join("")+"</div>"),
+    grp("상태 5",'<div class="row" style="gap:10px;align-items:flex-start">'+[["empty","placeholder…"],["default","입력값"],["focused","포커스"],["error","오류"],["disabled","비활성"]].map(a=>fFld(R,TR,{st:a[0],t:a[1],w:140})).join("")+"</div>"),
     grp("크기 3",'<div class="row" style="gap:10px">'+["sm","md","lg"].map(z=>fFld(R,TR,{sz:z,t:z+" · "+F_H[z],w:110})).join("")+"</div>")
   ]);
   const select=grp("상태 3",'<div class="row" style="gap:13px;align-items:flex-start">'+["closed","open","disabled"].map(x=>fSel(R,TR,{st:x,w:165})).join("")+"</div>");
@@ -1233,7 +1233,7 @@ function comps(R,st,TR){
   const tabs=grp("상태 3","<div>"+fTabs(R,TR,{})+"</div>");
   const card=grp("elevation 3",'<div class="row" style="gap:14px;align-items:flex-start">'+["resting","raised","overlay"].map(e=>fCard(R,TR,{elev:e,w:196,t:"elevation."+e})).join("")+"</div>");
   const toasts=stk([
-    grp("상태 4",'<div style="display:flex;flex-direction:column;gap:7px">'+["success","danger","warning","info"].map(k=>fToast(R,TR,{status:k})).join("")+"</div>"),
+    grp("상태 4",'<div style="display:flex;flex-direction:column;gap:7px">'+["success","error","warning","info"].map(k=>fToast(R,TR,{status:k})).join("")+"</div>"),
     grp("변형 soft",'<div style="display:flex;flex-direction:column;gap:7px">'+["success","warning"].map(k=>fToast(R,TR,{status:k,v:"soft"})).join("")+"</div>")
   ]);
   const modal=stk([
@@ -1262,7 +1262,7 @@ function comps(R,st,TR){
 
 /* ===== 상태 ===== */
 const state={seed:"#8974f0",dark:"on",neutral:"cool",aa:"AAA",dens:8,rad:8,tbase:16,tratio:1.25,elev:50,motion:200,
-  statusSeeds:{danger:"",warning:"",success:"",info:""},
+  statusSeeds:{error:"",warning:"",success:"",info:""},
   fdisp:{mode:"sans",custom:"",web:""},   // 제목용 서체 슬롯
   ftext:{mode:"sans",custom:"",web:""},   // 본문용 서체 슬롯
   roleOv:{display:{},heading:{},title:{},body:{},label:{},caption:{}}, // 역할별 override
@@ -1327,7 +1327,7 @@ function stage(R,label,dark,TR){
     <div class="shd" style="color:${dark?'#aab0ba':'#5f6672'};font-family:var(--mono)"><span class="dot" style="background:${dark?'#3a3f47':'#ffd27a'};border:1px solid ${dark?'#565c66':'#e2b95e'}"></span>${label}</div>
     <div class="comps">${comps(R,state,TR)}</div></div>`;
 }
-const ST_CODE={danger:"dg",warning:"wn",success:"sc",info:"if"};
+const ST_CODE={error:"dg",warning:"wn",success:"sc",info:"if"};
 function shareString(){let s=`theme:${state.seed.replace('#','')}·${state.neutral}·${state.dark}·${state.aa}·d${state.dens}·r${state.rad}·tb${state.tbase}·tr${state.tratio}·gd${({compact:'c',comfortable:'m',spacious:'s'})[state.density]||'m'}·es${state.easing[0]}·st${state.shadowTint}${state.reducedMotion?'·rm':''}`;
   if(["sans","serif","mono"].includes(state.fdisp.mode))s+=`·fd${state.fdisp.mode}`;
   if(["sans","serif","mono"].includes(state.ftext.mode))s+=`·ft${state.ftext.mode}`;
@@ -1336,7 +1336,7 @@ function shareString(){let s=`theme:${state.seed.replace('#','')}·${state.neutr
 function applyThemeString(str){
   str=(str||"").trim();if(!str.startsWith("theme:"))return false;
   const parts=str.slice(6).split("·");if(!/^[0-9a-fA-F]{6}$/.test(parts[0]))return false;
-  const ns={danger:"",warning:"",success:"",info:""};const CODE_ST=Object.fromEntries(Object.entries(ST_CODE).map(([k,c])=>[c,k]));
+  const ns={error:"",warning:"",success:"",info:""};const CODE_ST=Object.fromEntries(Object.entries(ST_CODE).map(([k,c])=>[c,k]));
   const next={seed:"#"+parts[0],reducedMotion:false};let fd=null,ft=null;
   for(const p of parts.slice(1)){
     if(p==="cool"||p==="warm")next.neutral=p;
@@ -1378,7 +1378,7 @@ function updateRoleDetail(TR){
 }
 
 /* v0.4 간격/모서리 상세 UI */
-const SP_ROLES_META=[["inset","Inset · 안쪽여백"],["stack","Stack · 세로간격"],["inline","Inline · 가로간격"],["section","Section-gap"]];
+const SP_ROLES_META=[["inset","Padding · 안쪽여백"],["stack","Gap.y · 세로간격"],["inline","Gap.x · 가로간격"],["section","Gap.section"]];
 function initSpacingRows(){
   $("spRoleRows").innerHTML=SP_ROLES_META.map(([k,label])=>`<div class="sprow">
     <span class="spl">${label}</span>
@@ -1543,7 +1543,7 @@ function tokenModel(){
   const L=roles(BR,NEU,tgt,"light",ST), D=roles(BR,NEU,tgt,"dark",ST);
   const TR=typeRoles(state.tbase,state.tratio);
   const TSC=typeScale(state.tbase,state.tratio), SC=spaceScale(state.dens), DUR=durScale();
-  const RAMPS=[["color.brand",BR],["color.neutral",NEU],["color.danger",ST.danger],
+  const RAMPS=[["color.brand",BR],["color.neutral",NEU],["color.error",ST.error],
                ["color.warning",ST.warning],["color.success",ST.success],["color.info",ST.info]];
   const MODES=state.dark==="on"?[["light",L],["dark",D]]:[["light",L]];
   const P=[],S=[],C=[],index={};
@@ -1576,7 +1576,7 @@ function tokenModel(){
   /* ── ① primitive — 엔진이 만든 원본 값 ───────────────────────────────── */
   RAMPS.forEach(function(r){STEPS.forEach(function(st){tk(P,"primitive",r[0],r[0]+"."+st,r[1][st],"color");});});
   TSTEPS.forEach(function(st){tk(P,"primitive","size.font","size.font."+st,TSC[st]+"px","dimension");});
-  SC.forEach(function(v,i){tk(P,"primitive","size.space","size.space."+i,v+"px","dimension");});
+  SC.forEach(function(v,i){tk(P,"primitive","dimension","dimension.step-"+i,v+"px","dimension");});
   tk(P,"primitive","size.radius","size.radius.base",state.rad+"px","dimension");
   DUR_ROLES.forEach(function(r,i){tk(P,"primitive","duration","duration."+r,DUR[i]+"ms","duration");});
   Object.keys(EASINGS).forEach(function(k){tk(P,"primitive","easing","easing."+k,EASINGS[k],"cubicBezier");});
@@ -1589,14 +1589,14 @@ function tokenModel(){
     ["color.bg.overlay",R.S.overlay,"color.neutral"],
     ["color.bg.subtle",R.S.subtle,"color.neutral"],
     ["color.bg.brand-subtle",R.brandSub,"color.brand"],
-    ["color.bg.danger-subtle",R.dangerSub,"color.danger"],
+    ["color.bg.error-subtle",R.errorSub,"color.error"],
     ["color.bg.warning-subtle",R.warnSub,"color.warning"],
     ["color.bg.success-subtle",R.succSub,"color.success"],
     ["color.bg.info-subtle",R.infoSub,"color.info"],
     ["color.bg.scrim",R.scrim,null],
     ["color.action.primary",R.ap,"color.brand"],
     ["color.action.primary-hover",R.apHover,"color.brand"],
-    ["color.action.primary-active",R.apActive,"color.brand"],
+    ["color.action.primary-pressed",R.apActive,"color.brand"],
     ["color.action.on-primary",R.onAction,"color.neutral"],
     ["color.action.secondary",R.asDef,"color.neutral"],
     ["color.action.secondary-hover",R.asHover,"color.neutral"],
@@ -1607,16 +1607,16 @@ function tokenModel(){
     ["color.fg.placeholder",R.fgPlaceholder,"color.neutral"],
     ["color.fg.disabled",R.fgDisabled,"color.neutral"],
     ["color.fg.brand",R.fgBrand,"color.brand"],
-    ["color.fg.danger",R.fgDanger,"color.danger"],
+    ["color.fg.error",R.fgDanger,"color.error"],
     ["color.fg.warning",R.fgWarn,"color.warning"],
     ["color.fg.success",R.fgSucc,"color.success"],
     ["color.fg.info",R.fgInfo,"color.info"],
     ["color.fg.link",R.link,"color.info"],
-    ["color.stroke.default",R.strokeDefault,"color.neutral"],
-    ["color.stroke.subtle",R.strokeSubtle,"color.neutral"],
-    ["color.stroke.strong",R.strokeStrong,"color.neutral"],
-    ["color.stroke.focus",R.focus,"color.brand"],
-    ["color.stroke.danger",R.strokeDanger,"color.danger"]
+    ["color.bdr.default",R.strokeDefault,"color.neutral"],
+    ["color.bdr.subtle",R.strokeSubtle,"color.neutral"],
+    ["color.bdr.strong",R.strokeStrong,"color.neutral"],
+    ["color.bdr.focused",R.focus,"color.brand"],
+    ["color.bdr.error",R.strokeDanger,"color.error"]
   ];};
   MODES.forEach(function(mm){const m=mm[0],R=mm[1];
     SEMC(R).forEach(function(a){
@@ -1637,10 +1637,10 @@ function tokenModel(){
     tk(S,"semantic","typography","font."+k+".family",r.fam,"fontFamily");
   });
 
-  [["inset","안쪽 여백"],["stack","세로 간격"],["inline","가로 간격"],["section","섹션 간격"]].forEach(function(f){
+  [["inset","padding","안쪽 여백"],["stack","gap.y","세로 간격"],["inline","gap.x","가로 간격"],["section","gap.section","섹션 간격"]].forEach(function(f){
     ["sm","md","lg"].forEach(function(sz){
       const i=spIdx(f[0],sz);
-      tk(S,"semantic","space","space."+f[0]+"."+sz,SC[i]+"px","dimension",{ref:"size.space."+i});
+      tk(S,"semantic","space","space."+f[1]+"."+sz,SC[i]+"px","dimension",{ref:"dimension.step-"+i});
     });
   });
 
@@ -1671,9 +1671,9 @@ function tokenModel(){
     ["button","button.height.sm",F_H.sm+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["button","button.height.md",F_H.md+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["button","button.height.lg",F_H.lg+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
-    ["button","button.padding-x.sm",spx("inline","sm")+"px","space.inline.sm",null],
-    ["button","button.padding-x.md",spx("inline","md")+"px","space.inline.md",null],
-    ["button","button.padding-x.lg",spx("inline","lg")+"px","space.inline.lg",null],
+    ["button","button.padding-x.sm",spx("inline","sm")+"px","space.gap.x.sm",null],
+    ["button","button.padding-x.md",spx("inline","md")+"px","space.gap.x.md",null],
+    ["button","button.padding-x.lg",spx("inline","lg")+"px","space.gap.x.lg",null],
     ["button","button.focus-ring","2px",null,"프리뷰 고정값"],
     ["input","input.radius",rc+"px","radius.control",null],
     ["input","input.height.sm",F_H.sm+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
@@ -1682,11 +1682,11 @@ function tokenModel(){
     ["input","input.padding-x","12px",null,"프리뷰 고정값"],
     ["input","input.focus-ring","2px",null,"프리뷰 고정값"],
     ["input","input.border-width.error","1px",null,"프리뷰 고정값"],
-    ["input","input.border-width.focus","2px",null,"프리뷰 고정값"],
+    ["input","input.border.focused","2px",null,"프리뷰 고정값"],
     ["select","select.trigger.radius",rc+"px","radius.control",null],
     ["select","select.trigger.height",F_H.md+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["select","select.menu.radius",rcont+"px","radius.container",null],
-    ["select","select.menu.padding",spx("inset","sm")+"px","space.inset.sm",null],
+    ["select","select.menu.padding",spx("inset","sm")+"px","space.padding.sm",null],
     ["select","select.item.radius",Math.max(0,rcont-8)+"px","radius.container","container −8px 파생"],
     ["switch","switch.track.width.sm",F_SWT.sm.w+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["switch","switch.track.width.md",F_SWT.md.w+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
@@ -1697,47 +1697,47 @@ function tokenModel(){
     ["tabs","tabs.indicator.height","2px",null,"프리뷰 고정값"],
     ["tabs","tabs.item.padding-x","15px",null,"프리뷰 고정값"],
     ["card","card.radius",rcont+"px","radius.container",null],
-    ["card","card.padding",spx("inset","lg")+"px","space.inset.lg",null],
-    ["card","card.title.gap",spx("stack","sm")+"px","space.stack.sm",null],
+    ["card","card.padding",spx("inset","lg")+"px","space.padding.lg",null],
+    ["card","card.title.gap",spx("stack","sm")+"px","space.gap.y.sm",null],
     ["toast","toast.radius",rcont+"px","radius.container",null],
     ["modal","modal.radius",rov+"px","radius.overlay",null],
-    ["modal","modal.padding",spx("inset","lg")+"px","space.inset.lg",null],
+    ["modal","modal.padding",spx("inset","lg")+"px","space.padding.lg",null],
     ["modal","modal.width.sm",F_MODALW.sm+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["modal","modal.width.md",F_MODALW.md+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
     ["modal","modal.width.lg",F_MODALW.lg+"px",null,"프리뷰 고정값 — 아직 토큰 미승격"],
-    ["modal","modal.title.gap",spx("stack","sm")+"px","space.stack.sm",null]
+    ["modal","modal.title.gap",spx("stack","sm")+"px","space.gap.y.sm",null]
   ];
   const CCOL=function(R){return [
     ["button","button.primary.bg",R.ap,"color.action.primary"],
     ["button","button.primary.fg",R.onAction,"color.action.on-primary"],
     ["button","button.primary.bg-hover",R.apHover,"color.action.primary-hover"],
-    ["button","button.primary.bg-active",R.apActive,"color.action.primary-active"],
+    ["button","button.primary.bg-pressed",R.apActive,"color.action.primary-pressed"],
     ["button","button.secondary.bg",R.asDef,"color.action.secondary"],
     ["button","button.secondary.bg-hover",R.asHover,"color.action.secondary-hover"],
     ["button","button.secondary.fg",R.fgPrimary,"color.fg.primary"],
-    ["button","button.secondary.border",R.strokeDefault,"color.stroke.default"],
+    ["button","button.secondary.border",R.strokeDefault,"color.bdr.default"],
     ["button","button.ghost.fg",R.fgPrimary,"color.fg.primary"],
     ["button","button.ghost.bg-hover",R.asDef,"color.action.secondary"],
-    ["button","button.focus-ring",R.focus,"color.stroke.focus"],
+    ["button","button.focus-ring",R.focus,"color.bdr.focused"],
     ["button","button.disabled.bg",R.disabled,"color.action.disabled"],
     ["button","button.disabled.fg",R.fgDisabled,"color.fg.disabled"],
     ["input","input.bg",R.light?"#ffffff":R.S.raised,R.light?null:"color.bg.raised"],
     ["input","input.fg",R.fgPrimary,"color.fg.primary"],
     ["input","input.placeholder",R.fgPlaceholder,"color.fg.placeholder"],
-    ["input","input.border",R.strokeDefault,"color.stroke.default"],
-    ["input","input.border-focus",R.focus,"color.stroke.focus"],
-    ["input","input.border-error",R.strokeDanger,"color.stroke.danger"],
-    ["input","input.caption.error.fg",R.fgDanger,"color.fg.danger"],
+    ["input","input.border",R.strokeDefault,"color.bdr.default"],
+    ["input","input.border-focused",R.focus,"color.bdr.focused"],
+    ["input","input.border-error",R.strokeDanger,"color.bdr.error"],
+    ["input","input.caption.error.fg",R.fgDanger,"color.fg.error"],
     ["input","input.disabled.bg",R.disabled,"color.action.disabled"],
     ["input","input.disabled.fg",R.fgDisabled,"color.fg.disabled"],
-    ["input","input.disabled.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["input","input.disabled.border",R.strokeSubtle,"color.bdr.subtle"],
     ["select","select.trigger.bg",R.S.surface,"color.bg.surface"],
-    ["select","select.trigger.border",R.strokeDefault,"color.stroke.default"],
-    ["select","select.trigger.border-focus",R.focus,"color.stroke.focus"],
+    ["select","select.trigger.border",R.strokeDefault,"color.bdr.default"],
+    ["select","select.trigger.border-focused",R.focus,"color.bdr.focused"],
     ["select","select.disabled.bg",R.disabled,"color.action.disabled"],
     ["select","select.disabled.fg",R.fgDisabled,"color.fg.disabled"],
     ["select","select.menu.bg",R.S.raised,"color.bg.raised"],
-    ["select","select.menu.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["select","select.menu.border",R.strokeSubtle,"color.bdr.subtle"],
     ["select","select.menu.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
     ["select","select.item.fg",R.fgPrimary,"color.fg.primary"],
     ["select","select.item.selected.bg",R.brandSub,"color.bg.brand-subtle"],
@@ -1745,16 +1745,16 @@ function tokenModel(){
     ["switch","switch.track.on",R.ap,"color.action.primary"],
     ["switch","switch.track.off",R.asDef,"color.action.secondary"],
     ["switch","switch.knob.bg",R.knob,"color.action.knob"],
-    ["switch","switch.knob.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["switch","switch.knob.border",R.strokeSubtle,"color.bdr.subtle"],
     ["switch","switch.track.disabled",R.disabled,"color.action.disabled"],
     ["switch","switch.knob.disabled",R.fgDisabled,"color.fg.disabled"],
-    ["tabs","tabs.active.fg",R.fgBrand,"color.fg.brand"],
+    ["tabs","tabs.selected.fg",R.fgBrand,"color.fg.brand"],
     ["tabs","tabs.rest.fg",R.fgSecondary,"color.fg.secondary"],
     ["tabs","tabs.disabled.fg",R.fgDisabled,"color.fg.disabled"],
-    ["tabs","tabs.divider",R.strokeSubtle,"color.stroke.subtle"],
+    ["tabs","tabs.divider",R.strokeSubtle,"color.bdr.subtle"],
     ["tabs","tabs.indicator",R.fgBrand,"color.fg.brand"],
     ["card","card.bg",R.S.surface,"color.bg.surface"],
-    ["card","card.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["card","card.border",R.strokeSubtle,"color.bdr.subtle"],
     ["card","card.title.fg",R.fgPrimary,"color.fg.primary"],
     ["card","card.body.fg",R.fgSecondary,"color.fg.secondary"],
     ["card","card.shadow.resting",shadow(R,"resting"),"elevation.resting","shadow"],
@@ -1762,19 +1762,19 @@ function tokenModel(){
     ["card","card.shadow.overlay",shadow(R,"overlay"),"elevation.overlay","shadow"],
     ["card","card.shadow.spotlight",shadow(R,"spotlight"),"elevation.spotlight","shadow"],
     ["toast","toast.bg",R.S.raised,"color.bg.raised"],
-    ["toast","toast.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["toast","toast.border",R.strokeSubtle,"color.bdr.subtle"],
     ["toast","toast.fg",R.fgPrimary,"color.fg.primary"],
     ["toast","toast.status.success",R.fgSucc,"color.fg.success"],
-    ["toast","toast.status.danger",R.fgDanger,"color.fg.danger"],
+    ["toast","toast.status.error",R.fgDanger,"color.fg.error"],
     ["toast","toast.status.warning",R.fgWarn,"color.fg.warning"],
     ["toast","toast.status.info",R.fgInfo,"color.fg.info"],
     ["toast","toast.soft.success.bg",R.succSub,"color.bg.success-subtle"],
-    ["toast","toast.soft.danger.bg",R.dangerSub,"color.bg.danger-subtle"],
+    ["toast","toast.soft.error.bg",R.errorSub,"color.bg.error-subtle"],
     ["toast","toast.soft.warning.bg",R.warnSub,"color.bg.warning-subtle"],
     ["toast","toast.soft.info.bg",R.infoSub,"color.bg.info-subtle"],
     ["toast","toast.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
     ["modal","modal.bg",R.S.overlay,"color.bg.overlay"],
-    ["modal","modal.border",R.strokeSubtle,"color.stroke.subtle"],
+    ["modal","modal.border",R.strokeSubtle,"color.bdr.subtle"],
     ["modal","modal.scrim",R.scrim,"color.bg.scrim"],
     ["modal","modal.title.fg",R.fgPrimary,"color.fg.primary"],
     ["modal","modal.body.fg",R.fgSecondary,"color.fg.secondary"],
@@ -2054,7 +2054,7 @@ const CSORDER=["button","input","select","switch","tabs","card","toast","modal"]
 const CSMETA={button:["Button","변형 3 · 크기 3 · 상태 5"],input:["Input","크기 3 · 상태 5"],
   select:["Select","상태 3"],switch:["Switch","상태 3 · 크기 2"],tabs:["Tabs","상태 3"],
   card:["Card","elevation 4"],toast:["Toast","상태 4 · 변형 2"],modal:["Modal","크기 3"]};
-const CS_ST5=["default","hover","active","focus","disabled"];
+const CS_ST5=["default","hover","pressed","focused","disabled"];
 let CSSEL="all", CSHL=null;
 
 /* 축 정의 — [축 라벨, [{l:항목 라벨, h:HTML}, …]] */
@@ -2067,7 +2067,7 @@ function cfRows(k,R,TR){
   }
   if(k==="input")
     return [["크기 3", ["sm","md","lg"].map(function(z){return it(z+" · "+F_H[z]+"px",fFld(R,TR,{sz:z,t:"입력값",w:130}));})],
-            ["상태 5", [["empty","placeholder…"],["default","입력값"],["focus","포커스"],["error","오류"],["disabled","비활성"]]
+            ["상태 5", [["empty","placeholder…"],["default","입력값"],["focused","포커스"],["error","오류"],["disabled","비활성"]]
               .map(function(a){return it(a[0],fFld(R,TR,{st:a[0],t:a[1],w:130}));})]];
   if(k==="select")
     return [["상태 3", ["closed","open","disabled"].map(function(x){return it(x,fSel(R,TR,{st:x,w:170}));})]];
@@ -2081,14 +2081,14 @@ function cfRows(k,R,TR){
     return out;
   }
   if(k==="tabs")
-    return [["상태 3 — active · rest · disabled", [it("기본",fTabs(R,TR,{}))]],
-            ["항목 2개", [it("최소 구성",fTabs(R,TR,{items:[["Overview","active"],["Activity","rest"]]}))]]];
+    return [["상태 3 — selected · rest · disabled", [it("기본",fTabs(R,TR,{}))]],
+            ["항목 2개", [it("최소 구성",fTabs(R,TR,{items:[["Overview","selected"],["Activity","rest"]]}))]]];
   if(k==="card")
     return [["elevation 4", ["resting","raised","overlay","spotlight"].map(function(e){
       return it(e+" · "+state.dpRoles[e]+"dp",fCard(R,TR,{elev:e,w:196,t:"elevation."+e}));})]];
   if(k==="toast")
-    return [["상태 4 · solid", ["success","danger","warning","info"].map(function(x){return it(x,fToast(R,TR,{status:x}));})],
-            ["상태 4 · soft", ["success","danger","warning","info"].map(function(x){return it(x,fToast(R,TR,{status:x,v:"soft"}));})]];
+    return [["상태 4 · solid", ["success","error","warning","info"].map(function(x){return it(x,fToast(R,TR,{status:x}));})],
+            ["상태 4 · soft", ["success","error","warning","info"].map(function(x){return it(x,fToast(R,TR,{status:x,v:"soft"}));})]];
   if(k==="modal")
     return [["기본 (md)", [it("scrim + overlay 표면",fModal(R,TR,{sz:"md"}))]],
             ["크기 3 — 폭 비율 축소", ["sm","md","lg"].map(function(z){return it(z,fWbar(R,TR,F_MODALW[z]));})]];
@@ -2236,7 +2236,7 @@ function render(){
   if(state.dark==="on")checks.push(["채움 위 흰 글자 ≥4.5 (다크)",D.apRatio>=4.5,D.apRatio],[`본문 대비 ≥${tgt} (다크)`,D.fgPrimaryR>=tgt,D.fgPrimaryR],["상태색 4종 글자 ≥4.5 (다크)",D.statusMinR>=4.5,D.statusMinR]);
   checks.push([`Caption ${Math.round(TR.caption.px)}px ≥ 12 (가독성 바닥)`,TR.caption.px>=12,TR.caption.px]);
   const scaleArr=spaceScale(state.dens),gridOK=scaleArr.every(v=>v%2===0),monoOK=scaleArr.every((v,i)=>i===0||v>scaleArr[i-1]);
-  checks.push([`간격 스케일 2px 그리드·단조 (space-0…${scaleArr.length-1})`,gridOK&&monoOK,scaleArr[scaleArr.length-1]]);
+  checks.push([`간격 스케일 2px 그리드·단조 (step-0…${scaleArr.length-1})`,gridOK&&monoOK,scaleArr[scaleArr.length-1]]);
   const tc=radTier('control'),tk=radTier('container'),to=radTier('overlay');
   checks.push([`모서리 티어 단조 (control≤container≤overlay)`,tc<=tk&&tk<=to,to]);
   const dpArr=[state.dpRoles.resting,state.dpRoles.raised,state.dpRoles.overlay,state.dpRoles.spotlight];
@@ -2315,7 +2315,7 @@ function renderGallery(){
     Object.assign(state,{seed:p.seed,neutral:p.neutral,dark:p.dark,aa:p.aa});
     if(p.dens!=null){state.dens=p.dens;$("densR").value=p.dens;$("densN").value=p.dens;}
     if(p.rad!=null){state.rad=p.rad;$("radR").value=p.rad;$("radN").value=p.rad;}
-    state.statusSeeds=Object.assign({danger:"",warning:"",success:"",info:""},p.statusSeeds||{});
+    state.statusSeeds=Object.assign({error:"",warning:"",success:"",info:""},p.statusSeeds||{});
     $("seed").value=p.seed;$("seedHex").value=p.seed;render();});
 }
 $("presetSave").onclick=()=>{const nm=($("presetName").value||"").trim();
