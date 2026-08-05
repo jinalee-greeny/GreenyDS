@@ -2,3 +2,4 @@ node_modules/
 build/
 build-interim/
 *.bundle
+PROJECT-STATE.md
