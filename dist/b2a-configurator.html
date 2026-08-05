@@ -4,23 +4,45 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>프리셋 컨피규레이터 — 내부 베타 v1.2.2</title>
+<title>프리셋 컨피규레이터 — 내부 베타 v1.3</title>
 <style>
-  :root{--bg:#f4f5f7;--fg:#1c1e21;--muted:#5f6672;--faint:#9aa1ab;--card:#fff;--line:#e2e5ea;--line2:#eef0f3;
-    --brand:#725cd3;--brand050:#f5f4ff;--brandln:#e0dcfb;--l3:#c0392b;--l4:#048a55;
+  /* ═══ Apple 워싱 토큰 레이어 (v1.3) ═══
+     GreenyDS 아키텍처 그대로 빌드한 하나의 프리셋:
+     ① dimension 사다리(step-0…14 + 센티널) ② 시맨틱 역할(bg/fg/bdr — KDX 어휘, 결정 #40)
+     ③ 기존 UI 변수는 전부 별칭으로 시맨틱을 가리킴 — 하드코딩 없이 전면 교체. */
+  :root{
+    /* ① dimension 사다리 */
+    --step-0:0px;--step-1:2px;--step-2:4px;--step-3:8px;--step-4:12px;--step-5:16px;
+    --step-6:20px;--step-7:24px;--step-8:32px;--step-9:40px;--step-10:48px;--step-11:64px;
+    --step-12:80px;--step-13:96px;--step-14:128px;--hairline:1px;--full:999px;
+    /* ② 시맨틱 — Apple 시드(#0071e3 · Apple 중립 그레이)로 해석한 역할 */
+    --bg-page:#f5f5f7;--bg-surface:#ffffff;--bg-subtle:#fafafc;
+    --fg-primary:#1d1d1f;--fg-secondary:#6e6e73;--fg-tertiary:#86868b;
+    --bdr-default:#d2d2d7;--bdr-subtle:#e8e8ed;
+    --bg-action-primary:#0071e3;--bg-action-primary-hover:#0077ed;--bg-action-primary-pressed:#0068d1;
+    --bg-brand-subtle:#eef5fd;--bdr-brand:#b9d9f7;--fg-brand:#0066cc;
+    --fg-error:#d70015;--fg-success:#248a3d;--fg-warning:#b25000;--bg-warning-bar:#ff9f0a;
+    --radius-control:var(--step-4);--radius-container:var(--step-5);--radius-overlay:var(--step-6);
+    --elev-raised:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
+    --elev-overlay:0 4px 10px rgba(0,0,0,.08),0 16px 44px rgba(0,0,0,.12);
+    /* ③ 기존 변수 → 별칭 (기존 규칙 전체가 자동 워싱됨) */
+    --bg:var(--bg-page);--fg:var(--fg-primary);--muted:var(--fg-secondary);--faint:var(--fg-tertiary);
+    --card:var(--bg-surface);--line:var(--bdr-default);--line2:var(--bdr-subtle);
+    --brand:var(--bg-action-primary);--brand050:var(--bg-brand-subtle);--brandln:var(--bdr-brand);
+    --l3:var(--fg-error);--l4:var(--fg-success);
     --mono:ui-monospace,'SF Mono',Menlo,monospace;}
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif;background:var(--bg);color:var(--fg);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
   .top{background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:20}
   .top .brand{font-size:15px;font-weight:700}
-  .top .tag{font-size:10.5px;font-family:var(--mono);color:#4c3aa0;background:var(--brand050);border:1px solid var(--brandln);border-radius:6px;padding:2px 8px}
+  .top .tag{font-size:10.5px;font-family:var(--mono);color:var(--fg-brand);background:var(--brand050);border:1px solid var(--brandln);border-radius:6px;padding:2px 8px}
   .top .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
   .tbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--fg)}
   .tbtn.pri{background:var(--brand);color:#fff;border-color:var(--brand)}
   /* 검증 미통과 상태를 버튼이 실제로 드러내게 한다. render() 가 data-ok 를 써 왔지만
      이를 받는 규칙이 없어, 통과/미통과가 눌러보기 전까지 화면에 표시되지 않았다. */
   .tbtn.pri[data-ok="0"]{background:#fff;color:var(--muted);border-color:var(--line)}
-  .tbtn.pri[data-ok="0"]::before{content:"⚠ ";color:#b06a12}
+  .tbtn.pri[data-ok="0"]::before{content:"⚠ ";color:var(--fg-warning)}
   /* 모바일에서 상단바가 한 줄을 고집하다 보니 버튼 글자가 세로로 쪼개졌다
      ("토 큰 내 보 내 기"). 줄바꿈을 허용하고 버튼 내부만 줄바꿈을 막는다 —
      늘어나야 할 건 줄 수지, 글자를 세로로 접는 게 아니다. */
@@ -155,7 +177,7 @@
 
   .forks{display:flex;gap:8px}
   .fk{flex:1;border:1.5px solid var(--line);border-radius:9px;padding:9px 8px;cursor:pointer;text-align:center;transition:.1s;background:#fff}
-  .fk:hover{border-color:#c9bdf7}
+  .fk:hover{border-color:var(--bdr-brand)}
   .fk.on{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand050);background:var(--brand050)}
   .fk .l{font-size:11.5px;font-weight:700;margin-bottom:5px}
   .fk .fp{display:flex;gap:2px;justify-content:center;margin-bottom:4px}
@@ -170,8 +192,8 @@
   .seg{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;border:none;color:var(--fg)}
   .seg.on{background:var(--brand);color:#fff}
   .loadbtn{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--fg)}
-  .loadbtn:hover{border-color:#c9bdf7}
-  .why{display:block;background:var(--brand050);border:1px solid var(--brandln);color:#4c3aa0;border-radius:10px;padding:6px 10px;font-size:10px;margin-top:9px;line-height:1.45}
+  .loadbtn:hover{border-color:var(--bdr-brand)}
+  .why{display:block;background:var(--brand050);border:1px solid var(--brandln);color:var(--fg-brand);border-radius:10px;padding:6px 10px;font-size:10px;margin-top:9px;line-height:1.45}
   /* 결함 1 — input[type=text] 의 기본 min-width:auto(size=20 기준)가 flex 축소를 막아
      ↵ 버튼을 패널 밖 +3px 로 밀어냈다. min-width:0 이 근본 원인 해결이다. */
   .slotbox input[type=text],.improw input[type=text]{min-width:0}
@@ -193,7 +215,7 @@
   .rfield .rauto{font-size:9.5px;color:var(--faint);font-family:var(--mono);margin-left:auto}
   .scalestrip{display:flex;align-items:flex-end;gap:3px;height:46px;margin:8px 0 2px}
   .scalestrip .sb{flex:1;min-width:0;background:var(--brand050);border:1px solid var(--brandln);border-bottom:none;border-radius:3px 3px 0 0;position:relative}
-  .scalestrip .sb span{position:absolute;bottom:1px;left:0;right:0;font-size:8px;color:#4c3aa0;font-family:var(--mono);text-align:center}
+  .scalestrip .sb span{position:absolute;bottom:1px;left:0;right:0;font-size:8px;color:var(--fg-brand);font-family:var(--mono);text-align:center}
   .scalestrip .sb i{position:absolute;top:-11px;left:0;right:0;font-size:7.5px;color:var(--faint);font-family:var(--mono);text-align:center;font-style:normal}
   .sprow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
   .sprow .spl{font-size:11.5px;font-weight:600;width:80px;flex:none}
@@ -202,7 +224,7 @@
 
   .gallery{display:flex;flex-wrap:wrap;gap:8px}
   .gcard{border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;width:calc(50% - 4px);background:#fff}
-  .gcard:hover{border-color:#c9bdf7}
+  .gcard:hover{border-color:var(--bdr-brand)}
   .gcard .sw{height:26px;display:flex}.gcard .sw i{flex:1}
   .gcard .nm{font-size:10.5px;font-weight:600;padding:5px 8px}
 
@@ -229,10 +251,10 @@
   .shfield{margin-left:auto;display:flex;align-items:center;gap:0;border:1px solid var(--line);
            border-radius:8px;background:#fff;overflow:hidden;flex:0 1 360px;min-width:0}
   .shfield .shl{font-size:10.5px;font-weight:700;color:var(--muted);padding:5px 8px;
-                border-right:1px solid var(--line);background:#fbfbfc;flex:none}
+                border-right:1px solid var(--line);background:var(--bg-subtle);flex:none}
   .shfield .share{font-family:var(--mono);font-size:10.5px;color:var(--fg);padding:5px 9px;
                   flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
-  .shfield .shc{flex:none;border:0;border-left:1px solid var(--line);background:#fbfbfc;color:var(--brand);
+  .shfield .shc{flex:none;border:0;border-left:1px solid var(--line);background:var(--bg-subtle);color:var(--brand);
                 font-family:inherit;font-size:10.5px;font-weight:700;padding:5px 10px;cursor:pointer}
   .shfield .shc:hover{background:var(--brand050)}
   /* 상단 바 양보 순서 (v1.1 · 결함 V2). 기준은 뷰포트가 아니라 캔버스 열의 폭이다 —
@@ -283,7 +305,7 @@
   .csh b{font-size:13px;color:var(--fg)}
   .csh .cmeta{font-family:var(--mono);font-size:10px;color:var(--faint)}
   .csh .cgo{margin-left:auto}
-  .cgo{font-size:9.5px;font-weight:700;color:#4c3aa0;background:var(--brand050);
+  .cgo{font-size:9.5px;font-weight:700;color:var(--fg-brand);background:var(--brand050);
     border:1px solid var(--brandln);border-radius:5px;padding:2px 7px;cursor:pointer;flex:none;white-space:nowrap}
   .cgo:hover{background:#ede8fd}
   .csmodes{display:grid;grid-template-columns:1fr;gap:12px}
@@ -299,17 +321,17 @@
   .cfl{font-family:var(--mono);font-size:9px;white-space:nowrap}
   .ctoks{border:1px solid var(--line);border-radius:10px;margin-top:10px;overflow:hidden;background:#fff}
   .ctoks>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;
-    font-size:11.5px;font-weight:700;color:var(--fg);background:#fbfbfc}
+    font-size:11.5px;font-weight:700;color:var(--fg);background:var(--bg-subtle)}
   .ctoks>summary::-webkit-details-marker{display:none}
   .ctoks>summary::before{content:"\25b8";color:var(--faint);font-size:9px;flex:none}
   .ctoks[open]>summary::before{content:"\25be"}
   .ctoks .gc{margin-left:auto;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--faint);flex:none}
   .ctok{display:flex;align-items:center;gap:8px;padding:5px 12px;border-top:1px solid var(--line);cursor:pointer}
   .ctok:hover{background:var(--brand050)}
-  .ctok.hl,.trow.hl{background:#fff6dd;box-shadow:inset 3px 0 0 #e0a516}
+  .ctok.hl,.trow.hl{background:#fff6dd;box-shadow:inset 3px 0 0 var(--bg-warning-bar)}
   .ctok .cgrp{font-size:9.5px;font-weight:700;color:var(--faint);flex:none;white-space:nowrap}
   .trow.jmp{cursor:pointer}
-  .jgo{font-family:inherit;font-size:9px;font-weight:700;color:#4c3aa0;flex:none;white-space:nowrap;opacity:0}
+  .jgo{font-family:inherit;font-size:9px;font-weight:700;color:var(--fg-brand);flex:none;white-space:nowrap;opacity:0}
   .trow.jmp:hover .jgo,.tlin:hover .jgo{opacity:1}
   .tlin .lh .jgo{margin-left:7px}
   .tstab{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:13px;flex-wrap:wrap}
@@ -317,21 +339,21 @@
     padding:8px 11px;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
   .tstab button:hover{color:var(--fg)}
   .tstab button.on{color:var(--fg);border-bottom-color:var(--fg)}
-  .tsnote{font-size:11px;line-height:1.65;color:var(--muted);background:#fbfbfc;border:1px solid var(--line);
+  .tsnote{font-size:11px;line-height:1.65;color:var(--muted);background:var(--bg-subtle);border:1px solid var(--line);
     border-radius:9px;padding:9px 12px;margin-bottom:13px}
   .tsnote b{color:var(--fg)}
-  .tsnote code{font-family:var(--mono);font-size:10px;color:#4c3aa0}
+  .tsnote code{font-family:var(--mono);font-size:10px;color:var(--fg-brand)}
   .tspane{display:none}
   .tspane.on{display:block}
   .tsec{margin:17px 0 8px;font-size:12px;font-weight:800;color:var(--fg)}
   .tsec span{font-weight:600;color:var(--faint);font-size:10.5px}
   .tsum{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
   .tsum i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--line);
-    border-radius:7px;padding:4px 9px;background:#fbfbfc}
+    border-radius:7px;padding:4px 9px;background:var(--bg-subtle)}
   .tsum i b{color:var(--fg)}
   .tgrp{border:1px solid var(--line);border-radius:10px;margin-bottom:7px;overflow:hidden;background:#fff}
   .tgrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;
-    font-size:11.5px;font-weight:700;color:var(--fg);background:#fbfbfc}
+    font-size:11.5px;font-weight:700;color:var(--fg);background:var(--bg-subtle)}
   .tgrp>summary::-webkit-details-marker{display:none}
   .tgrp>summary::before{content:"▸";color:var(--faint);font-size:9px;flex:none}
   .tgrp[open]>summary::before{content:"▾"}
@@ -344,14 +366,14 @@
   .tnm em{font-style:normal;color:var(--faint)}
   .tvl{font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:none;max-width:44%;
        overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tref{font-family:var(--mono);font-size:9.5px;color:#4c3aa0;background:var(--brand050);border:1px solid var(--brandln);
+  .tref{font-family:var(--mono);font-size:9.5px;color:var(--fg-brand);background:var(--brand050);border:1px solid var(--brandln);
     border-radius:4px;padding:1px 5px;flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tovr{font-size:9.5px;font-weight:700;color:#b06a12;flex:none;white-space:nowrap}
+  .tovr{font-size:9.5px;font-weight:700;color:var(--fg-warning);flex:none;white-space:nowrap}
   .tlin{padding:10px 12px;border-top:1px solid var(--line)}
   .tlin .lh{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--fg);margin-bottom:7px}
   .tchain{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .tnode{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:7px;
-    padding:3px 8px;background:#fbfbfc;min-width:0}
+    padding:3px 8px;background:var(--bg-subtle);min-width:0}
   .tnode .lv{font-size:8.5px;font-weight:700;color:var(--faint);flex:none}
   .tnode .nm{font-family:var(--mono);font-size:10.5px;color:var(--fg)}
   .tnode .vv{font-family:var(--mono);font-size:9.5px;color:var(--faint)}
@@ -371,11 +393,11 @@
   .tsfmt button.on{border-color:var(--fg);color:var(--fg)}
   .tsfmt .cp{margin-left:auto;color:var(--brand);border-color:var(--brandln);background:var(--brand050)}
   .tscap{display:flex;align-items:baseline;gap:10px;margin:0 2px 7px;font-size:10.5px;line-height:1.6;color:var(--muted)}
-  .tscap code{font-family:var(--mono);font-size:10px;color:#4c3aa0}
+  .tscap code{font-family:var(--mono);font-size:10px;color:var(--fg-brand)}
   .tscap b{color:var(--fg)}
   .tscap i{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--faint);flex:none;white-space:nowrap}
   .tscode{font-family:var(--mono);font-size:10.5px;line-height:1.55;white-space:pre;overflow:auto;max-height:56vh;
-    background:#fbfbfc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--fg)}
+    background:var(--bg-subtle);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--fg)}
   @media(max-width:920px){.tvl{max-width:38%}.tref{display:none}}
   /* min-width:0 — 그리드 아이템 기본 min-width:auto 가 내용 폭으로 부풀어 1181~1594px 구간에서
      가로 스크롤을 만들었다(1440px 에서 문서 폭 1594px). 잠금 없이 1fr 1fr 을 지키게 한다. */
@@ -393,7 +415,7 @@
      통과/미통과가 뒤집힌 순간이 어디였는지. 각 항목에서 그 시점으로 되돌릴 수 있다.
      이력은 메모리에만 둔다 — 이 파일은 Cowork 아티팩트로도 배포되고
      그 환경에서는 localStorage 계열이 동작하지 않는다. */
-  .dock{grid-column:1;grid-row:1;background:#fbfbfc;border-right:1px solid var(--line);
+  .dock{grid-column:1;grid-row:1;background:var(--bg-subtle);border-right:1px solid var(--line);
         height:calc(100vh - 53px);position:sticky;top:53px;display:flex;flex-direction:column;min-width:0}
   body.dock-off .dock{display:none}
   .dksec{padding:12px 14px;min-width:0}
@@ -440,8 +462,8 @@
   .strow .miniramp{flex:1;display:flex;border-radius:5px;overflow:hidden;border:1px solid var(--line);height:18px}
   .strow .miniramp i{flex:1}
   .strow .rst{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:10px;padding:3px 7px;cursor:pointer;color:var(--muted);flex:none}
-  .strow .rst:hover{border-color:#c9bdf7}
-  .strow .ov{font-size:9px;font-family:var(--mono);color:#4c3aa0;flex:none;width:14px;text-align:center}
+  .strow .rst:hover{border-color:var(--bdr-brand)}
+  .strow .ov{font-size:9px;font-family:var(--mono);color:var(--fg-brand);flex:none;width:14px;text-align:center}
   .improw{display:flex;gap:6px;margin-top:8px}
   .improw input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:11px}
   .saverow{display:flex;gap:6px;margin-bottom:10px}
@@ -473,11 +495,38 @@
   .gdfall .gfb{margin-left:auto;font-size:11px;font-weight:700;color:var(--brand);
     border:1px solid var(--line);border-radius:7px;padding:5px 10px;text-decoration:none;white-space:nowrap}
   .gdfall .gfb:hover{border-color:var(--brand);background:#fff}
+
+  /* ═══ Apple 형태 언어 오버라이드 (v1.3) — 색은 위 토큰 레이어가 담당, 여기는 형태·질감 ═══ */
+  body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Pretendard','Noto Sans KR',sans-serif;letter-spacing:-0.01em}
+  .top{background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08)}
+  .top .brand{font-weight:600;letter-spacing:-0.022em;font-size:16px}
+  .top .tag{border-radius:var(--full);padding:3px 11px}
+  .tbtn{border-radius:var(--full);padding:7px 15px;transition:background .18s ease,color .18s ease,transform .12s ease}
+  .tbtn:hover{background:var(--bg-subtle)}
+  .tbtn:active{transform:scale(.985)}
+  .tbtn.pri{background:var(--bg-action-primary);border-color:var(--bg-action-primary)}
+  .tbtn.pri:hover{background:var(--bg-action-primary-hover)}
+  .tbtn.pri:active{background:var(--bg-action-primary-pressed)}
+  .panel,.dock{background:var(--bg-surface)}
+  .panel{border-radius:0;box-shadow:none}
+  .card,.blk{border-radius:var(--radius-container)}
+  input[type=text],input[type=number],select,textarea{border-radius:var(--radius-control);border-color:var(--bdr-default);transition:border-color .15s ease,box-shadow .15s ease}
+  input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{outline:none;border-color:var(--bg-action-primary);box-shadow:0 0 0 3.5px rgba(0,113,227,.18)}
+  input[type=range]{accent-color:var(--bg-action-primary)}
+  input[type=checkbox],input[type=radio]{accent-color:var(--bg-action-primary)}
+  ::selection{background:rgba(0,113,227,.2)}
+  .stage,.stageWrap .stage{border-radius:var(--radius-overlay)}
+  button,.tbtn{-webkit-font-smoothing:antialiased}
+  *:focus-visible{outline:2px solid var(--bg-action-primary);outline-offset:2px}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:var(--full);border:2px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.3);border:2px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.2.2 — 컴포넌트 스튜디오 · 형태 매트릭스 · 2px 간격 그리드 · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.3 — Apple 워싱 · 컴포넌트 스튜디오 · 2px 간격 그리드 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -1860,7 +1909,7 @@ function paneDiff(M){
   const rows=tsDiffRows(M);
   const note='<div class="tsnote"><b>변경분</b> — 페이지를 처음 연 기본 프리셋과 비교해 값이 달라진 토큰만 모았습니다. 이전값 → 현재값. 다크모드를 끄면 다크 토큰이 <b>제거</b>로 잡히는데, 그것도 사실입니다.</div>';
   if(!rows.length) return note+'<div class="tsempty">기본 프리셋과 동일합니다 — 바뀐 토큰이 없습니다.<br><span style="color:var(--faint)">오른쪽 인스펙터에서 값을 바꾸면 여기에 이전값 → 현재값이 쌓입니다.</span></div>';
-  const KC={"변경":"color:#4c3aa0;background:var(--brand050);border:1px solid var(--brandln)",
+  const KC={"변경":"color:var(--fg-brand);background:var(--brand050);border:1px solid var(--brandln)",
             "추가":"color:#0b6b3a;background:#e8f6ee;border:1px solid #bfe3cd",
             "제거":"color:#b06a12;background:#fdf3e4;border:1px solid #f0d9b2"};
   rows.sort(function(a,b){return a.k<b.k?-1:a.k>b.k?1:0;});

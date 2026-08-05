@@ -65,8 +65,8 @@ function build() {
 
   // T2 — 미러임을 상단 태그에 표시
   s = swap(s,
-    '<span class="tag">내부 베타 v1.2.2 — 컴포넌트 스튜디오 · 형태 매트릭스 · 2px 간격 그리드</span>',
-    '<span class="tag">내부 베타 v1.2.2 — 컴포넌트 스튜디오 · 형태 매트릭스 · 2px 간격 그리드 · B2a 미러</span>',
+    '<span class="tag">내부 베타 v1.3 — Apple 워싱 · 컴포넌트 스튜디오 · 2px 간격 그리드</span>',
+    '<span class="tag">내부 베타 v1.3 — Apple 워싱 · 컴포넌트 스튜디오 · 2px 간격 그리드 · B2a 미러</span>',
     'T2 미러 태그');
 
   // T3 — 폴백/새 탭 링크 CSS
