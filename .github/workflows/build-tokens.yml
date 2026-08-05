@@ -42,13 +42,16 @@ jobs:
       - name: Perturbation matrix (engine adaptation gate)
         run: node scripts/perturb.cjs
 
-      # 빌드 산출물(build/css·json)이 원천 토큰과 드리프트 없는지 검증
-      - name: Check build output matches tokens (no drift)
-        run: node scripts/build-css.cjs --check
-
       # 공식 빌드 (자립 node 빌더) → build/css/primitives.css, build/json/primitives.flat.json
+      #   ⚠ 순서 수정(2026-08-05, BC-43): build/ 는 .gitignore 라 신선 체크아웃엔 비교 대상이
+      #   없어 "빌드 전 --check" 는 구조적으로 항상 실패했다(상호운용 런 #7 §8 결함, 수정안 (a)).
+      #   빌드 → 검증 순서로 바꿔 "빌더 결정성(같은 입력 → 같은 출력)" 게이트로 재정의한다.
       - name: Build CSS + flat JSON (self-contained)
         run: node scripts/build-css.cjs
+
+      # 빌드 산출물이 재실행에도 동일한지 검증 (결정성 게이트)
+      - name: Check build output is deterministic (no drift)
+        run: node scripts/build-css.cjs --check
 
       # 배포본 가이드(public/guide.html)가 정본(docs/service-concept-guide.html)과
       # 어긋나지 않는지 검증 — 정본만 고치고 재생성을 잊으면 여기서 실패한다(사본 표류 방지).
