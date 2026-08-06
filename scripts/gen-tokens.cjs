@@ -29,9 +29,12 @@ const DEFAULT_PARAMS = {
   },
   typography: {
     breakpoints: {
-      mobile: { base: 15, ratio: 1.2, round: 0.5 },
-      tablet: { base: 16, ratio: 1.2, round: 0.5 },
-      desktop: { base: 16, ratio: 1.25, round: 0.5 },
+      // round: 1 = 정수 스냅 (진아 지시 2026-08-06 "소수점 삭제되는 방향으로 정리").
+      // 0.5 스냅은 10.5·21.5·37.5 같은 반픽셀을 낳고, Figma 변수·브라우저 렌더 양쪽에서
+      // 반올림 지점이 갈려 같은 토큰이 두 값으로 보인다. 정수로 고정해 그 갈림을 없앤다.
+      mobile: { base: 15, ratio: 1.2, round: 1 },
+      tablet: { base: 16, ratio: 1.2, round: 1 },
+      desktop: { base: 16, ratio: 1.25, round: 1 },
     },
     steps: [
       { n: 'xs', i: -2 }, { n: 'sm', i: -1 }, { n: 'base', i: 0 }, { n: 'md', i: 1 },
@@ -175,7 +178,7 @@ function genTypography(p) {
   const IMAX = Math.max(...p.steps.map((s) => s.i));
   for (const s of p.steps) {
     const t = s.i <= p.lhKnee ? 0 : (s.i - p.lhKnee) / (IMAX - p.lhKnee);
-    lh[s.n] = { $value: Math.round((p.lhLoose - (p.lhLoose - p.lhTight) * t) * 10000) / 10000 };
+    lh[s.n] = { $value: Math.round((p.lhLoose - (p.lhLoose - p.lhTight) * t) * 100) / 100 };  // 소수 2자리 (2026-08-06 정리)
     const v = Math.round(-p.lsStrength * s.i * 1000) / 1000;
     ls[s.n] = { $value: `${v === 0 ? '0' : String(v)}em` };
   }

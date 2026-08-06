@@ -363,10 +363,10 @@
         "$type": "dimension",
         "mobile": {
           "xs": {
-            "$value": "0.6563rem"
+            "$value": "0.625rem"
           },
           "sm": {
-            "$value": "0.7813rem"
+            "$value": "0.8125rem"
           },
           "base": {
             "$value": "0.9375rem"
@@ -375,7 +375,7 @@
             "$value": "1.125rem"
           },
           "lg": {
-            "$value": "1.3438rem"
+            "$value": "1.375rem"
           },
           "xl": {
             "$value": "1.625rem"
@@ -384,16 +384,16 @@
             "$value": "1.9375rem"
           },
           "3xl": {
-            "$value": "2.3438rem"
+            "$value": "2.3125rem"
           },
           "4xl": {
             "$value": "2.8125rem"
           },
           "5xl": {
-            "$value": "3.3438rem"
+            "$value": "3.375rem"
           },
           "6xl": {
-            "$value": "4.0313rem"
+            "$value": "4rem"
           }
         },
         "tablet": {
@@ -401,7 +401,7 @@
             "$value": "0.6875rem"
           },
           "sm": {
-            "$value": "0.8438rem"
+            "$value": "0.8125rem"
           },
           "base": {
             "$value": "1rem"
@@ -413,7 +413,7 @@
             "$value": "1.4375rem"
           },
           "xl": {
-            "$value": "1.7188rem"
+            "$value": "1.75rem"
           },
           "2xl": {
             "$value": "2.0625rem"
@@ -425,7 +425,7 @@
             "$value": "3rem"
           },
           "5xl": {
-            "$value": "3.5938rem"
+            "$value": "3.5625rem"
           },
           "6xl": {
             "$value": "4.3125rem"
@@ -448,7 +448,7 @@
             "$value": "1.5625rem"
           },
           "xl": {
-            "$value": "1.9688rem"
+            "$value": "1.9375rem"
           },
           "2xl": {
             "$value": "2.4375rem"
@@ -460,10 +460,10 @@
             "$value": "3.8125rem"
           },
           "5xl": {
-            "$value": "4.7813rem"
+            "$value": "4.75rem"
           },
           "6xl": {
-            "$value": "5.9688rem"
+            "$value": "5.9375rem"
           }
         }
       },
@@ -471,10 +471,10 @@
         "$type": "dimension",
         "mobile": {
           "xs": {
-            "$value": "10.5px"
+            "$value": "10px"
           },
           "sm": {
-            "$value": "12.5px"
+            "$value": "13px"
           },
           "base": {
             "$value": "15px"
@@ -483,7 +483,7 @@
             "$value": "18px"
           },
           "lg": {
-            "$value": "21.5px"
+            "$value": "22px"
           },
           "xl": {
             "$value": "26px"
@@ -492,16 +492,16 @@
             "$value": "31px"
           },
           "3xl": {
-            "$value": "37.5px"
+            "$value": "37px"
           },
           "4xl": {
             "$value": "45px"
           },
           "5xl": {
-            "$value": "53.5px"
+            "$value": "54px"
           },
           "6xl": {
-            "$value": "64.5px"
+            "$value": "64px"
           }
         },
         "tablet": {
@@ -509,7 +509,7 @@
             "$value": "11px"
           },
           "sm": {
-            "$value": "13.5px"
+            "$value": "13px"
           },
           "base": {
             "$value": "16px"
@@ -521,7 +521,7 @@
             "$value": "23px"
           },
           "xl": {
-            "$value": "27.5px"
+            "$value": "28px"
           },
           "2xl": {
             "$value": "33px"
@@ -533,7 +533,7 @@
             "$value": "48px"
           },
           "5xl": {
-            "$value": "57.5px"
+            "$value": "57px"
           },
           "6xl": {
             "$value": "69px"
@@ -556,7 +556,7 @@
             "$value": "25px"
           },
           "xl": {
-            "$value": "31.5px"
+            "$value": "31px"
           },
           "2xl": {
             "$value": "39px"
@@ -568,10 +568,10 @@
             "$value": "61px"
           },
           "5xl": {
-            "$value": "76.5px"
+            "$value": "76px"
           },
           "6xl": {
-            "$value": "95.5px"
+            "$value": "95px"
           }
         }
       }
@@ -592,22 +592,22 @@
         "$value": 1.6
       },
       "lg": {
-        "$value": 1.5214
+        "$value": 1.52
       },
       "xl": {
-        "$value": 1.4429
+        "$value": 1.44
       },
       "2xl": {
-        "$value": 1.3643
+        "$value": 1.36
       },
       "3xl": {
-        "$value": 1.2857
+        "$value": 1.29
       },
       "4xl": {
-        "$value": 1.2071
+        "$value": 1.21
       },
       "5xl": {
-        "$value": 1.1286
+        "$value": 1.13
       },
       "6xl": {
         "$value": 1.05

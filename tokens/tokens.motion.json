@@ -11,10 +11,10 @@
         }
       },
       "duration-fast": {
-        "$value": "120ms",
+        "$value": "100ms",
         "$type": "duration",
         "$extensions": {
-          "ms": 120
+          "ms": 100
         }
       },
       "duration-base": {
@@ -25,17 +25,17 @@
         }
       },
       "duration-slow": {
-        "$value": "320ms",
+        "$value": "300ms",
         "$type": "duration",
         "$extensions": {
-          "ms": 320
+          "ms": 300
         }
       },
       "duration-slower": {
-        "$value": "480ms",
+        "$value": "500ms",
         "$type": "duration",
         "$extensions": {
-          "ms": 480
+          "ms": 500
         }
       }
     },

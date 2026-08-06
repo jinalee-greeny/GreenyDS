@@ -5,12 +5,12 @@
       "tab": {
         "fg": {
           "default": {
-            "$value": "{semantic.color.fg.secondary}",
-            "ref": "color.fg.secondary"
+            "$value": "{semantic.color.fg.unselected}",
+            "ref": "color.fg.unselected"
           },
           "selected": {
-            "$value": "{semantic.color.fg.brand}",
-            "ref": "color.fg.brand"
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
           },
           "disabled": {
             "$value": "{semantic.color.fg.disabled}",

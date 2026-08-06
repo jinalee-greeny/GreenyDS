@@ -1016,7 +1016,7 @@
           },
           "$extensions": {
             "step": "3xl",
-            "sizePx": 37.5
+            "sizePx": 37
           }
         },
         "tablet": {
@@ -1042,7 +1042,7 @@
           },
           "$extensions": {
             "step": "5xl",
-            "sizePx": 76.5
+            "sizePx": 76
           }
         }
       },
@@ -1208,7 +1208,7 @@
           },
           "$extensions": {
             "step": "sm",
-            "sizePx": 12.5
+            "sizePx": 13
           }
         },
         "tablet": {
@@ -1221,7 +1221,7 @@
           },
           "$extensions": {
             "step": "sm",
-            "sizePx": 13.5
+            "sizePx": 13
           }
         },
         "desktop": {
@@ -1257,7 +1257,7 @@
           },
           "$extensions": {
             "step": "sm",
-            "sizePx": 12.5
+            "sizePx": 13
           }
         },
         "tablet": {
@@ -1270,7 +1270,7 @@
           },
           "$extensions": {
             "step": "sm",
-            "sizePx": 13.5
+            "sizePx": 13
           }
         },
         "desktop": {

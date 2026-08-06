@@ -113,19 +113,15 @@
         },
         "selected": {
           "bg": {
-            "$value": "{semantic.color.bg.brand-subtle}",
-            "ref": "color.bg.brand-subtle"
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
           },
           "fg": {
-            "$value": "{semantic.color.fg.brand}",
-            "ref": "color.fg.brand"
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
           },
           "$extensions": {
-            "rule": {
-              "type": "component-state",
-              "state": "selected",
-              "why": "컴포넌트 고유 상태 — Tabs와 반복 시 시맨틱 승격 검토(§4.2-3)"
-            }
+            "why": "공용 selected 역할 소비 — 결정 #40 ② 실행(2026-08-06)으로 고유 상태에서 승격됨"
           }
         }
       },

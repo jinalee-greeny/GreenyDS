@@ -50,7 +50,10 @@ function buildSize() {
 }
 // border-width primitive는 결정 #40으로 폐지 — dimension 사다리(step-0·1·2) + special.hairline이 원천.
 // motion primitive (DP-5, A3 오너 · 게이트 M-1) — duration=ms 고정, easing=cubic-bezier 4튜플(#12 부칙). ~12개 캡.
-const DURATION = { instant: 0, fast: 120, base: 200, slow: 320, slower: 480 };   // ms, 단조 증가
+// ms, 단조 증가 · 100ms 그리드 (진아 지시 2026-08-06 "모션도 해당 방향으로 정리").
+// 구값 0/120/200/320/480 은 간격이 120·80·120·160 으로 불규칙했다. 100 그리드로 스냅해
+// 사람이 외울 수 있는 사다리로 만든다 — 값을 고를 때 "그 사이 어딘가"를 발명하지 않게 된다.
+const DURATION = { instant: 0, fast: 100, base: 200, slow: 300, slower: 500 };
 const EASING = {                                                                 // cubic-bezier 4튜플 (x∈[0,1])
   "linear":     [0, 0, 1, 1],
   "standard":   [0.2, 0, 0, 1],       // 일반 UI 상태 전이 (ease-out 우세)
@@ -106,6 +109,22 @@ function injectSemanticAdditions(){
     // ③ bg.scrim — 검정 알파(다크 상향). Modal(W2) 전제, W1에 미리 확정.
     const a = mode==="light"?0.5:0.6;
     bg["scrim"] = { "$value": `rgba(0,0,0,${a})`, "$type":"color", "$extensions":{ rule:{ type:"alpha", ramp:"alpha.black", alpha:a, why:"모달 스크림 — 다크 상향(§5.5-③)" } } };
+
+    /* ⑨ selected / unselected 공용 승격 — 결정 #40 ② 실행(진아 지시 2026-08-06 "실행").
+     * 결정 #27(비승격)을 공식 폐기한다. 값은 인라인 강조 패턴(Select.item·Tabs 2건이 공유하던
+     * bg.brand-subtle + fg.brand)을 기준으로 삼는다 — 3건 중 2건이 이미 이 조합이었다.
+     * ⚠ Segmented 는 raised 칩(bg.surface-raised + elevation.raised)이라 이 역할을 쓰지 않는다.
+     *    승격했다고 값이 다른 컴포넌트를 억지로 맞추지 않는다 — CS-1 마커로 계속 추적한다. */
+    bg["selected"]   = { "$value": bg["brand-subtle"].$value, "$type":"color", "$extensions":{ resolved: bg["brand-subtle"].$extensions && bg["brand-subtle"].$extensions.resolved, rule:{ type:"fixed", why:"선택 상태 공용 — 인라인 강조 패턴(결정 #40 ② 실행)" } } };
+    bg["unselected"] = { "$value": "transparent", "$type":"color", "$extensions":{ rule:{ type:"fixed", why:"비선택 상태 공용 — 배경 없음(트랙/표면이 비친다)" } } };
+    fg["selected"]   = { "$value": fg["brand"].$value, "$type":"color", "$extensions":{ resolved: fg["brand"].$extensions && fg["brand"].$extensions.resolved, rule:{ type:"fixed", why:"선택 상태 텍스트 공용 — fg.brand 와 같은 단계" } } };
+    fg["unselected"] = { "$value": fg["secondary"].$value, "$type":"color", "$extensions":{ resolved: fg["secondary"].$extensions && fg["secondary"].$extensions.resolved, rule:{ type:"fixed", why:"비선택 상태 텍스트 공용 — fg.secondary 와 같은 단계" } } };
+
+    /* ⑩ fg.quaternary — 위계 4단 완성(결정 #40 ② 실행).
+     * ⚠ 텍스트 금지. 목표 대비 2:1 로 WCAG 텍스트 기준을 넘지 못한다 — 구분선 옆 보조 기호·
+     *    장식 아이콘처럼 "읽지 않아도 되는" 요소 전용이다. 이 제약을 이름이 아니라 규칙에 박아 둔다. */
+    const q4 = resolveW(NEUTRAL, surfacesFor(mode), 2);
+    fg["quaternary"] = { "$value": `{color.${NEUTRAL}.${q4.step}}`, "$type":"color", "$extensions":{ resolved: q4.hex, rule:{ type:"contrast", against:"worst-case", target:2, why:"위계 4단 — 비텍스트·장식 전용(텍스트 사용 금지)" }, contrastMin: round2(q4.ratio) } };
   }
   // ⑦ bg.control-knob — 스위치 노브(색 채움 위 물리 요소). 비텍스트 UI ≥3(검사 C-3). Wave 2 승격.
   for (const mode of ["light","dark"]) {
@@ -235,8 +254,8 @@ function buildSelect(){
       "fg":       a("color.fg.primary"),
       "bg-hover": a("color.bg.action-ghost.hover"),
       "radius":   computedChildRadius("container","sm"),      // 중첩: 12−8=4
-      "selected":{ "bg":a("color.bg.brand-subtle"), "fg":a("color.fg.brand"),
-                   "$extensions":{ rule:{ type:"component-state", state:"selected", why:"컴포넌트 고유 상태 — Tabs와 반복 시 시맨틱 승격 검토(§4.2-3)" } } } },
+      "selected":{ "bg":a("color.bg.selected"), "fg":a("color.fg.selected"),
+                   "$extensions":{ why:"공용 selected 역할 소비 — 결정 #40 ② 실행(2026-08-06)으로 고유 상태에서 승격됨" } } },
     "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
@@ -285,7 +304,7 @@ function buildTabs(){
   return { "component":{ "tabs":{
     "$description":"Tabs — 탭+인디케이터 슬라이드, selected 고유 상태(승격 후보)",
     "tab":{
-      "fg":{ "default":a("color.fg.secondary"), "selected":a("color.fg.brand"), "disabled":a("color.fg.disabled") },
+      "fg":{ "default":a("color.fg.unselected"), "selected":a("color.fg.selected"), "disabled":a("color.fg.disabled") },
       "bg":{ "hover":a("color.bg.action-ghost.hover") },
       "height":a("size.control.md"),
       "radius":a("radius.control"),

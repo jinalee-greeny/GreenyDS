@@ -3,11 +3,13 @@
 const RAMPS = require('./ramps.cjs');
 const STEPS=["50","100","200","300","400","500","600","700","800","900","950"];
 const ELEV_DARK={ "elevation-1":{ov:0.0117,bd:0.0075}, "elevation-3":{ov:0.0467,bd:0.03} };
-const FS_PX={
- mobile:{xs:10.5,sm:12.5,base:15,md:18,lg:21.5,xl:26,"2xl":31,"3xl":37.5,"4xl":45,"5xl":53.5,"6xl":64.5},
- tablet:{xs:11,sm:13.5,base:16,md:19,lg:23,xl:27.5,"2xl":33,"3xl":40,"4xl":48,"5xl":57.5,"6xl":69},
- desktop:{xs:10,sm:13,base:16,md:20,lg:25,xl:31.5,"2xl":39,"3xl":49,"4xl":61,"5xl":76.5,"6xl":95.5}
-};
+/* 폰트 크기 px — primitive 원천에서 읽는다(하드코딩 사본 금지).
+ * 2026-08-06: 여기에 표를 복사해 두었더니 gen-tokens 의 정수 스냅 후 값이 갈라졌다
+ * (caption 최소 12px 판정이 낡은 12.5 를 보고 있었다). 결정 #29 "복사가 아니라 생성"과 같은 사고. */
+const FS_PX=(()=>{const P=require("../tokens/tokens.primitive.json").typography["font-size"].px,o={};
+  for(const bp of Object.keys(P)){if(bp.startsWith("$"))continue;o[bp]={};
+    for(const k of Object.keys(P[bp])){if(k.startsWith("$"))continue;o[bp][k]=parseFloat(P[bp][k].$value);}}
+  return o;})();
 const TSTEPS=["xs","sm","base","md","lg","xl","2xl","3xl","4xl","5xl","6xl"];
 const BPS=["mobile","tablet","desktop"];
 let NEUTRAL="cool-gray";
