@@ -968,6 +968,49 @@ function runChecks(comps){
     ck("H-14", !JSON.stringify(sk).includes("typography."), `skeleton 이 typography 를 참조한다 — 자리표시는 글자가 아니라 자리다`);
   }
 
+  /* ===== Wave 7 검사 (§3 표시) ===== */
+  for (const mode of ["light","dark"]){
+    const surf = resolveSem(mode,"color.bg.surface").hex;
+    const sub  = resolveSem(mode,"color.bg.subtle").hex;
+    const sel  = resolveSem(mode,"color.bg.selected").hex;
+    // J-1: Tag 기본 — bg.subtle 위 본문급 글자
+    ck("J-1", contrast(resolveSem(mode,"color.fg.primary").hex,sub)>=7, `${mode} tag fg.primary×bg.subtle <7`);
+    // J-2: Avatar 이니셜은 읽어야 한다(사진이 없을 때 유일한 식별자다) — 본문급 7
+    ck("J-2", contrast(resolveSem(mode,"color.fg.primary").hex,sub)>=7, `${mode} avatar 이니셜 fg×bg.subtle <7`);
+    ck("J-2", contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.bg.brand-subtle").hex)>=4.5,
+       `${mode} avatar.brand 이니셜 fg.brand×brand-subtle ${round2(contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.bg.brand-subtle").hex))}<4.5`);
+    /* J-3: 선택된 행/항목의 글자는 fg.selected 가 아니라 fg.primary 로 남긴다.
+     *   행 전체를 브랜드색 글자로 물들이면 그 안의 배지·링크가 전부 안 읽힌다.
+     *   그래서 fg.primary × bg.selected 가 새 페어가 된다 — 지금까지 아무도 안 보던 조합이다. */
+    ck("J-3", contrast(resolveSem(mode,"color.fg.primary").hex,sel)>=4.5,
+       `${mode} table/list 선택 행 fg.primary×bg.selected ${round2(contrast(resolveSem(mode,"color.fg.primary").hex,sel))}<4.5`);
+    // J-4: Accordion 손잡이·Table 헤더
+    ck("J-4", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7, `${mode} accordion.trigger fg×surface <7`);
+    ck("J-4", contrast(resolveSem(mode,"color.fg.secondary").hex,sub)>=4.5, `${mode} table.header fg.secondary×bg.subtle <4.5`);
+    // J-5: List 보조 문구(supporting)는 읽는 문장이라 본문 기준
+    ck("J-5", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5, `${mode} list.item.supporting fg.secondary×surface <4.5`);
+    /* J-6: 구분선은 '같지 않을 것'까지만 본다.
+     *   Skeleton H-5 에서 배운 것과 같다 — 장식성 요소에 없는 문턱을 발명하면 검사가 미신이 된다.
+     *   구분선의 실제 실패 모드는 하나뿐이다: 표면과 같은 색이 되어 선이 사라지는 것. */
+    ck("J-6", resolveSem(mode,"color.border.subtle").hex !== surf, `${mode} divider 색이 표면과 같다 — 선이 사라진다`);
+  }
+  {
+    const tag = buildTag().component.tag, av = buildAvatar().component.avatar;
+    const dv = buildDivider().component.divider, ac = buildAccordion().component.accordion;
+    const tb = buildTable().component.table, ls = buildList().component.list;
+    // J-7: 열린 컨테이너 4종 루트에 고정 높이 금지 — 단 '항목' 은 닫힌 클릭 타깃이라 height 를 갖는다
+    [["divider",dv],["accordion",ac],["table",tb],["list",ls]].forEach(([nm,c])=>
+      ck("J-7", !("height" in c), `${nm} 루트에 고정 높이 토큰 존재(§3.1 위반)`));
+    ck("J-7", !!ac.trigger.height && !!tb.row.height && !!ls.item.height,
+       `accordion.trigger·table.row·list.item 중 height 결손 — 닫힌 클릭 타깃은 높이를 가져야 한다(Q-007)`);
+    // J-8: Tag 는 닫힌 클릭 타깃이므로 height 를 갖는다 — Badge 와 갈리는 지점
+    ck("J-8", !!tag.height && !!tag.bg.hover && !!tag.bg.selected,
+       `tag 에 height·hover·selected 중 결손 — 이게 없으면 Badge 와 같은 물건이라 따로 둘 이유가 없다`);
+    ck("J-8", !("hover" in buildBadge().component.badge), `badge 에 hover 가 생겼다 — 읽히는 표시와 손대는 표시의 경계가 무너진다`);
+    // J-9: Avatar 상태 점도 원이다 — F-12 가 잡지만 size 선언 자체를 여기서도 못박는다
+    ck("J-9", !!av.status.size && !!av.status.radius, `avatar.status 에 size 또는 radius 결손`);
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -1428,6 +1471,137 @@ function buildEmptyState(){
   }}};
 }
 
+
+/* ============================================================
+ * Wave 7 — CDS_Components §3 표시 6종 (2026-08-06) — 3-A 완결
+ * ============================================================ */
+
+// ---- Tag / Chip ----
+// Badge 와 무엇이 다른가: Badge 는 **읽히는 표시**(상태 라벨)이고 Tag 는 **손대는 표시**다
+// (선택·해제·삭제). 그래서 Tag 에만 hover·selected·remove 가 있고 Badge 에는 없다.
+// 겉모습이 비슷하다고 한 컴포넌트로 합치면 상태 축이 뒤섞인다.
+function buildTag(){
+  return { "component":{ "tag":{
+    "$description":"Tag/Chip — 손대는 표시(선택·해제·삭제). Badge(읽히는 상태 라벨)와 겉모습은 비슷하지만 상태 축이 다르다 — 합치면 'Badge 에 hover 가 왜 있나'가 된다. 열린 컨테이너가 아니라 닫힌 클릭 타깃이라 height 를 갖는다(Q-007 스코프 안).",
+    "bg":{ "default":a("color.bg.subtle"), "hover":a("color.bg.action-ghost.hover"),
+           "selected":a("color.bg.selected"), "disabled":a("color.bg.action-disabled") },
+    "fg":{ "default":a("color.fg.primary"), "selected":a("color.fg.selected"), "disabled":a("color.fg.disabled") },
+    "border":{ "default":a("color.border.subtle"), "focused":a("color.border.focused") },
+    "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
+    "height":{ "sm":a("size.icon.lg"), "md":a("size.control.sm") },
+    "radius":a("radius.pill"),
+    "padding-x":a("spacing.padding.sm"),
+    "gap":a("spacing.gap.x.sm"),
+    "typography":a("typography.label"),
+    "remove":{ "fg":a("color.fg.secondary"), "size":a("size.icon.sm"),
+               "$extensions":{ why:"삭제 손잡이는 fg.tertiary(3:1)가 아니라 secondary — 누르는 대상이라 보조 기호보다 잘 보여야 한다" } },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- Avatar ----
+// radius.circle 소비 → F-12 정사각 게이트 대상.
+function buildAvatar(){
+  return { "component":{ "avatar":{
+    "$description":"Avatar — 이니셜 대체 표시 + 상태 점. ⚠ 사진 자체는 토큰이 아니다(이 시스템에 이미지 축이 없다) — 사진이 없을 때의 바닥·글자·테두리만 토큰으로 낸다. radius.circle 소비라 F-12 정사각 게이트 대상.",
+    "bg":{ "default":a("color.bg.subtle"), "brand":a("color.bg.brand-subtle") },
+    "fg":{ "default":a("color.fg.primary"), "brand":a("color.fg.brand") },
+    "border":a("color.bg.surface"),
+    "borderWidth":a("borderWidth.selected"),
+    "radius":a("radius.circle"),
+    "size":{ "sm":a("size.icon.lg"), "md":a("size.control.sm"), "lg":a("size.control.md") },
+    "typography":a("typography.label"),
+    "status":{ "online":a("color.fg.success"), "busy":a("color.fg.error"),
+               "away":a("color.fg.warning"), "offline":a("color.fg.tertiary"),
+               "size":a("size.icon.sm"), "radius":a("radius.circle"),
+               "$extensions":{ square:"size", why:"상태 점도 원 — F-12 대상" } },
+    "$extensions":{ square:"size", why:"radius.circle 소비 — 정사각 전제(F-12)" }
+  }}};
+}
+
+// ---- Divider ----
+// ⚠ 방향(가로/세로)은 토큰 축이 아니다 — Drawer 의 모서리 방향과 같은 종류의 부재.
+function buildDivider(){
+  return { "component":{ "divider":{
+    "$description":"Divider — 구분선. ⚠ 방향(가로/세로)은 이 시스템의 토큰 축에 없다(Drawer 붙은 변과 같은 부재) — 색·굵기·여백만 내고 어느 축에 그릴지는 구현 레이어 몫. 라벨이 있는 변형은 선 사이에 글자가 들어간다.",
+    "color":{ "default":a("color.border.subtle"), "strong":a("color.border.default") },
+    "thickness":a("borderWidth.default"),
+    "gap":{ "sm":a("spacing.gap.y.sm"), "md":a("spacing.gap.y.md") },
+    "label":{ "fg":a("color.fg.tertiary"), "typography":a("typography.caption"), "gap":a("spacing.gap.x.sm") }
+  }}};
+}
+
+// ---- Accordion ----
+function buildAccordion(){
+  return { "component":{ "accordion":{
+    "$description":"Accordion — 접히는 항목 목록. 루트는 열린 컨테이너(항목 수·펼침 상태로 높이가 변한다)라 height 가 없고, 손잡이(trigger)는 닫힌 클릭 타깃이라 height 를 갖는다 — Q-007 스코프를 항목 단위로 적용.",
+    "trigger":{
+      "bg":{ "default":a("color.bg.surface"), "hover":a("color.bg.action-ghost.hover"), "disabled":a("color.bg.subtle") },
+      "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") },
+      "height":a("size.control.md"),
+      "padding-x":a("spacing.padding.md"),
+      "typography":a("typography.label"),
+      "icon":{ "fg":a("color.fg.secondary"), "size":a("size.icon.md"), "motion":a("motion.control") }
+    },
+    "panel":{ "bg":a("color.bg.surface"), "fg":a("color.fg.secondary"),
+              "padding":a("spacing.padding.md"), "gap":a("spacing.gap.y.sm"),
+              "typography":a("typography.body"), "motion":a("motion.control") },
+    "divider":{ "color":a("color.border.subtle"), "thickness":a("borderWidth.default") },
+    "radius":a("radius.container"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- Table ----
+function buildTable(){
+  return { "component":{ "table":{
+    "$description":"Table — 표. 열린 컨테이너(행 수가 가변). 선택 행은 공용 selected 배경을 쓰되 글자는 fg.primary 를 유지한다 — 행 전체가 브랜드색으로 물들면 그 안의 상태 배지·링크가 전부 읽히지 않는다.",
+    "header":{
+      "bg":a("color.bg.subtle"), "fg":a("color.fg.secondary"),
+      "typography":a("typography.label"),
+      "border":a("color.border.default"), "borderWidth":a("borderWidth.default"),
+      "sort-icon":a("color.fg.tertiary")
+    },
+    "row":{
+      "bg":{ "default":a("color.bg.surface"), "zebra":a("color.bg.subtle"),
+             "hover":a("color.bg.action-ghost.hover"), "selected":a("color.bg.selected") },
+      "fg":{ "default":a("color.fg.primary"), "muted":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+      "border":a("color.border.subtle"), "borderWidth":a("borderWidth.default"),
+      "height":{ "sm":a("size.control.sm"), "md":a("size.control.md") },
+      "$extensions":{ why:"선택 행 글자는 fg.selected 가 아니라 fg.primary — 행 안에 다른 색 요소(배지·링크)가 함께 살아야 한다" }
+    },
+    "cell":{ "padding-x":a("spacing.padding.md"), "gap":a("spacing.gap.x.sm"), "typography":a("typography.body") },
+    "radius":a("radius.container"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- List ----
+function buildList(){
+  return { "component":{ "list":{
+    "$description":"List — 항목 목록. Table 과 다른 점: 열(column) 축이 없고 항목이 한 덩어리다. 루트는 열린 컨테이너, 항목은 닫힌 클릭 타깃.",
+    "item":{
+      "bg":{ "default":a("color.bg.surface"), "hover":a("color.bg.action-ghost.hover"),
+             "selected":a("color.bg.selected"), "disabled":a("color.bg.subtle") },
+      "fg":{ "default":a("color.fg.primary"), "supporting":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+      "height":{ "sm":a("size.control.sm"), "md":a("size.control.md"), "lg":a("size.control.lg") },
+      "padding-x":a("spacing.padding.md"),
+      "gap":a("spacing.gap.x.sm"),
+      "typography":{ "primary":a("typography.body"), "supporting":a("typography.caption") },
+      "icon":{ "leading":a("size.icon.md"), "trailing":a("size.icon.sm"), "fg":a("color.fg.secondary") }
+    },
+    "section":{ "fg":a("color.fg.tertiary"), "typography":a("typography.caption"),
+                "padding-x":a("spacing.padding.md"), "gap":a("spacing.gap.y.sm") },
+    "divider":{ "color":a("color.border.subtle"), "thickness":a("borderWidth.default") },
+    "radius":a("radius.container"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
@@ -1435,7 +1609,8 @@ const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildField(), buildTextarea(), buildCounter(),
                buildFileUpload(), buildDatePicker(),
                buildBreadcrumb(), buildPagination(), buildNavBar(), buildProgressSteps(),
-               buildDrawer(), buildProgressBar(), buildSpinner(), buildSkeleton(), buildEmptyState()];
+               buildDrawer(), buildProgressBar(), buildSpinner(), buildSkeleton(), buildEmptyState(),
+               buildTag(), buildAvatar(), buildDivider(), buildAccordion(), buildTable(), buildList()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -1446,7 +1621,8 @@ const names = ["button","input","select","card","switch","tabs","modal","toast",
                "checkbox","radio","slider","segmented","tooltip","badge","banner",
                "field","textarea","counter","file-upload","date-picker",
                "breadcrumb","pagination","nav-bar","progress-steps",
-               "drawer","progress-bar","spinner","skeleton","empty-state"];
+               "drawer","progress-bar","spinner","skeleton","empty-state",
+               "tag","avatar","divider","accordion","table","list"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -1518,7 +1694,7 @@ const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4 + Wave6 5) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4 + Wave6 5 + Wave7 6) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
 if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log(`전 검사 ✗ 0건 — Wave 1~6 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);
+console.log(`전 검사 ✗ 0건 — Wave 1~7 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);

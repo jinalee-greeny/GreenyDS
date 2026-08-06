@@ -1,0 +1,45 @@
+{
+  "component": {
+    "divider": {
+      "$description": "Divider — 구분선. ⚠ 방향(가로/세로)은 이 시스템의 토큰 축에 없다(Drawer 붙은 변과 같은 부재) — 색·굵기·여백만 내고 어느 축에 그릴지는 구현 레이어 몫. 라벨이 있는 변형은 선 사이에 글자가 들어간다.",
+      "color": {
+        "default": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "strong": {
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
+        }
+      },
+      "thickness": {
+        "$value": "{semantic.borderWidth.default}",
+        "ref": "borderWidth.default"
+      },
+      "gap": {
+        "sm": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        },
+        "md": {
+          "$value": "{semantic.spacing.gap.y.md}",
+          "ref": "spacing.gap.y.md"
+        }
+      },
+      "label": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "component": {
+    "tag": {
+      "$description": "Tag/Chip — 손대는 표시(선택·해제·삭제). Badge(읽히는 상태 라벨)와 겉모습은 비슷하지만 상태 축이 다르다 — 합치면 'Badge 에 hover 가 왜 있나'가 된다. 열린 컨테이너가 아니라 닫힌 클릭 타깃이라 height 를 갖는다(Q-007 스코프 안).",
+      "bg": {
+        "default": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "selected": {
+          "$value": "{semantic.color.bg.selected}",
+          "ref": "color.bg.selected"
+        },
+        "disabled": {
+          "$value": "{semantic.color.bg.action-disabled}",
+          "ref": "color.bg.action-disabled"
+        }
+      },
+      "fg": {
+        "default": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "selected": {
+          "$value": "{semantic.color.fg.selected}",
+          "ref": "color.fg.selected"
+        },
+        "disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        }
+      },
+      "border": {
+        "default": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "focused": {
+          "$value": "{semantic.color.border.focused}",
+          "ref": "color.border.focused"
+        }
+      },
+      "borderWidth": {
+        "default": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "focused": {
+          "$value": "{semantic.borderWidth.focused}",
+          "ref": "borderWidth.focused"
+        }
+      },
+      "height": {
+        "sm": {
+          "$value": "{semantic.size.icon.lg}",
+          "ref": "size.icon.lg"
+        },
+        "md": {
+          "$value": "{semantic.size.control.sm}",
+          "ref": "size.control.sm"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.pill}",
+        "ref": "radius.pill"
+      },
+      "padding-x": {
+        "$value": "{semantic.spacing.padding.sm}",
+        "ref": "spacing.padding.sm"
+      },
+      "gap": {
+        "$value": "{semantic.spacing.gap.x.sm}",
+        "ref": "spacing.gap.x.sm"
+      },
+      "typography": {
+        "$value": "{semantic.typography.label}",
+        "ref": "typography.label"
+      },
+      "remove": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        },
+        "$extensions": {
+          "why": "삭제 손잡이는 fg.tertiary(3:1)가 아니라 secondary — 누르는 대상이라 보조 기호보다 잘 보여야 한다"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "component": {
+    "avatar": {
+      "$description": "Avatar — 이니셜 대체 표시 + 상태 점. ⚠ 사진 자체는 토큰이 아니다(이 시스템에 이미지 축이 없다) — 사진이 없을 때의 바닥·글자·테두리만 토큰으로 낸다. radius.circle 소비라 F-12 정사각 게이트 대상.",
+      "bg": {
+        "default": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "brand": {
+          "$value": "{semantic.color.bg.brand-subtle}",
+          "ref": "color.bg.brand-subtle"
+        }
+      },
+      "fg": {
+        "default": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "brand": {
+          "$value": "{semantic.color.fg.brand}",
+          "ref": "color.fg.brand"
+        }
+      },
+      "border": {
+        "$value": "{semantic.color.bg.surface}",
+        "ref": "color.bg.surface"
+      },
+      "borderWidth": {
+        "$value": "{semantic.borderWidth.selected}",
+        "ref": "borderWidth.selected"
+      },
+      "radius": {
+        "$value": "{semantic.radius.circle}",
+        "ref": "radius.circle"
+      },
+      "size": {
+        "sm": {
+          "$value": "{semantic.size.icon.lg}",
+          "ref": "size.icon.lg"
+        },
+        "md": {
+          "$value": "{semantic.size.control.sm}",
+          "ref": "size.control.sm"
+        },
+        "lg": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        }
+      },
+      "typography": {
+        "$value": "{semantic.typography.label}",
+        "ref": "typography.label"
+      },
+      "status": {
+        "online": {
+          "$value": "{semantic.color.fg.success}",
+          "ref": "color.fg.success"
+        },
+        "busy": {
+          "$value": "{semantic.color.fg.error}",
+          "ref": "color.fg.error"
+        },
+        "away": {
+          "$value": "{semantic.color.fg.warning}",
+          "ref": "color.fg.warning"
+        },
+        "offline": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "$extensions": {
+          "square": "size",
+          "why": "상태 점도 원 — F-12 대상"
+        }
+      },
+      "$extensions": {
+        "square": "size",
+        "why": "radius.circle 소비 — 정사각 전제(F-12)"
+      }
+    }
+  }
+}

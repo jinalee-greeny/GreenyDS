@@ -1,0 +1,127 @@
+{
+  "component": {
+    "list": {
+      "$description": "List — 항목 목록. Table 과 다른 점: 열(column) 축이 없고 항목이 한 덩어리다. 루트는 열린 컨테이너, 항목은 닫힌 클릭 타깃.",
+      "item": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "selected": {
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "supporting": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          },
+          "lg": {
+            "$value": "{semantic.size.control.lg}",
+            "ref": "size.control.lg"
+          }
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        },
+        "typography": {
+          "primary": {
+            "$value": "{semantic.typography.body}",
+            "ref": "typography.body"
+          },
+          "supporting": {
+            "$value": "{semantic.typography.caption}",
+            "ref": "typography.caption"
+          }
+        },
+        "icon": {
+          "leading": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          },
+          "trailing": {
+            "$value": "{semantic.size.icon.sm}",
+            "ref": "size.icon.sm"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          }
+        }
+      },
+      "section": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "divider": {
+        "color": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "thickness": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.container}",
+        "ref": "radius.container"
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

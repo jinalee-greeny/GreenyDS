@@ -1,0 +1,114 @@
+{
+  "component": {
+    "table": {
+      "$description": "Table — 표. 열린 컨테이너(행 수가 가변). 선택 행은 공용 selected 배경을 쓰되 글자는 fg.primary 를 유지한다 — 행 전체가 브랜드색으로 물들면 그 안의 상태 배지·링크가 전부 읽히지 않는다.",
+      "header": {
+        "bg": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "border": {
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "sort-icon": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        }
+      },
+      "row": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "zebra": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "selected": {
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "muted": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          }
+        },
+        "$extensions": {
+          "why": "선택 행 글자는 fg.selected 가 아니라 fg.primary — 행 안에 다른 색 요소(배지·링크)가 함께 살아야 한다"
+        }
+      },
+      "cell": {
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.container}",
+        "ref": "radius.container"
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}
