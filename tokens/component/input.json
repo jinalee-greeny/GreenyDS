@@ -94,6 +94,38 @@
           "ref": "size.icon.md"
         }
       },
+      "slot": {
+        "leading": {
+          "fg": {
+            "$value": "{semantic.color.fg.tertiary}",
+            "ref": "color.fg.tertiary"
+          },
+          "size": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          },
+          "$extensions": {
+            "why": "돋보기 같은 선행 아이콘은 읽는 대상이 아니라 표식 — 비텍스트 3:1 단계(tertiary)"
+          }
+        },
+        "trailing": {
+          "fg": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "size": {
+            "$value": "{semantic.size.icon.sm}",
+            "ref": "size.icon.sm"
+          },
+          "$extensions": {
+            "why": "지우기(×)는 누르는 대상이라 tertiary 보다 잘 보여야 한다 — Tag.remove 와 같은 판단"
+          }
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        }
+      },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",
         "ref": "focus-offset"

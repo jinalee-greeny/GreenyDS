@@ -260,6 +260,15 @@ function buildInput(){
     "padding-x":a("spacing.padding.md"),
     "typography":a("typography.body"),
     "icon":     { "sm":a("size.icon.sm"),"md":a("size.icon.md") },
+    /* 슬롯 — Search field 를 별도 컴포넌트로 만들지 않고 여기에 흡수한다(§3-B 조합 판정).
+       검색창은 Input + 선행 아이콘 + 지우기 버튼이지 새 해부도가 아니다. */
+    "slot":{
+      "leading":{ "fg":a("color.fg.tertiary"), "size":a("size.icon.md"),
+                  "$extensions":{ why:"돋보기 같은 선행 아이콘은 읽는 대상이 아니라 표식 — 비텍스트 3:1 단계(tertiary)" } },
+      "trailing":{ "fg":a("color.fg.secondary"), "size":a("size.icon.sm"),
+                   "$extensions":{ why:"지우기(×)는 누르는 대상이라 tertiary 보다 잘 보여야 한다 — Tag.remove 와 같은 판단" } },
+      "gap":a("spacing.gap.x.sm")
+    },
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -1011,6 +1020,55 @@ function runChecks(comps){
     ck("J-9", !!av.status.size && !!av.status.radius, `avatar.status 에 size 또는 radius 결손`);
   }
 
+  /* ===== Q-016 (B) 이행 검사 — 중복을 '검사가 볼 수 있는 중복' 으로 만든다 =====
+   * (B) 는 중복을 없애지 않는다. 없애지 않기로 한 대신, 갈라지는 순간을 잡는 장치를 둔다.
+   * 이 네 검사가 없으면 (B) 는 그냥 '사본을 하나 더 만든 것' 이 된다. */
+  {
+    const refOf = (node, path) => {
+      let n = node; for (const k of path.split(".")) { if (!n) return null; n = n[k]; }
+      return n && n.ref || null;
+    };
+    const comp = (nm) => { const c = comps.find(x => Object.keys(x.component)[0] === nm); return c && c.component[nm]; };
+    /* K-1: raised 계열 '떠 있는 표면' 3요소가 모든 선언에서 같은 시맨틱을 가리키는지.
+     *   select.menu(Wave 2) · datePicker.panel(Wave 4-B) · menu(Q-016) — 세 벌이 공존한다. */
+    const RAISED = [["menu","surface"],["select","menu"],["datePicker","panel"]];
+    [["bg","color.bg.surface-raised"],["elevation","elevation.raised"],["radius","radius.container"],["border","color.border.subtle"]]
+      .forEach(([prop,want]) => RAISED.forEach(([c,base]) => {
+        const got = refOf(comp(c), base + "." + prop);
+        ck("K-1", got === want, `${c}.${base}.${prop} = ${got} ≠ ${want} — 같은 '떠 있는 표면'인데 선언이 갈라졌다(Q-016 (B) 전제 붕괴)`);
+      }));
+    /* K-2: overlay 계열도 같은 방식. tooltip 은 radius 가 control(작은 말풍선)이라 3요소 중 2개만 본다. */
+    const OVERLAY = [["popover","surface"],["modal",null],["drawer","panel"]];
+    [["bg","color.bg.surface-overlay"],["elevation","elevation.overlay"],["radius","radius.overlay"]]
+      .forEach(([prop,want]) => OVERLAY.forEach(([c,base]) => {
+        const key = c === "modal" ? (prop === "bg" ? "surface" : prop) : base + "." + prop;
+        const got = refOf(comp(c), key);
+        ck("K-2", got === want, `${c}.${key} = ${got} ≠ ${want} — overlay 표면 선언이 갈라졌다`);
+      }));
+    /* K-3: 표면과 그림자는 항상 짝이다(E-1 확장). raised 를 쓰면서 overlay 그림자를 다는 실수를 막는다. */
+    [["menu","surface"],["select","menu"],["datePicker","panel"],["popover","surface"],["drawer","panel"]]
+      .forEach(([c,base]) => {
+        const bg = refOf(comp(c), base + ".bg"), el = refOf(comp(c), base + ".elevation");
+        const tier = (bg||"").indexOf("surface-raised") >= 0 ? "raised" : "overlay";
+        ck("K-3", el === "elevation." + tier, `${c}.${base}: bg 는 ${tier} 인데 elevation 은 ${el} — 표면·그림자 짝이 어긋났다`);
+      });
+    /* K-4: ★ (B) 의 핵심 약속 — 컴포넌트가 다른 컴포넌트를 참조하지 않는다(§0.1).
+     *   (A) 로 슬며시 넘어가는 것을 막는 유일한 장치다. 이게 없으면 판정이 문서에만 남는다. */
+    const NAMES = comps.map(c => Object.keys(c.component)[0]);
+    comps.forEach(c => {
+      const nm = Object.keys(c.component)[0];
+      const walk = (n, t) => { for (const [k,v] of Object.entries(n)) {
+        if (k.startsWith("$")) continue;
+        if (v && typeof v === "object") {
+          if (v.ref && NAMES.some(x => v.ref === x || v.ref.indexOf(x + ".") === 0))
+            ck("K-4", false, `${nm}.${t.concat(k).join(".")} 가 컴포넌트 '${v.ref}' 를 참조한다 — §0.1 위반(Q-016 (B) 는 시맨틱만 가리키기로 한 판정)`);
+          else if (!v.ref) walk(v, t.concat(k));
+        } } };
+      walk(c.component[nm], []);
+    });
+    ck("K-4", true, "컴포넌트간 참조 0건 — §0.1 유지");
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -1602,6 +1660,73 @@ function buildList(){
   }}};
 }
 
+
+/* ============================================================
+ * Q-016 (B) 이행 — Menu · Popover 독립 등재 (진아 판정 2026-08-06)
+ *
+ * (B) 를 고른다는 것은 **중복을 없애는 게 아니라 검사가 볼 수 있는 중복으로 바꾸는 것**이다.
+ * §0.1(컴포넌트간 참조 금지)은 그대로 두고, Select·Tooltip·Modal·Drawer·DatePicker 는
+ * 지금 구조를 유지한 채 Menu·Popover 를 나란히 등재한다.
+ * 그 대가로 검사 K-1~K-4 를 신설한다 — 같은 '떠 있는 표면'을 말하는 선언들이
+ * 서로 다른 시맨틱을 가리키기 시작하면 그 순간 빌드가 멈춘다.
+ * ============================================================ */
+
+// ---- Menu (raised 계열 떠 있는 표면 + 항목) ----
+function buildMenu(){
+  return { "component":{ "menu":{
+    "$description":"Menu — 떠 있는 목록(raised 쌍). Dropdown menu · Context menu · Combobox 의 목록이 전부 이 물건이다(§3-B 조합 판정). ⚠ Select 는 지금 select.menu 를 그대로 유지한다 — Q-016 (B) 판정대로 컴포넌트간 참조(§0.1)를 만들지 않고 같은 시맨틱을 각자 가리킨다. 두 선언이 갈라지지 않게 검사 K-1 이 지킨다.",
+    "surface":{
+      "bg":a("color.bg.surface-raised"),
+      "elevation":a("elevation.raised"),
+      "border":a("color.border.subtle"),
+      "borderWidth":a("borderWidth.default"),
+      "radius":a("radius.container"),
+      "padding":a("spacing.padding.sm"),
+      "gap":a("spacing.gap.y.sm")
+    },
+    "item":{
+      "bg":{ "default":a("color.bg.unselected"), "hover":a("color.bg.action-ghost.hover"),
+             "selected":a("color.bg.selected"), "disabled":a("color.bg.unselected") },
+      "fg":{ "default":a("color.fg.primary"), "selected":a("color.fg.selected"),
+             "supporting":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+      "height":{ "sm":a("size.control.sm"), "md":a("size.control.md") },
+      "radius":computedChildRadius("container","sm"),
+      "padding-x":a("spacing.padding.md"),
+      "gap":a("spacing.gap.x.sm"),
+      "icon":a("size.icon.md"),
+      "typography":a("typography.body")
+    },
+    "section":{ "fg":a("color.fg.tertiary"), "typography":a("typography.caption"), "padding-x":a("spacing.padding.md") },
+    "divider":{ "color":a("color.border.subtle"), "thickness":a("borderWidth.default") },
+    "motion":{ "enter":a("motion.overlay-enter"), "exit":a("motion.overlay-exit") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- Popover (overlay 계열 떠 있는 표면) ----
+function buildPopover(){
+  return { "component":{ "popover":{
+    "$description":"Popover — 앵커에 붙어 뜨는 패널(overlay 쌍). Tooltip 과 다른 점: Tooltip 은 읽기만 하는 짧은 설명이고 Popover 는 안에 컨트롤이 들어간다 — 그래서 padding 이 크고 닫기 손잡이·모션이 있다. ⚠ 화살표의 '방향'은 이 시스템의 토큰 축에 없다(Drawer 모서리·Divider 방향과 같은 부재) — 색만 내고 어느 변에 그릴지는 구현 레이어 몫.",
+    "surface":{
+      "bg":a("color.bg.surface-overlay"),
+      "elevation":a("elevation.overlay"),
+      "border":a("color.border.subtle"),
+      "borderWidth":a("borderWidth.default"),
+      "radius":a("radius.overlay"),
+      "padding":a("spacing.padding.md"),
+      "gap":a("spacing.gap.y.sm")
+    },
+    "arrow":{ "bg":a("color.bg.surface-overlay"), "border":a("color.border.subtle"), "size":a("size.icon.sm") },
+    "title":{ "fg":a("color.fg.primary"), "typography":a("typography.title") },
+    "body":{ "fg":a("color.fg.secondary"), "typography":a("typography.body") },
+    "close":{ "fg":a("color.fg.secondary"), "bg-hover":a("color.bg.action-ghost.hover"), "size":a("size.icon.md") },
+    "motion":{ "enter":a("motion.overlay-enter"), "exit":a("motion.overlay-exit") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
@@ -1610,7 +1735,8 @@ const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildFileUpload(), buildDatePicker(),
                buildBreadcrumb(), buildPagination(), buildNavBar(), buildProgressSteps(),
                buildDrawer(), buildProgressBar(), buildSpinner(), buildSkeleton(), buildEmptyState(),
-               buildTag(), buildAvatar(), buildDivider(), buildAccordion(), buildTable(), buildList()];
+               buildTag(), buildAvatar(), buildDivider(), buildAccordion(), buildTable(), buildList(),
+               buildMenu(), buildPopover()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -1622,7 +1748,7 @@ const names = ["button","input","select","card","switch","tabs","modal","toast",
                "field","textarea","counter","file-upload","date-picker",
                "breadcrumb","pagination","nav-bar","progress-steps",
                "drawer","progress-bar","spinner","skeleton","empty-state",
-               "tag","avatar","divider","accordion","table","list"];
+               "tag","avatar","divider","accordion","table","list","menu","popover"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -1694,7 +1820,7 @@ const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4 + Wave6 5 + Wave7 6) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4 + Wave6 5 + Wave7 6 + Q-016 2) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
 if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log(`전 검사 ✗ 0건 — Wave 1~7 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);
+console.log(`전 검사 ✗ 0건 — Wave 1~7 + Q-016 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);

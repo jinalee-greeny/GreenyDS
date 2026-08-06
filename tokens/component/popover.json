@@ -1,0 +1,103 @@
+{
+  "component": {
+    "popover": {
+      "$description": "Popover — 앵커에 붙어 뜨는 패널(overlay 쌍). Tooltip 과 다른 점: Tooltip 은 읽기만 하는 짧은 설명이고 Popover 는 안에 컨트롤이 들어간다 — 그래서 padding 이 크고 닫기 손잡이·모션이 있다. ⚠ 화살표의 '방향'은 이 시스템의 토큰 축에 없다(Drawer 모서리·Divider 방향과 같은 부재) — 색만 내고 어느 변에 그릴지는 구현 레이어 몫.",
+      "surface": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-overlay}",
+          "ref": "color.bg.surface-overlay"
+        },
+        "elevation": {
+          "$value": "{semantic.elevation.overlay}",
+          "ref": "elevation.overlay"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "radius": {
+          "$value": "{semantic.radius.overlay}",
+          "ref": "radius.overlay"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "arrow": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-overlay}",
+          "ref": "color.bg.surface-overlay"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        }
+      },
+      "title": {
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.title}",
+          "ref": "typography.title"
+        }
+      },
+      "body": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "close": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "bg-hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        }
+      },
+      "motion": {
+        "enter": {
+          "$value": "{semantic.motion.overlay-enter}",
+          "ref": "motion.overlay-enter"
+        },
+        "exit": {
+          "$value": "{semantic.motion.overlay-exit}",
+          "ref": "motion.overlay-exit"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

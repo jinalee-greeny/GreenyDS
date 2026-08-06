@@ -1,0 +1,155 @@
+{
+  "component": {
+    "menu": {
+      "$description": "Menu — 떠 있는 목록(raised 쌍). Dropdown menu · Context menu · Combobox 의 목록이 전부 이 물건이다(§3-B 조합 판정). ⚠ Select 는 지금 select.menu 를 그대로 유지한다 — Q-016 (B) 판정대로 컴포넌트간 참조(§0.1)를 만들지 않고 같은 시맨틱을 각자 가리킨다. 두 선언이 갈라지지 않게 검사 K-1 이 지킨다.",
+      "surface": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-raised}",
+          "ref": "color.bg.surface-raised"
+        },
+        "elevation": {
+          "$value": "{semantic.elevation.raised}",
+          "ref": "elevation.raised"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "radius": {
+          "$value": "{semantic.radius.container}",
+          "ref": "radius.container"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "item": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "selected": {
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "selected": {
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
+          },
+          "supporting": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          }
+        },
+        "radius": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "nesting",
+              "formula": "max(0, radius.container − padding.sm)",
+              "why": "중첩 정합(#10)·padding 인자 호출(§5.2)"
+            }
+          }
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "section": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        }
+      },
+      "divider": {
+        "color": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "thickness": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        }
+      },
+      "motion": {
+        "enter": {
+          "$value": "{semantic.motion.overlay-enter}",
+          "ref": "motion.overlay-enter"
+        },
+        "exit": {
+          "$value": "{semantic.motion.overlay-exit}",
+          "ref": "motion.overlay-exit"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

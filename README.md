@@ -13,8 +13,8 @@ tokens/                 DTCG 원천·산출
 scripts/
   gen-tokens.cjs          파라미터(DEFAULT_PARAMS) → primitive. --check로 SSOT 재현 검증
   gen-semantic.cjs        primitive + 바인딩 규칙(#16~#19) → 시맨틱 (대비 자동 해결)
-  gen-component.cjs       시맨틱 → 컴포넌트 35종 + 919 검사
-  perturb.cjs / presets.cjs  섭동 매트릭스 6프리셋 × 919 = 5,514 검사
+  gen-component.cjs       시맨틱 → 컴포넌트 37종 + 1,002 검사
+  perturb.cjs / presets.cjs  섭동 매트릭스 6프리셋 × 1,002 = 6,012 검사
   ramps.cjs               primitive 색 미러 — SSOT(primitive.json) 직접 읽기(드리프트 방지)
   build-css.cjs           primitive → build/css·json (자립 빌더, 외부 의존 없음). --check로 드리프트 검증
   validate-tokens.cjs     primitive 엔진 검증 (✗ 하드 / △ 권고)
@@ -29,8 +29,8 @@ build/                  빌드 산출 (build-css.cjs 생성)
 node scripts/gen-tokens.cjs --check     # 파라미터→SSOT 재현 검증
 node scripts/validate-tokens.cjs        # primitive 하드 게이트
 node scripts/gen-semantic.cjs tokens/tokens.semantic.json
-node scripts/gen-component.cjs          # 919 검사
-node scripts/perturb.cjs                # 5,514 검사 (엔진 적응)
+node scripts/gen-component.cjs          # 1,002 검사
+node scripts/perturb.cjs                # 6,012 검사 (엔진 적응)
 node scripts/check-mirror.cjs           # 컨피규레이터 미러 ↔ 파이프라인 값 결정 대조
 node scripts/build-configurator-comps.cjs  # 레포 컴포넌트 토큰 → 컨피규레이터 표 (--check 로 드리프트 검사)
 node scripts/build-css.cjs              # 공식 CSS·flat JSON 생성 (npm run build)

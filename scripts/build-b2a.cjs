@@ -65,8 +65,8 @@ function build() {
 
   // T2 — 미러임을 상단 태그에 표시
   s = swap(s,
-    '<span class="tag">내부 베타 v1.6 — 컴포넌트 35종 형태+토큰 전량 · 결정 #44 다크 대비</span>',
-    '<span class="tag">내부 베타 v1.6 — 컴포넌트 35종 형태+토큰 전량 · 결정 #44 다크 대비 · B2a 미러</span>',
+    '<span class="tag">내부 베타 v1.7 — 컴포넌트 37종 형태+토큰 전량 · Q-016(B) Menu·Popover</span>',
+    '<span class="tag">내부 베타 v1.7 — 컴포넌트 37종 형태+토큰 전량 · Q-016(B) Menu·Popover · B2a 미러</span>',
     'T2 미러 태그');
 
   // T3 — 폴백/새 탭 링크 CSS
