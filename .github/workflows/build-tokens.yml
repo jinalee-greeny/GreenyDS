@@ -78,6 +78,12 @@ jobs:
       - name: Check B2a mirror matches live configurator (no drift)
         run: node scripts/build-b2a.cjs --check
 
+      # 컨피규레이터는 브라우저에서 도는 두 번째 엔진이다 — 파이프라인과 같은 값 결정을 각자
+      # 구현하고 있어 한쪽만 고치면 화면과 산출물이 조용히 갈라진다(결정 #44 에서 실제로 드러났다).
+      # 미러 전체를 생성물로 바꾸기 전까지, 값 결정이 갈라지는 것만이라도 여기서 막는다.
+      - name: Check configurator mirror agrees with pipeline (no value drift)
+        run: node scripts/check-mirror.cjs
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:

@@ -129,9 +129,10 @@
                 "resolved": "#725cd3",
                 "rule": {
                   "type": "contrast",
-                  "against": "fg.on-action(white)",
+                  "against": "fg.on-action",
                   "target": 4.5,
-                  "anchor": "fg"
+                  "anchor": "fg",
+                  "why": "fg 앵커형 (결정 #17)"
                 },
                 "contrast": 5.02
               }
@@ -144,7 +145,7 @@
                 "rule": {
                   "type": "state",
                   "shift": "+1",
-                  "why": "fg 앵커형은 모드 무관 어둡게 (결정 #17)"
+                  "why": "fg 앵커형은 어둡게 (결정 #17)"
                 },
                 "contrast": 7.14
               }
@@ -180,7 +181,8 @@
               "$extensions": {
                 "resolved": "#e9ebef",
                 "rule": {
-                  "type": "ladder"
+                  "type": "ladder",
+                  "why": "진행 표시의 트랙이 이 값을 쓴다 — 밝게 올리면 채움×트랙이 무너진다(결정 #44)"
                 }
               }
             },
@@ -624,42 +626,43 @@
           },
           "action-primary": {
             "default": {
-              "$value": "{color.brand.600}",
+              "$value": "{color.brand.400}",
               "$type": "color",
               "$extensions": {
-                "resolved": "#725cd3",
+                "resolved": "#a294ff",
                 "rule": {
                   "type": "contrast",
-                  "against": "fg.on-action(white)",
+                  "against": "fg.on-action",
                   "target": 4.5,
-                  "anchor": "fg"
+                  "anchor": "fg",
+                  "why": "다크는 밝은 단계 고정 — 결정 #44"
                 },
-                "contrast": 5.02
+                "contrast": 6.33
               }
             },
             "hover": {
-              "$value": "{color.brand.700}",
+              "$value": "{color.brand.300}",
               "$type": "color",
               "$extensions": {
-                "resolved": "#5b46af",
+                "resolved": "#bdb7ff",
                 "rule": {
                   "type": "state",
-                  "shift": "+1",
-                  "why": "fg 앵커형은 모드 무관 어둡게 (결정 #17)"
+                  "shift": "-1",
+                  "why": "다크는 강조할수록 밝게 (결정 #44)"
                 },
-                "contrast": 7.14
+                "contrast": 8.77
               }
             },
             "pressed": {
-              "$value": "{color.brand.800}",
+              "$value": "{color.brand.200}",
               "$type": "color",
               "$extensions": {
-                "resolved": "#46338c",
+                "resolved": "#d6d4ff",
                 "rule": {
                   "type": "state",
-                  "shift": "+2"
+                  "shift": "-2"
                 },
-                "contrast": 9.94
+                "contrast": 11.34
               }
             },
             "disabled": {
@@ -681,7 +684,8 @@
               "$extensions": {
                 "resolved": "#44474a",
                 "rule": {
-                  "type": "ladder"
+                  "type": "ladder",
+                  "why": "진행 표시의 트랙이 이 값을 쓴다 — 밝게 올리면 채움×트랙이 무너진다(결정 #44)"
                 }
               }
             },
@@ -692,18 +696,20 @@
                 "resolved": "#5a5c60",
                 "rule": {
                   "type": "state",
-                  "shift": "-1"
+                  "shift": "-1",
+                  "why": "hover 는 떠오른다"
                 }
               }
             },
             "pressed": {
-              "$value": "{color.cool-gray.600}",
+              "$value": "{color.cool-gray.900}",
               "$type": "color",
               "$extensions": {
-                "resolved": "#717478",
+                "resolved": "#313337",
                 "rule": {
                   "type": "state",
-                  "shift": "-2"
+                  "shift": "+1",
+                  "why": "눌림은 가라앉는다 — hover 와 방향이 갈리는 것은 의도다(결정 #44, Q-015)"
                 }
               }
             }
@@ -805,13 +811,14 @@
             }
           },
           "on-action": {
-            "$value": "#ffffff",
+            "$value": "#22184a",
             "$type": "color",
             "$extensions": {
               "rule": {
-                "type": "fixed"
+                "type": "inverted",
+                "why": "다크 채움이 밝아졌으므로 그 위 글자를 어둡게 뒤집는다 (결정 #44)"
               },
-              "contrast": 5.02
+              "contrast": 6.33
             }
           },
           "brand": {

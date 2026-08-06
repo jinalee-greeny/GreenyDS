@@ -1008,15 +1008,30 @@ function roles(BR,NEU,tgt,mode,ST){
   ST=ST||STATUS_DEF;
   const DG=ST.error,WN=ST.warning,SC=ST.success,IF=ST.info;
   const S=surfaces(mode,NEU),SURF=[S.surface,S.raised,S.overlay,S.subtle],light=mode==="light";
-  const apStep=resolveStep(BR,"#ffffff",4.5).s, apH=shift(apStep,1), apA=shift(apStep,2);
+  /* 결정 #44 (진아 판정 2026-08-06 · Q-015·Q-017 통합 '안 1') — 다크에서만 채워진 면을
+     밝은 쪽으로 옮기고 그 위 글자를 어둡게 뒤집는다. 라이트는 전부 불변.
+     ⚠ 이 블록은 파이프라인 gen-semantic.cjs 의 같은 결정과 짝이다 — 한쪽만 고치면
+       컨피규레이터가 옛 색을 계속 보여준다(실제로 이번에 그 격차가 드러났다). */
+  const onActionC = light ? "#ffffff" : BR["950"];
+  const apStep = light ? resolveStep(BR,"#ffffff",4.5).s : "400";
+  const apH    = light ? shift(apStep,1) : "300";
+  const apA    = light ? shift(apStep,2) : "200";
+  // 노브: 선언(대비 3:1)대로 실제로 해결한다 — 다크 채움이 밝아졌으므로 노브는 어두워져야 한다.
+  const knobC = (function(){
+    if (light) return "#ffffff";
+    for (const st of ["950","900","800","700"]) if (contrast(NEU[st], BR[apStep]) >= 3) return NEU[st];
+    return NEU["950"];
+  })();
   const sub=(R)=>R[light?"50":"950"];
   const fgP=resolveW(NEU,SURF,tgt), fgS=resolveW(NEU,SURF,4.5);
   const fgDangerRes=resolveW(DG,[...SURF,sub(DG)],4.5),fgWarnRes=resolveW(WN,[...SURF,sub(WN)],4.5),
         fgSuccRes=resolveW(SC,[...SURF,sub(SC)],4.5),fgInfoRes=resolveW(IF,[...SURF,sub(IF)],4.5);
   return {S,SURF,light,
-    ap:BR[apStep],apHover:BR[apH],apActive:BR[apA],onAction:"#ffffff",apStep,apRatio:contrast("#ffffff",BR[apStep]),
-    asDef:NEU[light?"100":"800"],asHover:NEU[light?"200":"700"],disabled:NEU[light?"100":"800"],
-    knob:light?"#ffffff":NEU["200"],brandSub:BR[light?"50":"950"],
+    ap:BR[apStep],apHover:BR[apH],apActive:BR[apA],onAction:onActionC,apStep,apRatio:contrast(onActionC,BR[apStep]),
+    asDef:NEU[light?"100":"800"],asHover:NEU[light?"200":"700"],
+    // 눌림은 가라앉는 방향(결정 #44) — hover 와 갈리는 것은 의도다. default 는 진행 트랙이 쓰는 값이라 못 건드린다.
+    asActive:NEU[light?"300":"900"],disabled:NEU[light?"100":"800"],
+    knob:knobC,brandSub:BR[light?"50":"950"],
     errorSub:sub(DG),warnSub:sub(WN),succSub:sub(SC),infoSub:sub(IF),
     fgPrimary:NEU[fgP.s],fgPrimaryR:fgP.r,fgSecondary:NEU[fgS.s],fgPlaceholder:NEU[fgS.s],fgDisabled:NEU[light?"400":"600"],
     fgBrand:BR[resolveW(BR,[...SURF,sub(BR)],4.5).s],
@@ -1116,7 +1131,7 @@ function fBtn(R,TR,o){
   o=o||{}; const v=o.v||"primary", sz=o.sz||"md", st=o.st||"default";
   const h=F_H[sz], px=spx("inline",sz), rc=radTier("control");
   let bg,fg,bd="1px solid transparent";
-  if(v==="secondary"){bg=(st==="hover"||st==="pressed")?R.asHover:R.asDef;fg=R.fgPrimary;bd="1px solid "+R.strokeDefault;}
+  if(v==="secondary"){bg=st==="pressed"?R.asActive:(st==="hover"?R.asHover:R.asDef);fg=R.fgPrimary;bd="1px solid "+R.strokeDefault;}
   else if(v==="ghost"){bg=(st==="hover"||st==="pressed")?R.asDef:"transparent";fg=R.fgPrimary;}
   else{bg=st==="hover"?R.apHover:st==="pressed"?R.apActive:R.ap;fg=R.onAction;}
   if(st==="disabled"){bg=R.disabled;fg=R.fgDisabled;bd="1px solid transparent";}
@@ -1610,6 +1625,7 @@ function tokenModel(){
     ["color.action.on-primary",R.onAction,"color.neutral"],
     ["color.action.secondary",R.asDef,"color.neutral"],
     ["color.action.secondary-hover",R.asHover,"color.neutral"],
+    ["color.action.secondary-pressed",R.asActive,"color.neutral"],
     ["color.action.disabled",R.disabled,"color.neutral"],
     ["color.action.knob",R.knob,"color.neutral"],
     ["color.fg.primary",R.fgPrimary,"color.neutral"],
@@ -1724,6 +1740,7 @@ function tokenModel(){
     ["button","button.primary.bg-pressed",R.apActive,"color.action.primary-pressed"],
     ["button","button.secondary.bg",R.asDef,"color.action.secondary"],
     ["button","button.secondary.bg-hover",R.asHover,"color.action.secondary-hover"],
+    ["button","button.secondary.bg-pressed",R.asActive,"color.action.secondary-pressed"],
     ["button","button.secondary.fg",R.fgPrimary,"color.fg.primary"],
     ["button","button.secondary.border",R.strokeDefault,"color.border.default"],
     ["button","button.ghost.fg",R.fgPrimary,"color.fg.primary"],

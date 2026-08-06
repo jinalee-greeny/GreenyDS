@@ -141,11 +141,26 @@ function injectSemanticAdditions(){
     const q4 = resolveW(NEUTRAL, surfacesFor(mode), 2);
     fg["quaternary"] = { "$value": `{color.${NEUTRAL}.${q4.step}}`, "$type":"color", "$extensions":{ resolved: q4.hex, rule:{ type:"contrast", against:"worst-case", target:2, why:"위계 4단 — 비텍스트·장식 전용(텍스트 사용 금지)" }, contrastMin: round2(q4.ratio) } };
   }
-  // ⑦ bg.control-knob — 스위치 노브(색 채움 위 물리 요소). 비텍스트 UI ≥3(검사 C-3). Wave 2 승격.
+  /* ⑦ bg.control-knob — 스위치 노브(색 채움 위 물리 요소). 비텍스트 UI ≥3(검사 C-3).
+   * ⚠ 이 값은 rule 에 `type:"contrast", target:3` 이라고 적혀 있었지만 실제로는 다크에서
+   *   `cool-gray.200` 으로 **하드코딩**돼 있었다. 결정 #44 로 다크 채움이 밝아지자 곧바로 1.8 로
+   *   무너졌다 — 선언과 구현이 갈라져 있으면 전제가 바뀌는 순간 조용히 깨진다.
+   *   이제 선언대로 실제로 해결한다: 그 모드의 on-트랙과 3:1 을 넘기는 첫 칸을 고른다.
+   * off-트랙(꺼짐)과의 경계는 노브의 border(color.border.subtle)가 맡는다 — 라이트에서 흰 노브가
+   *   밝은 트랙 위에 있을 때(1.19) 이미 쓰던 방식이고, 다크는 그것의 거울이다. */
   for (const mode of ["light","dark"]) {
     const light = mode==="light";
-    const hex = light ? "#ffffff" : RAMPS[NEUTRAL]["200"];
-    SEM.color[mode].bg["control-knob"] = { "$value": light ? "#ffffff" : `{color.${NEUTRAL}.200}`, "$type":"color", "$extensions":{ resolved: hex, rule:{ type:"contrast", against:"track on-state(action-primary)", target:3, why:"노브는 채움 위 물리 요소 — 비텍스트 대비(§ Wave2)" } } };
+    const onTrack = SEM.color[mode].bg["action-primary"].default.$extensions.resolved;
+    const order = light ? ["50","100","200","300"] : ["950","900","800","700"];
+    let step = null;
+    for (const st of order) { if (contrast(light ? "#ffffff" : RAMPS[NEUTRAL][st], onTrack) >= 3) { step = st; break; } }
+    if (light && contrast("#ffffff", onTrack) >= 3) step = null;   // 라이트는 순백이 먼저다
+    const hex = light ? "#ffffff" : RAMPS[NEUTRAL][step];
+    if (!light && step == null) throw new Error("control-knob: 다크에서 on-트랙과 3:1 을 넘기는 중립 칸이 없다");
+    SEM.color[mode].bg["control-knob"] = { "$value": light ? "#ffffff" : `{color.${NEUTRAL}.${step}}`, "$type":"color",
+      "$extensions":{ resolved: hex, rule:{ type:"contrast", against:"track on-state(action-primary)", target:3,
+        why:"노브는 채움 위 물리 요소 — 비텍스트 대비(§ Wave2). 하드코딩이 아니라 실제 해결(결정 #44 후속)" },
+        contrastMin: round2(contrast(hex, onTrack)) } };
   }
   // ⑧ semantic.motion 역할(합성 transition) — control/overlay-enter/overlay-exit/emphasis (DP-5)
   const mrole = (d, e, why) => ({ "$value": { duration: `{motion.duration.duration-${d}}`, delay: "0ms", timingFunction: `{motion.easing.${e}}` }, "$type":"transition", "$extensions":{ ms: DURATION[d], easing: EASING[e], why } });
@@ -729,16 +744,14 @@ function runChecks(comps){
     //      hover/pressed 는 알파 오버레이라 합성 전 값으로는 기계 검사가 불가능하다(Button.ghost 와 동일 한계).
     ck("F-4", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7,
        `${mode} counter.button fg.primary×surface ${round2(contrast(resolveSem(mode,"color.fg.primary").hex,surf))}<7`);
-    // F-11 [선재 결함 상시 보고] Button.secondary 는 fg.primary 를 action-secondary 위에 얹는데
-    //      다크 pressed 에서 4.34 로 AA(4.5) 미달이다. Wave 1 부터 있었고 어떤 검사도 이 페어를 보지 않았다.
-    //      값 산식은 시맨틱이 유일 소유(§0.2)이고 고치면 눌림 색이 실제로 바뀌므로 독단 수정하지 않는다 —
-    //      컨펌 큐 Q-015 로 상정하고, 그때까지 매 런 이 줄로 보고한다.
+    /* F-11 [Q-015 해소 — 결정 #44] Button.secondary 는 fg.primary 를 action-secondary 위에 얹는다.
+     * Wave 1 부터 다크 pressed 가 4.34 였고 어떤 검사도 이 페어를 보지 않았다(C-2 는 primary 만 본다).
+     * 결정 #44 로 다크 눌림을 가라앉는 방향(cool-gray 900)으로 반전해 11.7 로 해소.
+     * 이제 △(보고)가 아니라 ✗(하드)다 — 고쳤으면 다시 깨지지 않게 잠근다. */
     for (const st of ["default","hover","pressed"]){
       const bg2 = resolveSem(mode,`color.bg.action-secondary.${st}`).hex;
       const c2 = contrast(resolveSem(mode,"color.fg.primary").hex,bg2);
-      ck("F-11", c2>=4.5,
-         `${mode} button.secondary ${st}: fg.primary×action-secondary ${round2(c2)}<4.5 — 선재 결함, Q-015 판정 대기`,
-         "△");
+      ck("F-11", c2>=4.5, `${mode} button.secondary ${st}: fg.primary×action-secondary ${round2(c2)}<4.5`);
     }
   }
   {
@@ -899,16 +912,13 @@ function runChecks(comps){
        `${mode} drawer.close fg.secondary×surface-overlay ${round2(contrast(resolveSem(mode,"color.fg.secondary").hex,ovl))}<4.5`);
     // H-2: ProgressBar 의 값 표시(퍼센트)는 읽어야 하는 숫자다
     ck("H-2", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5, `${mode} progressBar.value fg.secondary×surface <4.5`);
-    /* H-3 [선재 결함 상시 보고 — Q-017] 진행 상태는 색만으로 말한다: 채움과 트랙이 비텍스트 대비
-     *   3:1 로 구분되지 않으면 저시력 사용자에게 '얼마나 찼는지'가 전달되지 않는다(WCAG 1.4.11).
-     *   다크에서 fill(brand-600) × track(neutral-800) = 1.86 으로 미달이다.
-     *   ⚠ 이 페어를 쓰는 컴포넌트는 4종 — Slider(Wave 1) · FileUpload.progress(Wave 4-B) ·
-     *      ProgressSteps.connector(Wave 5) · ProgressBar(Wave 6). 앞의 셋은 이 검사가 생기기 전에
-     *      나갔고, 그중 둘은 이 세션이 만들었다. 검사가 없으면 만든 사람도 못 본다는 증거다.
-     *   값 산식은 시맨틱이 유일 소유(§0.2)라 독단 수정하지 않는다 — Q-017 판정 대기, 그때까지 △. */
+    /* H-3 [Q-017 해소 — 결정 #44] 진행 상태는 색만으로 말한다: 채움과 트랙이 비텍스트 대비 3:1 로
+     *   구분되지 않으면 저시력 사용자에게 '얼마나 찼는지'가 전달되지 않는다(WCAG 1.4.11).
+     *   다크에서 1.86 이었다. 이 페어를 쓰는 컴포넌트가 4종 — Slider(Wave 1) · FileUpload.progress ·
+     *   ProgressSteps.connector · ProgressBar — 이고 그중 둘은 이 세션이 만들었다.
+     *   검사가 없으면 만든 사람도 못 본다. 결정 #44 로 3.66 해소, 이제 하드 게이트. */
     ck("H-3", contrast(resolveSem(mode,"color.bg.action-primary.default").hex,resolveSem(mode,"color.bg.action-secondary.default").hex)>=3,
-       `${mode} 진행 표시 fill×track ${round2(contrast(resolveSem(mode,"color.bg.action-primary.default").hex,resolveSem(mode,"color.bg.action-secondary.default").hex))}<3 — 진행량이 안 보인다 (Slider·FileUpload·ProgressSteps·ProgressBar 공통, Q-017 판정 대기)`,
-       "△");
+       `${mode} 진행 표시 fill×track ${round2(contrast(resolveSem(mode,"color.bg.action-primary.default").hex,resolveSem(mode,"color.bg.action-secondary.default").hex))}<3 — 진행량이 안 보인다 (Slider·FileUpload·ProgressSteps·ProgressBar 공통)`);
     // H-4: Spinner 도 같은 이유 — 도는 호와 배경 링이 구분돼야 '돌고 있음'이 보인다
     ck("H-4", contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.border.subtle").hex)>=3,
        `${mode} spinner indicator×track ${round2(contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.border.subtle").hex))}<3`);

@@ -86,7 +86,28 @@ function buildColor(mode){
     const r=resolveW(ramp,surfs,t,`${mode} ${label}`);
     return ctok(ramp,r.step,{type:"contrast",against:`worst-case(${Object.keys(surfs).join("|")})`,target:t,...(adv?{advisory:adv}:{})},{contrastMin:round2(r.ratio),worstSurface:r.worst});};
   const bgBrand=resolve("brand","#ffffff",TARGETS.onFill,`${mode} bg.brand`);
-  const apStep=bgBrand.step, apH=shiftStep("brand",apStep,1), apA=shiftStep("brand",apStep,2);
+  /* ── 결정 #44 (진아 판정 2026-08-06, Q-015·Q-017 통합 '안 1') ─────────────────
+   * 문제: 다크에서 action-* 이 중간 톤에 머물러 위아래 양쪽으로 좁아졌다.
+   *   Q-017 채움(brand-600) × 트랙(cg-800) = 1.86 < 3  (진행량이 안 보인다)
+   *   Q-015 fg.primary × 보조 눌림(cg-600)  = 4.34 < 4.5
+   * 라이트에서는 어두운 글자 + 밝은 표면이라 저절로 벌어지지만 다크에는 그 도움이 없다.
+   *
+   * 해법: 다크에서만 채워진 면을 '밝은 쪽'으로 옮기고 그 위 글자를 어둡게 뒤집는다.
+   *   action-primary  다크 400 → 300 → 200 (강조할수록 밝게)
+   *   fg.on-action    다크 = brand-950 (라이트는 흰색 그대로)
+   * 그리고 보조 눌림만 '가라앉는 방향'으로 반전한다.
+   *   action-secondary 다크 800 → 700(hover, 떠오름) → 900(pressed, 가라앉음)
+   *
+   * ⚠ 눌림 방향이 hover 와 갈리는 것은 의도다 — hover 는 떠오르고 눌림은 가라앉는다.
+   *   단조 사다리로 만들려고 default 를 700 으로 올리면 트랙도 같이 밝아져
+   *   채움×트랙이 2.62 로 도로 무너진다(실측). default 는 트랙이 쓰는 값이라 못 건드린다.
+   *   → 이 두 결함이 '같은 뿌리'인 진짜 이유: action-secondary 하나가 '글자를 얹는 면'과
+   *     '채움을 대비시킬 바닥' 두 일을 겸하고 있다. 역할 분리는 별건(승격 절차)으로 남긴다.
+   * ────────────────────────────────────────────────────────────────────────── */
+  const apStep = light ? bgBrand.step : "400";
+  const apH    = light ? shiftStep("brand",apStep,1) : "300";
+  const apA    = light ? shiftStep("brand",apStep,2) : "200";
+  const ON_ACTION = light ? "#ffffff" : RAMPS.brand["950"];
   const bg={
     "page": light?fixed("#ffffff",{type:"fixed",why:"최하층"}):ctok(NEUTRAL,DARK_LADDER.page,{type:"ladder",role:"page",ladder:"950/900 (결정 #17 A안)"}),
     "surface": light?fixed("#ffffff",{type:"fixed"}):ctok(NEUTRAL,DARK_LADDER.surface,{type:"ladder",role:"surface"}),
@@ -100,15 +121,15 @@ function buildColor(mode){
     "success-subtle": ctok("green",light?"50":"950",{type:"ladder"}),
     "info-subtle": ctok("blue",light?"50":"950",{type:"ladder"}),
     "action-primary": {
-      "default": ctok("brand",apStep,{type:"contrast",against:"fg.on-action(white)",target:TARGETS.onFill,anchor:"fg"},{contrast:con("#ffffff",RAMPS.brand[apStep])}),
-      "hover":   ctok("brand",apH,{type:"state",shift:"+1",why:"fg 앵커형은 모드 무관 어둡게 (결정 #17)"},{contrast:con("#ffffff",RAMPS.brand[apH])}),
-      "pressed":  ctok("brand",apA,{type:"state",shift:"+2"},{contrast:con("#ffffff",RAMPS.brand[apA])}),
+      "default": ctok("brand",apStep,{type:"contrast",against:"fg.on-action",target:TARGETS.onFill,anchor:"fg",why:light?"fg 앵커형 (결정 #17)":"다크는 밝은 단계 고정 — 결정 #44"},{contrast:con(ON_ACTION,RAMPS.brand[apStep])}),
+      "hover":   ctok("brand",apH,{type:"state",shift:light?"+1":"-1",why:light?"fg 앵커형은 어둡게 (결정 #17)":"다크는 강조할수록 밝게 (결정 #44)"},{contrast:con(ON_ACTION,RAMPS.brand[apH])}),
+      "pressed":  ctok("brand",apA,{type:"state",shift:light?"+2":"-2"},{contrast:con(ON_ACTION,RAMPS.brand[apA])}),
       "disabled":ctok(NEUTRAL,light?"100":"800",{type:"fixed",why:"disabled는 WCAG 대비 예외"})
     },
     "action-secondary": {
-      "default": ctok(NEUTRAL,light?"100":"800",{type:"ladder"}),
-      "hover":   ctok(NEUTRAL,light?"200":"700",{type:"state",shift:light?"+1":"-1"}),
-      "pressed":  ctok(NEUTRAL,light?"300":"600",{type:"state",shift:light?"+2":"-2"})
+      "default": ctok(NEUTRAL,light?"100":"800",{type:"ladder",why:"진행 표시의 트랙이 이 값을 쓴다 — 밝게 올리면 채움×트랙이 무너진다(결정 #44)"}),
+      "hover":   ctok(NEUTRAL,light?"200":"700",{type:"state",shift:light?"+1":"-1",why:light?undefined:"hover 는 떠오른다"}),
+      "pressed":  ctok(NEUTRAL,light?"300":"900",{type:"state",shift:light?"+2":"+1",why:light?undefined:"눌림은 가라앉는다 — hover 와 방향이 갈리는 것은 의도다(결정 #44, Q-015)"})
     },
     "action-ghost": {
       "default": fixed("transparent",{type:"fixed"}),
@@ -126,7 +147,7 @@ function buildColor(mode){
     "tertiary": R(NEUTRAL,TARGETS.fgSubtle,"fg.tertiary","≥3:1 — 대형 텍스트·보조 전용"),
     "disabled": ctok(NEUTRAL,light?"400":"600",{type:"fixed",why:"WCAG 대비 예외"}),
     "on-brand": fixed("#ffffff",{type:"fixed",why:"bg.brand이 이 대비를 보장하도록 resolve됨"},{contrast:con("#ffffff",bgBrand.hex)}),
-    "on-action": fixed("#ffffff",{type:"fixed"},{contrast:con("#ffffff",RAMPS.brand[apStep])}),
+    "on-action": fixed(ON_ACTION,{type:light?"fixed":"inverted",why:light?undefined:"다크 채움이 밝아졌으므로 그 위 글자를 어둡게 뒤집는다 (결정 #44)"},{contrast:con(ON_ACTION,RAMPS.brand[apStep])}),
     "brand": R("brand",TARGETS.fgSecondary,"fg.brand",null,sub("brand")),
     "error": R("red",TARGETS.fgStatus,"fg.error",null,sub("red")),
     "warning": R("amber",TARGETS.fgStatus,"fg.warning",null,sub("amber")),
