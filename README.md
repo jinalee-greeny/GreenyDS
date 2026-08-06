@@ -32,6 +32,7 @@ node scripts/gen-semantic.cjs tokens/tokens.semantic.json
 node scripts/gen-component.cjs          # 774 검사
 node scripts/perturb.cjs                # 4,644 검사 (엔진 적응)
 node scripts/check-mirror.cjs           # 컨피규레이터 미러 ↔ 파이프라인 값 결정 대조
+node scripts/build-configurator-comps.cjs  # 레포 컴포넌트 토큰 → 컨피규레이터 표 (--check 로 드리프트 검사)
 node scripts/build-css.cjs              # 공식 CSS·flat JSON 생성 (npm run build)
 node scripts/build-css.cjs --check      # 커밋된 build/가 토큰과 일치하는지 드리프트 검증
 ```

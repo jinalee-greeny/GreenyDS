@@ -84,6 +84,12 @@ jobs:
       - name: Check configurator mirror agrees with pipeline (no value drift)
         run: node scripts/check-mirror.cjs
 
+      # 컨피규레이터의 컴포넌트 토큰 표는 이제 레포 tokens/component/*.json 에서 생성된다.
+      # 컴포넌트를 추가하고 재생성을 잊으면 화면이 옛 목록에 머무는데, 그게 정확히
+      # "업데이트가 컨피규레이터에 안 보인다"의 원인이었다(진아 지적 2026-08-06).
+      - name: Check configurator component tables match repo tokens (no drift)
+        run: node scripts/build-configurator-comps.cjs --check
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
