@@ -1,0 +1,153 @@
+{
+  "component": {
+    "drawer": {
+      "$description": "Drawer/Sheet — scrim + surface-overlay(elevation.overlay 쌍). 화면 가장자리에 붙어 나오므로 '폭'이 계약값이고 높이는 화면이 정한다(height 토큰 없음). ⚠ 붙은 변 쪽 모서리를 0 으로 두는 것은 방향 축이 있어야 표현되는데 이 시스템의 radius 에는 방향 축이 없다 — 없는 축을 여기서 발명하지 않고 radius 하나만 내보내며, 어느 변에 적용할지는 구현 레이어 몫으로 남긴다(FileUpload 의 borderStyle 과 같은 처리).",
+      "scrim": {
+        "$value": "{semantic.color.bg.scrim}",
+        "ref": "color.bg.scrim"
+      },
+      "panel": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-overlay}",
+          "ref": "color.bg.surface-overlay"
+        },
+        "elevation": {
+          "$value": "{semantic.elevation.overlay}",
+          "ref": "elevation.overlay"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "radius": {
+          "$value": "{semantic.radius.overlay}",
+          "ref": "radius.overlay"
+        },
+        "width": {
+          "sm": {
+            "$value": "19.5rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 312,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.lg × 6",
+                "why": "좁은 서랍 — 목록·필터용. 사다리 밖 임의 px 대신 lg 컨트롤 배수로 잡는다"
+              }
+            }
+          },
+          "md": {
+            "$value": "26rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 416,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.lg × 8",
+                "why": "기본 서랍 — 폼 한 열이 들어간다"
+              }
+            }
+          },
+          "lg": {
+            "$value": "39rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 624,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.lg × 12",
+                "why": "넓은 서랍 — 표·상세 보기"
+              }
+            }
+          }
+        }
+      },
+      "header": {
+        "typography": {
+          "$value": "{semantic.typography.heading}",
+          "ref": "typography.heading"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.lg}",
+          "ref": "spacing.padding.lg"
+        }
+      },
+      "body": {
+        "padding": {
+          "$value": "{semantic.spacing.padding.lg}",
+          "ref": "spacing.padding.lg"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.md}",
+          "ref": "spacing.gap.y.md"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "footer": {
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.lg}",
+          "ref": "spacing.padding.lg"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        }
+      },
+      "close": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "bg-hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        }
+      },
+      "motion": {
+        "enter": {
+          "$value": "{semantic.motion.overlay-enter}",
+          "ref": "motion.overlay-enter"
+        },
+        "exit": {
+          "$value": "{semantic.motion.overlay-exit}",
+          "ref": "motion.overlay-exit"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "component": {
+    "skeleton": {
+      "$description": "Skeleton — 로딩 자리표시. ⚠ 반짝임(shimmer)은 그라디언트인데 이 시스템의 색 토큰은 단색이고 그라디언트 축이 없다. 두 정지색(base·highlight)만 내보내고 잇는 방식은 구현 레이어 몫으로 남긴다(Drawer 의 모서리 방향·FileUpload 의 borderStyle 과 같은 처리).",
+      "bg": {
+        "base": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        },
+        "highlight": {
+          "$value": "{semantic.color.bg.surface-raised}",
+          "ref": "color.bg.surface-raised"
+        }
+      },
+      "text": {
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "height": {
+          "body": {
+            "$value": "0.75rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 12,
+              "rule": {
+                "type": "scale",
+                "formula": "size.icon.sm × 0.75",
+                "why": "본문 한 줄 자리 — 글자 크기가 아니라 '줄이 차지하는 자리'라서 아이콘 사다리에서 파생"
+              }
+            }
+          },
+          "title": {
+            "$value": "1.25rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 20,
+              "rule": {
+                "type": "scale",
+                "formula": "size.icon.md × 1",
+                "why": "제목 한 줄 자리"
+              }
+            }
+          }
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "block": {
+        "radius": {
+          "$value": "{semantic.radius.container}",
+          "ref": "radius.container"
+        }
+      },
+      "avatar": {
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "sm": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          },
+          "md": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "lg": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          }
+        },
+        "$extensions": {
+          "square": "size",
+          "why": "radius.circle 소비 — 정사각 전제(F-12)"
+        }
+      },
+      "motion": {
+        "$value": "{semantic.motion.emphasis}",
+        "ref": "motion.emphasis"
+      }
+    }
+  }
+}

@@ -888,6 +888,76 @@ function runChecks(comps){
        `pagination 이 action-secondary 를 참조한다 — Q-015 판정 전까지 회피 대상(의도치 않은 재도입)`);
   }
 
+  /* ===== Wave 6 검사 (§3 오버레이·피드백) ===== */
+  for (const mode of ["light","dark"]){
+    const surf = resolveSem(mode,"color.bg.surface").hex;
+    const ovl  = resolveSem(mode,"color.bg.surface-overlay").hex;
+    const sub  = resolveSem(mode,"color.bg.subtle").hex;
+    // H-1: Drawer 는 surface 가 아니라 surface-overlay 위다 — 별도 페어라 따로 본다
+    ck("H-1", contrast(resolveSem(mode,"color.fg.primary").hex,ovl)>=7, `${mode} drawer.header fg.primary×surface-overlay <7`);
+    ck("H-1", contrast(resolveSem(mode,"color.fg.secondary").hex,ovl)>=4.5,
+       `${mode} drawer.close fg.secondary×surface-overlay ${round2(contrast(resolveSem(mode,"color.fg.secondary").hex,ovl))}<4.5`);
+    // H-2: ProgressBar 의 값 표시(퍼센트)는 읽어야 하는 숫자다
+    ck("H-2", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5, `${mode} progressBar.value fg.secondary×surface <4.5`);
+    /* H-3 [선재 결함 상시 보고 — Q-017] 진행 상태는 색만으로 말한다: 채움과 트랙이 비텍스트 대비
+     *   3:1 로 구분되지 않으면 저시력 사용자에게 '얼마나 찼는지'가 전달되지 않는다(WCAG 1.4.11).
+     *   다크에서 fill(brand-600) × track(neutral-800) = 1.86 으로 미달이다.
+     *   ⚠ 이 페어를 쓰는 컴포넌트는 4종 — Slider(Wave 1) · FileUpload.progress(Wave 4-B) ·
+     *      ProgressSteps.connector(Wave 5) · ProgressBar(Wave 6). 앞의 셋은 이 검사가 생기기 전에
+     *      나갔고, 그중 둘은 이 세션이 만들었다. 검사가 없으면 만든 사람도 못 본다는 증거다.
+     *   값 산식은 시맨틱이 유일 소유(§0.2)라 독단 수정하지 않는다 — Q-017 판정 대기, 그때까지 △. */
+    ck("H-3", contrast(resolveSem(mode,"color.bg.action-primary.default").hex,resolveSem(mode,"color.bg.action-secondary.default").hex)>=3,
+       `${mode} 진행 표시 fill×track ${round2(contrast(resolveSem(mode,"color.bg.action-primary.default").hex,resolveSem(mode,"color.bg.action-secondary.default").hex))}<3 — 진행량이 안 보인다 (Slider·FileUpload·ProgressSteps·ProgressBar 공통, Q-017 판정 대기)`,
+       "△");
+    // H-4: Spinner 도 같은 이유 — 도는 호와 배경 링이 구분돼야 '돌고 있음'이 보인다
+    ck("H-4", contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.border.subtle").hex)>=3,
+       `${mode} spinner indicator×track ${round2(contrast(resolveSem(mode,"color.fg.brand").hex,resolveSem(mode,"color.border.subtle").hex))}<3`);
+    /* H-5: Skeleton 의 두 정지색은 '달라야 한다'까지만 본다.
+     *   초안은 1.1 이라는 문턱을 뒀다가 라이트에서 1.08 로 걸렸는데, 그 1.1 은 근거가 없는 숫자였다.
+     *   없는 기준을 발명해 빌드를 세우는 것은 검사가 아니라 미신이다.
+     *   스켈레톤의 신호는 정지 대비가 아니라 '움직임'이 나른다 — 낮은 대비는 결함이 아니라 의도다
+     *   (반짝임이 세면 로딩 화면이 시끄러워진다). 실제 실패 모드는 하나뿐이다:
+     *   누가 base 와 highlight 를 같은 역할로 물려 반짝임이 조용히 죽는 것. 그것만 막는다. */
+    ck("H-5", resolveSem(mode,"color.bg.subtle").hex !== resolveSem(mode,"color.bg.surface-raised").hex,
+       `${mode} skeleton base 와 highlight 가 같은 색이다 — 반짝임이 조용히 죽는다`);
+    // H-6: EmptyState 제목·설명
+    ck("H-6", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7, `${mode} emptyState.title <7`);
+    ck("H-6", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5, `${mode} emptyState.description <4.5`);
+    // H-7: EmptyState 아이콘은 장식이 아니라 '무엇이 비었는지' 를 말하는 기호다 — 비텍스트 3:1
+    ck("H-7", contrast(resolveSem(mode,"color.fg.tertiary").hex,surf)>=3, `${mode} emptyState.icon fg.tertiary×surface <3`);
+    void sub;
+  }
+  {
+    const dw = buildDrawer().component.drawer;
+    const pb = buildProgressBar().component.progressBar;
+    const sp = buildSpinner().component.spinner;
+    const sk = buildSkeleton().component.skeleton;
+    const es = buildEmptyState().component.emptyState;
+    // H-8: 열린 컨테이너 — Drawer 높이는 화면이 정하고, EmptyState 는 내용이 정한다
+    ck("H-8", !("height" in dw.panel), `drawer.panel 에 고정 높이 토큰 존재 — 높이는 화면이 정한다(§3.1 위반)`);
+    ck("H-8", !("height" in es), `emptyState 에 고정 높이 토큰 존재(§3.1 위반)`);
+    // H-9: Drawer 폭은 계약값이다 — 재계산 대조(lg 컨트롤 6·8·12 배)
+    [["sm",6],["md",8],["lg",12]].forEach(([t,k])=>
+      ck("H-9", dw.panel.width[t].$extensions.px===CONTROL_PX.lg*k,
+         `drawer.panel.width.${t} 재계산 불일치: ${dw.panel.width[t].$extensions.px} ≠ ${CONTROL_PX.lg*k}`));
+    // H-10: overlay 쌍 — surface-overlay 를 쓰면 elevation.overlay 도 함께(E-1 확장, Modal 선례)
+    ck("H-10", !!dw.panel.bg && !!dw.panel.elevation, `drawer.panel overlay 쌍 결손`);
+    // H-11: Spinner 링 두께는 작은 크기에서도 1px 밑으로 내려가면 안 된다(computedScale 의 max(1) 확인)
+    ["sm","md","lg"].forEach(t=>
+      ck("H-11", sp.thickness[t].$extensions.px>=1, `spinner.thickness.${t} ${sp.thickness[t].$extensions.px}px < 1 — 링이 사라진다`));
+    // H-12: 진행 표시 3종(Slider·FileUpload·ProgressBar·ProgressSteps)의 두께가 같은 규칙에서 나오는지.
+    //       규칙이 갈리면 같은 화면에서 막대 두께가 제각각이 된다.
+    ck("H-12", pb.thickness.sm.$extensions.px===Math.max(1,Math.round(ICON_PX.sm*0.25)),
+       `progressBar.thickness.sm 이 Slider.track 규칙(icon.sm × 0.25)과 다르다`);
+    // H-13: ProgressBar 는 성공/오류 변형을 갖지 않는다 — solid 상태색 부재를 공백으로 남긴 판단(§0.5).
+    //       나중에 누가 fg.error 를 채움색으로 밀어 넣는 것을 막는다(텍스트색을 면으로 쓰면 대비 전제가 깨진다).
+    ck("H-13", !("status" in pb.fill) && !JSON.stringify(pb.fill).includes("fg.error"),
+       `progressBar.fill 에 상태 변형이 생겼다 — solid 상태색(bg.success/bg.error) 승격 없이 넣으면 §0.5 위반`);
+    // H-14: Skeleton 은 실제 글자 크기가 아니라 '줄이 차지하는 자리' 를 낸다 — typography 참조가 없어야 한다.
+    //       스켈레톤에 typography 를 물리면 폰트가 바뀔 때 자리표시가 같이 흔들린다.
+    ck("H-14", !JSON.stringify(sk).includes("typography."), `skeleton 이 typography 를 참조한다 — 자리표시는 글자가 아니라 자리다`);
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -1240,13 +1310,122 @@ function buildProgressSteps(){
   }}};
 }
 
+
+/* ============================================================
+ * Wave 6 — CDS_Components §3 오버레이 1 + 피드백 4 (2026-08-06)
+ * ============================================================ */
+
+// ---- Drawer / Sheet ----
+// Modal 과 같은 오버레이 쌍(surface-overlay + elevation.overlay)을 쓰되, 다른 점은 두 가지다:
+//   ① 화면 가장자리에 붙어 나오므로 '폭'이 계약값이다(높이는 화면 전체 — 그래서 height 토큰 없음)
+//   ② 붙은 변 쪽 모서리는 둥글지 않다 — 그런데 radius 토큰에는 방향 축이 없다(아래 주석).
+function buildDrawer(){
+  return { "component":{ "drawer":{
+    "$description":"Drawer/Sheet — scrim + surface-overlay(elevation.overlay 쌍). 화면 가장자리에 붙어 나오므로 '폭'이 계약값이고 높이는 화면이 정한다(height 토큰 없음). ⚠ 붙은 변 쪽 모서리를 0 으로 두는 것은 방향 축이 있어야 표현되는데 이 시스템의 radius 에는 방향 축이 없다 — 없는 축을 여기서 발명하지 않고 radius 하나만 내보내며, 어느 변에 적용할지는 구현 레이어 몫으로 남긴다(FileUpload 의 borderStyle 과 같은 처리).",
+    "scrim":a("color.bg.scrim"),
+    "panel":{
+      "bg":a("color.bg.surface-overlay"),
+      "elevation":a("elevation.overlay"),
+      "border":a("color.border.subtle"),
+      "radius":a("radius.overlay"),
+      "width":{ "sm":computedScale("size.control.lg", 52, 6, "좁은 서랍 — 목록·필터용. 사다리 밖 임의 px 대신 lg 컨트롤 배수로 잡는다"),
+                "md":computedScale("size.control.lg", 52, 8, "기본 서랍 — 폼 한 열이 들어간다"),
+                "lg":computedScale("size.control.lg", 52, 12, "넓은 서랍 — 표·상세 보기") }
+    },
+    "header":{ "typography":a("typography.heading"), "fg":a("color.fg.primary"),
+               "border":a("color.border.subtle"), "borderWidth":a("borderWidth.default"),
+               "padding":a("spacing.padding.lg") },
+    "body":{ "padding":a("spacing.padding.lg"), "gap":a("spacing.gap.y.md"), "typography":a("typography.body") },
+    "footer":{ "border":a("color.border.subtle"), "borderWidth":a("borderWidth.default"),
+               "padding":a("spacing.padding.lg"), "gap":a("spacing.gap.x.sm") },
+    "close":{ "fg":a("color.fg.secondary"), "bg-hover":a("color.bg.action-ghost.hover"), "size":a("size.icon.md") },
+    "motion":{ "enter":a("motion.overlay-enter"), "exit":a("motion.overlay-exit") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- ProgressBar ----
+// ⚠ 성공/오류 변형을 만들지 않았다: 채워지는 막대에는 solid 상태색이 필요한데
+//   인벤토리에 bg.success·bg.error(solid)가 없다(있는 것은 *-subtle 뿐). §0.5 대로
+//   새 역할을 발명하지 않고 공백으로 기록한다 — Tooltip 반전 버블(bg.inverse 부재)과 같은 처리.
+function buildProgressBar(){
+  return { "component":{ "progressBar":{
+    "$description":"ProgressBar — 트랙 + 채움. Slider.track·FileUpload.progress 와 같은 두께 규칙. ⚠ 성공/오류 변형 미구현: 채우는 막대에는 solid 상태색이 필요한데 인벤토리에 bg.success·bg.error(solid)가 없다(있는 것은 *-subtle). 새 역할을 발명하지 않고 공백으로 남긴다(§0.5) — 필요해지면 승격 요청 대상.",
+    "track":{ "bg":a("color.bg.action-secondary.default"), "bg-disabled":a("color.bg.action-disabled"),
+              "radius":a("radius.pill"),
+              "$extensions":{ why:"action-secondary 를 배경으로만 쓴다 — 위에 텍스트를 얹지 않으므로 Q-015 의 미달 페어가 성립하지 않는다(Slider.track 과 같은 사용)" } },
+    "fill":{ "bg":a("color.bg.action-primary.default"), "bg-disabled":a("color.bg.action-disabled"),
+             "radius":a("radius.pill"), "motion":a("motion.control") },
+    "thickness":{ "sm":computedScale("size.icon.sm", ICON_PX.sm, 0.25, "얇은 막대 — 카드 하단·행 안"),
+                  "md":computedScale("size.icon.sm", ICON_PX.sm, 0.5, "기본 막대") },
+    "label":{ "fg":a("color.fg.primary"), "typography":a("typography.label") },
+    "value":{ "fg":a("color.fg.secondary"), "typography":a("typography.caption") },
+    "gap":a("spacing.gap.y.sm")
+  }}};
+}
+
+// ---- Spinner / Loader ----
+// 원형이라 radius.circle 소비 → F-12 정사각 게이트 대상.
+function buildSpinner(){
+  return { "component":{ "spinner":{
+    "$description":"Spinner — 원형 로더. 트랙(연한 링) + 인디케이터(브랜드 호). radius.circle 소비라 F-12 정사각 게이트 대상. ⚠ 회전 자체는 keyframes 이고 이 시스템의 모션 토큰 축(duration·easing)에 없다 — 지속·곡선만 내보내고 keyframes 는 구현 레이어 몫.",
+    "track":a("color.border.subtle"),
+    "indicator":a("color.fg.brand"),
+    "indicator-on-fill":a("color.fg.on-action"),
+    "radius":a("radius.circle"),
+    "size":{ "sm":a("size.icon.sm"), "md":a("size.icon.md"), "lg":a("size.icon.lg") },
+    "thickness":{ "sm":computedScale("size.icon.sm", ICON_PX.sm, 0.125, "링 두께 — 지름 대비 비례. 작은 크기에서 링이 뭉개지지 않는 하한(1px)은 computedScale 의 max(1) 이 보장"),
+                  "md":computedScale("size.icon.md", ICON_PX.md, 0.125, "링 두께 — 지름 대비 비례"),
+                  "lg":computedScale("size.icon.lg", ICON_PX.lg, 0.125, "링 두께 — 지름 대비 비례") },
+    "motion":a("motion.emphasis"),
+    "$extensions":{ square:"size", why:"radius.circle 소비 — 정사각 전제(F-12)" }
+  }}};
+}
+
+// ---- Skeleton ----
+// ⚠ 반짝임(shimmer)은 그라디언트다. 이 시스템의 색 토큰은 단색이고 그라디언트 축이 없다 —
+//   두 정지색(base·highlight)만 내보내고 그 사이를 어떻게 잇는지는 구현 레이어 몫.
+function buildSkeleton(){
+  return { "component":{ "skeleton":{
+    "$description":"Skeleton — 로딩 자리표시. ⚠ 반짝임(shimmer)은 그라디언트인데 이 시스템의 색 토큰은 단색이고 그라디언트 축이 없다. 두 정지색(base·highlight)만 내보내고 잇는 방식은 구현 레이어 몫으로 남긴다(Drawer 의 모서리 방향·FileUpload 의 borderStyle 과 같은 처리).",
+    "bg":{ "base":a("color.bg.subtle"), "highlight":a("color.bg.surface-raised") },
+    "text":{ "radius":a("radius.control"),
+             "height":{ "body":computedScale("size.icon.sm", ICON_PX.sm, 0.75, "본문 한 줄 자리 — 글자 크기가 아니라 '줄이 차지하는 자리'라서 아이콘 사다리에서 파생"),
+                        "title":computedScale("size.icon.md", ICON_PX.md, 1, "제목 한 줄 자리") },
+             "gap":a("spacing.gap.y.sm") },
+    "block":{ "radius":a("radius.container") },
+    "avatar":{ "radius":a("radius.circle"),
+               "size":{ "sm":a("size.icon.lg"), "md":a("size.control.sm"), "lg":a("size.control.md") },
+               "$extensions":{ square:"size", why:"radius.circle 소비 — 정사각 전제(F-12)" } },
+    "motion":a("motion.emphasis")
+  }}};
+}
+
+// ---- EmptyState ----
+// 열린 컨테이너. 액션 버튼은 Button 컴포넌트를 조합하는 것이므로 여기서 버튼 토큰을 만들지 않는다
+// (§3-B 조합 판정과 같은 사고 — 조합을 위해 사본을 만들지 않는다).
+function buildEmptyState(){
+  return { "component":{ "emptyState":{
+    "$description":"EmptyState — 비어 있음 안내. 액션 버튼은 Button 을 조합하는 것이므로 여기서 버튼 토큰을 만들지 않는다(§3-B 조합 판정과 같은 사고). 열린 컨테이너라 고정 높이 없음.",
+    "bg":a("color.bg.surface"),
+    "icon":{ "fg":a("color.fg.tertiary"),
+             "size":computedScale("size.icon.lg", ICON_PX.lg, 2, "안내 아이콘 — 본문 아이콘(24)보다 커야 '빈 화면의 주인공'으로 읽힌다. 새 크기 역할 발명 대신 규칙 실체화(§0 예외ⓐ)") },
+    "title":{ "fg":a("color.fg.primary"), "typography":a("typography.title") },
+    "description":{ "fg":a("color.fg.secondary"), "typography":a("typography.body") },
+    "padding":a("spacing.padding.lg"),
+    "gap":{ "y":a("spacing.gap.y.md"), "action":a("spacing.gap.x.sm") }
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
                buildTooltip(), buildBadge(), buildBanner(),
                buildField(), buildTextarea(), buildCounter(),
                buildFileUpload(), buildDatePicker(),
-               buildBreadcrumb(), buildPagination(), buildNavBar(), buildProgressSteps()];
+               buildBreadcrumb(), buildPagination(), buildNavBar(), buildProgressSteps(),
+               buildDrawer(), buildProgressBar(), buildSpinner(), buildSkeleton(), buildEmptyState()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -1256,7 +1435,8 @@ const outDir = path.join(OUT, "tokens/component");
 const names = ["button","input","select","card","switch","tabs","modal","toast",
                "checkbox","radio","slider","segmented","tooltip","badge","banner",
                "field","textarea","counter","file-upload","date-picker",
-               "breadcrumb","pagination","nav-bar","progress-steps"];
+               "breadcrumb","pagination","nav-bar","progress-steps",
+               "drawer","progress-bar","spinner","skeleton","empty-state"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -1328,7 +1508,7 @@ const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4 + Wave6 5) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
 if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log(`전 검사 ✗ 0건 — Wave 1~5 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);
+console.log(`전 검사 ✗ 0건 — Wave 1~6 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);

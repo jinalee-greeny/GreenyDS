@@ -1,0 +1,63 @@
+{
+  "component": {
+    "emptyState": {
+      "$description": "EmptyState — 비어 있음 안내. 액션 버튼은 Button 을 조합하는 것이므로 여기서 버튼 토큰을 만들지 않는다(§3-B 조합 판정과 같은 사고). 열린 컨테이너라 고정 높이 없음.",
+      "bg": {
+        "$value": "{semantic.color.bg.surface}",
+        "ref": "color.bg.surface"
+      },
+      "icon": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "size": {
+          "$value": "3rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 48,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.lg × 2",
+              "why": "안내 아이콘 — 본문 아이콘(24)보다 커야 '빈 화면의 주인공'으로 읽힌다. 새 크기 역할 발명 대신 규칙 실체화(§0 예외ⓐ)"
+            }
+          }
+        }
+      },
+      "title": {
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.title}",
+          "ref": "typography.title"
+        }
+      },
+      "description": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "padding": {
+        "$value": "{semantic.spacing.padding.lg}",
+        "ref": "spacing.padding.lg"
+      },
+      "gap": {
+        "y": {
+          "$value": "{semantic.spacing.gap.y.md}",
+          "ref": "spacing.gap.y.md"
+        },
+        "action": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        }
+      }
+    }
+  }
+}

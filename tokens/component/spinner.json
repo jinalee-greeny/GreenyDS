@@ -1,0 +1,83 @@
+{
+  "component": {
+    "spinner": {
+      "$description": "Spinner — 원형 로더. 트랙(연한 링) + 인디케이터(브랜드 호). radius.circle 소비라 F-12 정사각 게이트 대상. ⚠ 회전 자체는 keyframes 이고 이 시스템의 모션 토큰 축(duration·easing)에 없다 — 지속·곡선만 내보내고 keyframes 는 구현 레이어 몫.",
+      "track": {
+        "$value": "{semantic.color.border.subtle}",
+        "ref": "color.border.subtle"
+      },
+      "indicator": {
+        "$value": "{semantic.color.fg.brand}",
+        "ref": "color.fg.brand"
+      },
+      "indicator-on-fill": {
+        "$value": "{semantic.color.fg.on-action}",
+        "ref": "color.fg.on-action"
+      },
+      "radius": {
+        "$value": "{semantic.radius.circle}",
+        "ref": "radius.circle"
+      },
+      "size": {
+        "sm": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "lg": {
+          "$value": "{semantic.size.icon.lg}",
+          "ref": "size.icon.lg"
+        }
+      },
+      "thickness": {
+        "sm": {
+          "$value": "0.125rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 2,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.125",
+              "why": "링 두께 — 지름 대비 비례. 작은 크기에서 링이 뭉개지지 않는 하한(1px)은 computedScale 의 max(1) 이 보장"
+            }
+          }
+        },
+        "md": {
+          "$value": "0.1875rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 3,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.md × 0.125",
+              "why": "링 두께 — 지름 대비 비례"
+            }
+          }
+        },
+        "lg": {
+          "$value": "0.1875rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 3,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.lg × 0.125",
+              "why": "링 두께 — 지름 대비 비례"
+            }
+          }
+        }
+      },
+      "motion": {
+        "$value": "{semantic.motion.emphasis}",
+        "ref": "motion.emphasis"
+      },
+      "$extensions": {
+        "square": "size",
+        "why": "radius.circle 소비 — 정사각 전제(F-12)"
+      }
+    }
+  }
+}

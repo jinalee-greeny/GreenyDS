@@ -1,0 +1,92 @@
+{
+  "component": {
+    "progressBar": {
+      "$description": "ProgressBar — 트랙 + 채움. Slider.track·FileUpload.progress 와 같은 두께 규칙. ⚠ 성공/오류 변형 미구현: 채우는 막대에는 solid 상태색이 필요한데 인벤토리에 bg.success·bg.error(solid)가 없다(있는 것은 *-subtle). 새 역할을 발명하지 않고 공백으로 남긴다(§0.5) — 필요해지면 승격 요청 대상.",
+      "track": {
+        "bg": {
+          "$value": "{semantic.color.bg.action-secondary.default}",
+          "ref": "color.bg.action-secondary.default"
+        },
+        "bg-disabled": {
+          "$value": "{semantic.color.bg.action-disabled}",
+          "ref": "color.bg.action-disabled"
+        },
+        "radius": {
+          "$value": "{semantic.radius.pill}",
+          "ref": "radius.pill"
+        },
+        "$extensions": {
+          "why": "action-secondary 를 배경으로만 쓴다 — 위에 텍스트를 얹지 않으므로 Q-015 의 미달 페어가 성립하지 않는다(Slider.track 과 같은 사용)"
+        }
+      },
+      "fill": {
+        "bg": {
+          "$value": "{semantic.color.bg.action-primary.default}",
+          "ref": "color.bg.action-primary.default"
+        },
+        "bg-disabled": {
+          "$value": "{semantic.color.bg.action-disabled}",
+          "ref": "color.bg.action-disabled"
+        },
+        "radius": {
+          "$value": "{semantic.radius.pill}",
+          "ref": "radius.pill"
+        },
+        "motion": {
+          "$value": "{semantic.motion.control}",
+          "ref": "motion.control"
+        }
+      },
+      "thickness": {
+        "sm": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.25",
+              "why": "얇은 막대 — 카드 하단·행 안"
+            }
+          }
+        },
+        "md": {
+          "$value": "0.5rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 8,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.5",
+              "why": "기본 막대"
+            }
+          }
+        }
+      },
+      "label": {
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        }
+      },
+      "value": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        }
+      },
+      "gap": {
+        "$value": "{semantic.spacing.gap.y.sm}",
+        "ref": "spacing.gap.y.sm"
+      }
+    }
+  }
+}
