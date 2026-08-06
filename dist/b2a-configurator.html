@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>프리셋 컨피규레이터 — 내부 베타 v1.4</title>
+<title>프리셋 컨피규레이터 — 내부 베타 v1.5</title>
 <style>
   /* ═══ Apple 워싱 토큰 레이어 (v1.3) ═══
      GreenyDS 아키텍처 그대로 빌드한 하나의 프리셋:
@@ -527,7 +527,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.4 — 컴포넌트 스튜디오 29종(레포 전량 · 생성) · 결정 #44 다크 대비 · B2a 미러</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.5 — 컴포넌트 29종 형태+토큰 전량 · 결정 #44 다크 대비 · B2a 미러</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -1134,6 +1134,211 @@ const F_ST={success:["success","fgSucc","succSub"],error:["error","fgDanger","er
             warning:["warning","fgWarn","warnSub"],info:["info","fgInfo","infoSub"]};
 function fFs(TR,sz){const b=TR.label.px;return sz==="sm"?Math.max(11,+(b-1).toFixed(1)):sz==="lg"?+(b+1).toFixed(1):b;}
 function fRing(R){return "0 0 0 2px "+R.S.page+",0 0 0 4px "+R.focus;}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Wave 3~6 형태 빌더 (2026-08-06, 진아 지시 "형태 렌더도 당연히 있어야지")
+   결정 #37 원칙 그대로 — **한 형태는 한 함수에서만 나온다.** 미리보기와 컴포넌트
+   스튜디오가 같은 함수를 부른다. 두 벌을 만들면 갈라지는 순간 아무도 모른다.
+   치수는 여기서도 radTier()·spx()·F_H 를 거쳐 인스펙터에 반응한다.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const F_BOX={sm:16,md:20,lg:24};                            // 체크박스·라디오 박스 (아이콘 사다리)
+function fChk(R,TR,o){
+  o=o||{}; const sz=o.sz||"md", st=o.st||"unchecked", d=F_BOX[sz];
+  const rc=Math.max(1,Math.round(radTier("control")*0.5));
+  const on=(st==="checked"||st==="indeterminate");
+  let bg=on?R.ap:(R.light?"#ffffff":R.S.raised), bd="1px solid "+(on?"transparent":R.strokeDefault), ring="";
+  if(st==="hover"&&!on) bd="1px solid "+R.strokeStrong;
+  if(st==="focused"){bd="2px solid "+R.focus;ring="box-shadow:"+fRing(R)+";";}
+  if(st==="error") bd="1px solid "+R.strokeDanger;
+  if(st==="disabled"){bg=R.disabled;bd="1px solid "+R.strokeSubtle;}
+  const mark=st==="indeterminate"?'<span style="display:block;width:'+Math.round(d*0.5)+'px;height:2px;background:'+R.onAction+'"></span>'
+    :on?'<span style="display:block;width:'+Math.round(d*0.32)+"px;height:"+Math.round(d*0.55)+'px;border:solid '+R.onAction+';border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)"></span>':'';
+  return '<div style="display:inline-flex;align-items:center;gap:'+spx("inline","sm")+'px;flex:none">'+
+    '<span style="width:'+d+"px;height:"+d+"px;background:"+bg+";border:"+bd+";border-radius:"+rc+
+    'px;display:inline-flex;align-items:center;justify-content:center;'+ring+'flex:none"></span>'.replace('></span>','>'+mark+'</span>')+
+    '<span style="'+ty(TR.label)+";color:"+(st==="disabled"?R.fgDisabled:R.fgPrimary)+'">'+(o.t||"라벨")+'</span></div>';
+}
+function fRadio(R,TR,o){
+  o=o||{}; const sz=o.sz||"md", st=o.st||"unchecked", d=F_BOX[sz];
+  const on=(st==="checked"); let bd="1px solid "+R.strokeDefault, ring="";
+  if(on) bd="2px solid "+R.fgBrand;
+  if(st==="hover"&&!on) bd="1px solid "+R.strokeStrong;
+  if(st==="focused"){bd="2px solid "+R.focus;ring="box-shadow:"+fRing(R)+";";}
+  if(st==="disabled") bd="1px solid "+R.strokeSubtle;
+  const dot=on?'<span style="width:'+Math.max(4,d-8)+"px;height:"+Math.max(4,d-8)+'px;border-radius:999px;background:'+(st==="disabled"?R.fgDisabled:R.fgBrand)+'"></span>':'';
+  return '<div style="display:inline-flex;align-items:center;gap:'+spx("inline","sm")+'px;flex:none">'+
+    '<span style="width:'+d+"px;height:"+d+"px;background:"+(st==="disabled"?R.disabled:(R.light?"#ffffff":R.S.raised))+";border:"+bd+
+    ';border-radius:999px;display:inline-flex;align-items:center;justify-content:center;'+ring+'flex:none">'+dot+'</span>'+
+    '<span style="'+ty(TR.label)+";color:"+(st==="disabled"?R.fgDisabled:R.fgPrimary)+'">'+(o.t||"선택지")+'</span></div>';
+}
+function fSlider(R,o){
+  o=o||{}; const pct=o.pct==null?62:o.pct, dis=o.st==="disabled", w=o.w||168, th=Math.max(1,Math.round(F_BOX.sm*0.25));
+  return '<div style="position:relative;width:'+w+"px;height:20px;display:flex;align-items:center;flex:none"+'">'+
+    '<div style="width:100%;height:'+th+"px;border-radius:999px;background:"+(dis?R.disabled:R.asDef)+'"></div>'+
+    '<div style="position:absolute;left:0;width:'+pct+"%;height:"+th+"px;border-radius:999px;background:"+(dis?R.disabled:R.ap)+'"></div>'+
+    '<div style="position:absolute;left:calc('+pct+'% - 10px);width:20px;height:20px;border-radius:999px;background:'+(dis?R.fgDisabled:R.knob)+
+    ";border:1px solid "+R.strokeSubtle+(o.st==="focused"?";box-shadow:"+fRing(R):"")+'"></div></div>';
+}
+function fSeg(R,TR,o){
+  o=o||{}; const items=o.items||["일","주","월"], sel=o.sel==null?0:o.sel, rc=radTier("control");
+  return '<div style="display:inline-flex;gap:2px;padding:2px;background:'+R.asDef+";border-radius:"+rc+'px;flex:none">'+
+    items.map(function(t,i){const on=i===sel;
+      return '<span style="padding:6px 12px;border-radius:'+Math.max(0,rc-2)+"px;"+ty(TR.label)+";color:"+(on?R.fgPrimary:R.fgSecondary)+
+        (on?";background:"+R.S.raised+";box-shadow:"+shadow(R,"raised"):"")+'">'+t+'</span>';}).join("")+'</div>';
+}
+function fTip(R,TR,o){
+  o=o||{};
+  return '<div style="display:inline-block;max-width:180px;padding:'+spx("inset","sm")+"px "+spx("inset","md")+"px;background:"+R.S.overlay+
+    ";color:"+R.fgPrimary+";border:1px solid "+R.strokeSubtle+";border-radius:"+radTier("control")+"px;box-shadow:"+shadow(R,"overlay")+";"+
+    ty(TR.caption)+';flex:none">'+(o.t||"설명 문구가 여기 들어갑니다")+'</div>';
+}
+function fBadge(R,TR,o){
+  o=o||{}; const k=o.k||"brand";
+  const map={brand:[R.brandSub,R.fgBrand],neutral:[R.asDef,R.fgSecondary],
+    success:[R.succSub,R.fgSucc],error:[R.errorSub,R.fgDanger],warning:[R.warnSub,R.fgWarn],info:[R.infoSub,R.fgInfo]};
+  const c=map[k]||map.brand;
+  return '<span style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;background:'+c[0]+
+    ";color:"+c[1]+";"+ty(TR.caption)+';flex:none">'+(o.t||k)+'</span>';
+}
+function fBanner(R,TR,o){
+  o=o||{}; const k=o.k||"info";
+  const map={info:[R.infoSub,R.fgInfo],success:[R.succSub,R.fgSucc],warning:[R.warnSub,R.fgWarn],error:[R.errorSub,R.fgDanger]};
+  const c=map[k]||map.info;
+  return '<div style="display:flex;gap:'+spx("inline","sm")+"px;align-items:flex-start;max-width:320px;padding:"+spx("inset","md")+
+    "px;background:"+c[0]+";border:1px solid "+R.strokeSubtle+";border-radius:"+radTier("container")+'px;flex:none">'+
+    '<span style="width:8px;height:8px;border-radius:999px;background:'+c[1]+';margin-top:6px;flex:none"></span>'+
+    '<div><div style="'+ty(TR.label)+";color:"+R.fgPrimary+'">'+(o.t||"알림 제목")+'</div>'+
+    '<div style="'+ty(TR.caption)+";color:"+R.fgSecondary+';margin-top:2px">본문 설명이 한 줄 들어갑니다.</div></div></div>';
+}
+/* ── Wave 4~6 ── */
+function fField(R,TR,o){
+  o=o||{}; const st=o.st||"default";
+  return '<div style="display:flex;flex-direction:column;gap:'+spx("stack","sm")+'px;flex:none">'+
+    '<span style="'+ty(TR.label)+";color:"+(st==="disabled"?R.fgDisabled:R.fgPrimary)+'">이메일'+
+      (o.req?'<span style="color:'+R.fgDanger+'"> *</span>':'')+'</span>'+
+    fFld(R,TR,{st:st==="error"?"default":st,w:200,t:st==="empty"?"you@example.com":"jina@pxd.co.kr"})+
+    (st==="error"?'<span style="'+ty(TR.caption)+";color:"+R.fgDanger+'">올바른 형식이 아닙니다</span>'
+                 :'<span style="'+ty(TR.caption)+";color:"+R.fgSecondary+'">회사 메일을 사용하세요</span>')+'</div>';
+}
+function fTextarea(R,TR,o){
+  o=o||{}; const st=o.st||"default", rc=radTier("control");
+  let bg=R.light?"#ffffff":R.S.raised, bd="1px solid "+R.strokeDefault, extra="";
+  if(st==="focused"){bd="2px solid "+R.focus;extra="box-shadow:"+fRing(R)+";";}
+  if(st==="error") bd="1px solid "+R.strokeDanger;
+  if(st==="disabled"){bg=R.disabled;bd="1px solid "+R.strokeSubtle;}
+  return '<div style="width:220px;min-height:'+(F_H.lg*2)+"px;padding:"+spx("inset","md")+"px;background:"+bg+";border:"+bd+
+    ";border-radius:"+rc+"px;"+ty(TR.body)+";color:"+(st==="empty"?R.fgPlaceholder:R.fgPrimary)+";"+extra+'flex:none">'+
+    (st==="empty"?"여러 줄 입력…":"여러 줄 입력이 들어가고 높이는 내용에 따라 늘어납니다.")+'</div>';
+}
+function fCounter(R,TR,o){
+  o=o||{}; const sz=o.sz||"md", h=F_H[sz], rc=radTier("control"), dis=o.st==="disabled";
+  const btn=function(t){return '<span style="width:'+h+"px;height:"+h+"px;display:inline-flex;align-items:center;justify-content:center;"+
+    ty(TR.label)+";color:"+(dis?R.fgDisabled:R.fgPrimary)+'">'+t+'</span>';};
+  return '<div style="display:inline-flex;align-items:center;background:'+(dis?R.disabled:(R.light?"#ffffff":R.S.raised))+
+    ";border:"+(o.st==="focused"?"2px solid "+R.focus:"1px solid "+R.strokeDefault)+";border-radius:"+rc+"px;"+
+    (o.st==="focused"?"box-shadow:"+fRing(R)+";":"")+'overflow:hidden;flex:none">'+btn("−")+
+    '<span style="min-width:'+h+"px;text-align:center;"+ty(TR.body)+";color:"+(dis?R.fgDisabled:R.fgPrimary)+'">3</span>'+btn("+")+'</div>';
+}
+function fUpload(R,TR,o){
+  o=o||{}; const st=o.st||"default", rc=radTier("container");
+  const bg=st==="dragover"?R.brandSub:R.S.subtle, bd=st==="dragover"?R.focus:(st==="error"?R.strokeDanger:R.strokeDefault);
+  return '<div style="width:240px;flex:none">'+
+    '<div style="min-height:'+(F_H.lg*3)+"px;padding:"+spx("inset","lg")+"px;background:"+bg+";border:1px dashed "+bd+
+    ";border-radius:"+rc+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+spx("stack","sm")+'px">'+
+    '<span style="width:24px;height:24px;border-radius:6px;background:'+R.fgSecondary+';opacity:.35"></span>'+
+    '<span style="'+ty(TR.body)+";color:"+R.fgSecondary+';text-align:center">여기에 놓거나 <span style="color:'+R.link+'">찾아보기</span></span></div>'+
+    (o.file?'<div style="margin-top:'+spx("stack","sm")+"px;display:flex;align-items:center;gap:"+spx("inline","sm")+"px;padding:"+spx("inset","sm")+
+      "px;background:"+(o.file==="error"?R.errorSub:R.S.surface)+";border:1px solid "+R.strokeSubtle+";border-radius:"+radTier("control")+'px">'+
+      '<span style="'+ty(TR.label)+";color:"+R.fgPrimary+';flex:1">보고서.pdf</span>'+
+      '<span style="'+ty(TR.caption)+";color:"+(o.file==="error"?R.fgDanger:R.fgSecondary)+'">'+(o.file==="error"?"실패":"1.2MB")+'</span></div>':'')+'</div>';
+}
+function fDate(R,TR,o){
+  o=o||{}; const rc=radTier("container"), cell=F_H.sm;
+  const days=[1,2,3,4,5,6,7].map(function(d){
+    const sel=d===4, today=d===2;
+    return '<span style="width:'+cell+"px;height:"+cell+"px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;"+
+      ty(TR.body)+";color:"+(sel?R.fgBrand:R.fgPrimary)+(sel?";background:"+R.brandSub:"")+(today?";border:2px solid "+R.fgBrand:"")+'">'+d+'</span>';}).join("");
+  return '<div style="padding:'+spx("inset","sm")+"px;background:"+R.S.raised+";border:1px solid "+R.strokeSubtle+";border-radius:"+rc+
+    "px;box-shadow:"+shadow(R,"raised")+';flex:none">'+
+    '<div style="'+ty(TR.title)+";color:"+R.fgPrimary+";padding:0 4px "+spx("stack","sm")+'px">8월</div>'+
+    '<div style="display:flex;gap:2px">'+["일","월","화","수","목","금","토"].map(function(w){
+      return '<span style="width:'+cell+'px;text-align:center;'+ty(TR.caption)+";color:"+R.fgSecondary+'">'+w+'</span>';}).join("")+'</div>'+
+    '<div style="display:flex;gap:2px;margin-top:2px">'+days+'</div></div>';
+}
+function fCrumb(R,TR,o){
+  o=o||{}; const items=o.items||["홈","프로젝트","Core System"];
+  return '<div style="display:inline-flex;align-items:center;gap:'+spx("inline","sm")+'px;flex-wrap:wrap;flex:none">'+
+    items.map(function(t,i){const last=i===items.length-1;
+      return (i?'<span style="'+ty(TR.label)+";color:"+R.fgSecondary+';opacity:.6">/</span>':'')+
+        '<span style="'+ty(TR.label)+";color:"+(last?R.fgPrimary:R.fgSecondary)+'">'+t+'</span>';}).join("")+'</div>';
+}
+function fPage(R,TR,o){
+  o=o||{}; const sz=o.sz||"sm", d=F_H[sz], rc=radTier("control"), cur=o.cur==null?2:o.cur;
+  const cellFn=function(t,i){const on=i===cur;
+    return '<span style="width:'+d+"px;height:"+d+"px;display:inline-flex;align-items:center;justify-content:center;border-radius:"+rc+"px;"+
+      ty(TR.label)+";color:"+(on?R.fgBrand:R.fgPrimary)+(on?";background:"+R.brandSub:"")+'">'+t+'</span>';};
+  return '<div style="display:inline-flex;align-items:center;gap:'+spx("inline","sm")+'px;flex:none">'+
+    '<span style="'+ty(TR.label)+";color:"+R.fgSecondary+'">‹</span>'+
+    ["1","2","3","…","9"].map(cellFn).join("")+
+    '<span style="'+ty(TR.label)+";color:"+R.fgSecondary+'">›</span></div>';
+}
+function fNav(R,TR,o){
+  o=o||{}; const items=o.items||[["대시보드",1],["토큰",0],["컴포넌트",0]];
+  return '<div style="display:flex;align-items:center;gap:'+spx("inline","lg")+"px;padding:"+spx("inset","sm")+"px "+spx("inset","lg")+
+    "px;background:"+R.S.surface+";border-bottom:1px solid "+R.strokeSubtle+';min-width:300px;flex:none">'+
+    '<span style="'+ty(TR.title)+";color:"+R.fgPrimary+'">GreenyDS</span>'+
+    '<div style="display:flex;gap:'+spx("inline","md")+'px">'+items.map(function(it){
+      return '<span style="position:relative;padding:6px 4px;'+ty(TR.label)+";color:"+(it[1]?R.fgBrand:R.fgSecondary)+'">'+it[0]+
+        (it[1]?'<span style="position:absolute;left:0;right:0;bottom:-'+(spx("inset","sm")+1)+'px;height:2px;background:'+R.fgBrand+'"></span>':'')+'</span>';
+    }).join("")+'</div></div>';
+}
+function fSteps(R,TR,o){
+  o=o||{}; const st=["complete","current","upcoming"], d=F_H.sm, th=Math.max(1,Math.round(F_BOX.sm*0.25));
+  return '<div style="display:flex;align-items:center;flex:none">'+st.map(function(s,i){
+    const done=s==="complete", cur=s==="current";
+    const circle='<span style="width:'+d+"px;height:"+d+"px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;"+
+      "background:"+(done||cur?R.ap:R.S.subtle)+";color:"+(done||cur?R.onAction:R.fgSecondary)+
+      (cur?";box-shadow:0 0 0 2px "+R.fgBrand:"")+";"+ty(TR.label)+'">'+(done?"✓":(i+1))+'</span>';
+    const line=i<st.length-1?'<span style="width:32px;height:'+th+"px;background:"+(done?R.ap:R.asDef)+'"></span>':'';
+    return circle+line;}).join("")+'</div>';
+}
+function fDrawer(R,TR,o){
+  o=o||{}; const rc=radTier("overlay");
+  return '<div style="position:relative;width:260px;height:150px;background:'+R.scrim+";border-radius:"+radTier("container")+'px;overflow:hidden;flex:none">'+
+    '<div style="position:absolute;top:0;right:0;bottom:0;width:170px;background:'+R.S.overlay+";box-shadow:"+shadow(R,"overlay")+
+    ";border-radius:"+rc+"px 0 0 "+rc+'px;display:flex;flex-direction:column">'+
+    '<div style="padding:'+spx("inset","md")+"px;border-bottom:1px solid "+R.strokeSubtle+";"+ty(TR.title)+";color:"+R.fgPrimary+'">필터</div>'+
+    '<div style="padding:'+spx("inset","md")+"px;"+ty(TR.body)+";color:"+R.fgSecondary+';flex:1">가장자리에서 나오는 패널</div>'+
+    '<div style="padding:'+spx("inset","md")+"px;border-top:1px solid "+R.strokeSubtle+'"></div></div></div>';
+}
+function fProg(R,o){
+  o=o||{}; const pct=o.pct==null?62:o.pct, th=Math.max(1,Math.round(F_BOX.sm*(o.sz==="md"?0.5:0.25)));
+  return '<div style="width:180px;height:'+th+"px;border-radius:999px;background:"+R.asDef+';overflow:hidden;flex:none">'+
+    '<div style="width:'+pct+"%;height:100%;border-radius:999px;background:"+R.ap+'"></div></div>';
+}
+function fSpin(R,o){
+  o=o||{}; const sz=o.sz||"md", d=F_BOX[sz], t=Math.max(1,Math.round(d*0.125));
+  return '<span style="display:inline-block;width:'+d+"px;height:"+d+"px;border-radius:999px;border:"+t+"px solid "+R.strokeSubtle+
+    ";border-top-color:"+R.fgBrand+';flex:none"></span>';
+}
+function fSkel(R,o){
+  o=o||{}; const k=o.k||"text";
+  if(k==="avatar") return '<span style="display:inline-block;width:'+F_H.sm+"px;height:"+F_H.sm+"px;border-radius:999px;background:"+R.S.subtle+';flex:none"></span>';
+  if(k==="block") return '<span style="display:inline-block;width:120px;height:60px;border-radius:'+radTier("container")+"px;background:"+R.S.subtle+';flex:none"></span>';
+  return '<span style="display:inline-flex;flex-direction:column;gap:'+spx("stack","sm")+'px;flex:none">'+
+    '<span style="width:160px;height:'+Math.round(F_BOX.md)+"px;border-radius:"+radTier("control")+"px;background:"+R.S.subtle+'"></span>'+
+    '<span style="width:110px;height:'+Math.round(F_BOX.sm*0.75)+"px;border-radius:"+radTier("control")+"px;background:"+R.S.subtle+'"></span></span>';
+}
+function fEmpty(R,TR,o){
+  o=o||{};
+  return '<div style="width:220px;padding:'+spx("inset","lg")+"px;display:flex;flex-direction:column;align-items:center;gap:"+spx("stack","md")+
+    "px;text-align:center;background:"+R.S.surface+';flex:none">'+
+    '<span style="width:48px;height:48px;border-radius:12px;background:'+R.fgSecondary+';opacity:.25"></span>'+
+    '<div><div style="'+ty(TR.title)+";color:"+R.fgPrimary+'">아직 항목이 없습니다</div>'+
+    '<div style="'+ty(TR.body)+";color:"+R.fgSecondary+';margin-top:4px">첫 항목을 추가해 보세요.</div></div>'+
+    fBtn(R,TR,{sz:"sm",t:"추가"})+'</div>';
+}
 
 function fBtn(R,TR,o){
   o=o||{}; const v=o.v||"primary", sz=o.sz||"md", st=o.st||"default";
@@ -2235,7 +2440,11 @@ window.renderStudio=renderStudio;
    ═══════════════════════════════════════════════════════════════════════════ */
 /* 컴포넌트 스튜디오 목록 = 레포 29종 전량(생성물 순서). 형태 렌더가 있는 8종이 앞에 오고
    나머지는 '토큰만' 으로 이어진다 — 있는 것을 숨기지 않고, 없는 것을 있는 척하지 않는다. */
-const CS_SHAPED=["button","input","select","switch","tabs","card","toast","modal"];
+const CS_SHAPED=["button","input","select","switch","tabs","card","toast","modal",
+  "checkbox","radio","slider","segmented","tooltip","badge","banner",
+  "field","textarea","counter","fileUpload","datePicker",
+  "breadcrumb","pagination","navBar","progressSteps",
+  "drawer","progressBar","spinner","skeleton","emptyState"];
 const CSORDER=CS_SHAPED.concat(COMP_SPEC.map(function(c){return c.c;}).filter(function(k){return CS_SHAPED.indexOf(k)<0;}));
 const CSMETA=(function(){
   const base={button:["Button","변형 3 · 크기 3 · 상태 5"],input:["Input","크기 3 · 상태 5"],
@@ -2244,7 +2453,7 @@ const CSMETA=(function(){
   COMP_SPEC.forEach(function(c){
     if(base[c.c])return;
     const label=c.c.charAt(0).toUpperCase()+c.c.slice(1);
-    base[c.c]=[label,"형태 미제공 — 토큰 "+c.rows.length+"행"];
+    base[c.c]=[label,(CS_SHAPED.indexOf(c.c)>=0?"토큰 ":"형태 미제공 · 토큰 ")+c.rows.length+"행"];
   });
   return base;
 })();
@@ -2286,7 +2495,39 @@ function cfRows(k,R,TR){
   if(k==="modal")
     return [["기본 (md)", [it("scrim + overlay 표면",fModal(R,TR,{sz:"md"}))]],
             ["크기 3 — 폭 비율 축소", ["sm","md","lg"].map(function(z){return it(z,fWbar(R,TR,F_MODALW[z]));})]];
+  /* ── Wave 3~6 (2026-08-06) — 축은 그 컴포넌트가 실제로 가진 것만 적는다.
+     전 컴포넌트에 3단 변형을 억지로 만들지 않는다(Toast·Modal 선례).
+     ※ it() 은 함수 앞부분에서 이미 선언돼 있다 — 다시 선언하면 블록 전체가 죽는다. ── */
+  if(k==="checkbox") return [["상태 5", ["unchecked","checked","indeterminate","error","disabled"].map(function(x){return it(x,fChk(R,TR,{st:x}));})],
+                             ["크기 3", ["sm","md","lg"].map(function(z){return it(z+" · "+F_BOX[z]+"px",fChk(R,TR,{sz:z,st:"checked"}));})]];
+  if(k==="radio")    return [["상태 4", ["unchecked","checked","focused","disabled"].map(function(x){return it(x,fRadio(R,TR,{st:x}));})],
+                             ["크기 3", ["sm","md","lg"].map(function(z){return it(z+" · "+F_BOX[z]+"px",fRadio(R,TR,{sz:z,st:"checked"}));})]];
+  if(k==="slider")   return [["진행 4", [0,35,62,100].map(function(v){return it(v+"%",fSlider(R,{pct:v}));})],
+                             ["상태 2", ["focused","disabled"].map(function(x){return it(x,fSlider(R,{st:x}));})]];
+  if(k==="segmented")return [["선택 3", [0,1,2].map(function(i2){return it("index "+i2,fSeg(R,TR,{sel:i2}));})]];
+  if(k==="tooltip")  return [["기본", [it("단문",fTip(R,TR,{t:"복사됨"})),it("장문",fTip(R,TR,{}))]]];
+  if(k==="badge")    return [["종류 6", ["brand","neutral","success","error","warning","info"].map(function(x){return it(x,fBadge(R,TR,{k:x}));})]];
+  if(k==="banner")   return [["상태 4", ["info","success","warning","error"].map(function(x){return it(x,fBanner(R,TR,{k:x}));})]];
+  if(k==="field")    return [["상태 4", ["default","empty","error","disabled"].map(function(x){return it(x,fField(R,TR,{st:x}));})],
+                             ["필수 표시", [it("required",fField(R,TR,{req:true}))]]];
+  if(k==="textarea") return [["상태 5", ["default","empty","focused","error","disabled"].map(function(x){return it(x,fTextarea(R,TR,{st:x}));})]];
+  if(k==="counter")  return [["크기 3", ["sm","md","lg"].map(function(z){return it(z+" · "+F_H[z]+"px",fCounter(R,TR,{sz:z}));})],
+                             ["상태 2", ["focused","disabled"].map(function(x){return it(x,fCounter(R,TR,{st:x}));})]];
+  if(k==="fileUpload")return[["상태 3", ["default","dragover","error"].map(function(x){return it(x,fUpload(R,TR,{st:x}));})],
+                             ["파일 행 2", ["ok","error"].map(function(x){return it(x,fUpload(R,TR,{file:x}));})]];
+  if(k==="datePicker")return[["패널", [it("월 뷰",fDate(R,TR,{}))]]];
+  if(k==="breadcrumb")return[["경로", [it("3단",fCrumb(R,TR,{})),it("2단",fCrumb(R,TR,{items:["홈","설정"]}))]]];
+  if(k==="pagination")return[["크기 2", ["sm","md"].map(function(z){return it(z+" · "+F_H[z]+"px",fPage(R,TR,{sz:z}));})]];
+  if(k==="navBar")   return [["바", [it("선택 1",fNav(R,TR,{}))]]];
+  if(k==="progressSteps")return[["단계", [it("완료·현재·예정",fSteps(R,TR,{}))]]];
+  if(k==="drawer")   return [["패널", [it("오른쪽",fDrawer(R,TR,{}))]]];
+  if(k==="progressBar")return[["진행 4", [0,35,62,100].map(function(v){return it(v+"%",fProg(R,{pct:v}));})],
+                             ["두께 2", ["sm","md"].map(function(z){return it(z,fProg(R,{sz:z}));})]];
+  if(k==="spinner")  return [["크기 3", ["sm","md","lg"].map(function(z){return it(z+" · "+F_BOX[z]+"px",fSpin(R,{sz:z}));})]];
+  if(k==="skeleton") return [["종류 3", ["text","block","avatar"].map(function(x){return it(x,fSkel(R,{k:x}));})]];
+  if(k==="emptyState")return[["기본", [it("아이콘+제목+설명+액션",fEmpty(R,TR,{}))]]];
   return [];
+
 }
 
 function csBody(k,R,TR){
