@@ -216,7 +216,7 @@ function build() {
     out.forEach((t) => modeNeutral.push({ ...t, family: 'spatial' }));
   }
   {
-    const out = []; flatten(S.semantic.border, ['border'], ['visual', 'border'], out, 'semantic.border');
+    const out = []; flatten(S.semantic.borderWidth, ['borderWidth'], ['visual', 'borderWidth'], out, 'semantic.borderWidth');
     out.forEach((t) => modeNeutral.push({ ...t, family: 'visual' }));
   }
   modeNeutral.push({ logical: 'focus-offset', figma: 'visual/focusOffset', value: S.semantic['focus-offset'].$value, family: 'visual' });

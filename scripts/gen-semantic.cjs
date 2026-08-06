@@ -114,17 +114,17 @@ function buildColor(mode){
       "pressed": ctok("blue",lkA,{type:"state",shift:light?"+2":"-2"},{contrastMin:conW(RAMPS.blue[lkA],SURF)})
     }
   };
-  const st=resolveW(NEUTRAL,SURF,TARGETS.strokeStrong,`${mode} bdr.strong`);
-  const sd=resolveW("red",{...SURF,...sub("red")},TARGETS.strokeDanger,`${mode} bdr.error`);
-  const fc=resolveW("brand",SURF,TARGETS.focus,`${mode} bdr.focused`);
-  const bdr={
+  const st=resolveW(NEUTRAL,SURF,TARGETS.strokeStrong,`${mode} border.strong`);
+  const sd=resolveW("red",{...SURF,...sub("red")},TARGETS.strokeDanger,`${mode} border.error`);
+  const fc=resolveW("brand",SURF,TARGETS.focus,`${mode} border.focused`);
+  const border={
     "default": ctok(NEUTRAL,light?"300":"700",{type:"fixed",advisory:"장식 보더"},{contrastMin:conW(RAMPS[NEUTRAL][light?"300":"700"],SURF)}),
     "subtle": ctok(NEUTRAL,light?"200":"800",{type:"fixed"}),
     "strong": ctok(NEUTRAL,st.step,{type:"contrast",against:"worst-case",target:TARGETS.strokeStrong,why:"비텍스트 UI 경계 (WCAG 1.4.11)"},{contrastMin:round2(st.ratio),worstSurface:st.worst}),
     "focused": ctok("brand",fc.step,{type:"contrast",against:"worst-case",target:TARGETS.focus,why:"포커스 가시성 (WCAG 2.4.13)"},{contrastMin:round2(fc.ratio),worstSurface:fc.worst}),
     "error": ctok("red",sd.step,{type:"contrast",against:"worst-case(표면+error-subtle)",target:TARGETS.strokeDanger},{contrastMin:round2(sd.ratio),worstSurface:sd.worst})
   };
-  return {"$description":`${mode} 모드 색 역할`,bg,fg,bdr};
+  return {"$description":`${mode} 모드 색 역할`,bg,fg,border};
 }
 const TYPE_ROLES={
   display:{steps:["3xl","4xl","5xl"],weight:"bold",why:"히어로"},

@@ -27,22 +27,22 @@
             "ref": "color.fg.disabled"
           }
         },
-        "bdr": {
+        "border": {
           "default": {
-            "$value": "{semantic.color.bdr.default}",
-            "ref": "color.bdr.default"
+            "$value": "{semantic.color.border.default}",
+            "ref": "color.border.default"
           },
           "hover": {
-            "$value": "{semantic.color.bdr.strong}",
-            "ref": "color.bdr.strong"
+            "$value": "{semantic.color.border.strong}",
+            "ref": "color.border.strong"
           },
           "focused": {
-            "$value": "{semantic.color.bdr.focused}",
-            "ref": "color.bdr.focused"
+            "$value": "{semantic.color.border.focused}",
+            "ref": "color.border.focused"
           },
           "disabled": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         },
         "height": {
@@ -85,9 +85,9 @@
           "$value": "{semantic.spacing.padding.sm}",
           "ref": "spacing.padding.sm"
         },
-        "bdr": {
-          "$value": "{semantic.color.bdr.subtle}",
-          "ref": "color.bdr.subtle"
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
         }
       },
       "item": {
@@ -130,8 +130,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.bdr.focused}",
-        "ref": "color.bdr.focused"
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

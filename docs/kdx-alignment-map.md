@@ -19,7 +19,7 @@
 
 | 묶음 | 이전 | 이후 | 비고 |
 |---|---|---|---|
-| 색 카테고리 | bg · fg · **stroke** | bg · fg · **bdr** | bdr 금지 축약 목록에서 해제 |
+| 색 카테고리 | bg · fg · **stroke** | bg · fg · **border** | border 금지 축약 목록에서 해제 |
 | 상태 | hover · **active** · **focus** · disabled · **invalid** | default · hover · **pressed** · **focused** · **selected · unselected** · disabled | invalid → 상태색 **error** 문맥으로. selected 공용 승격 = **Q-012 판정 번복** |
 | 상태색(Status) | **danger** · warning · success · info | **error** · warning · success · info | fg.danger → fg.error 등 전 계층 |
 | 강도(Contrast) | subtle · (무표기) · strong — 3단 제한 | **faint · muted · subtlest · subtler · subtle · default · strong · stronger · strongest** — 9단 어휘 풀 | 실사용 기본은 subtle/default/strong, 나머지는 풀 등재. "3단 초과 금지" 규정 폐지 |
@@ -28,7 +28,7 @@
 | 방향 | x · y | x · y · **top · bottom · left · right · start · end** | |
 | 치수 | (없음) | **w**(width) · **h**(height) | |
 | Style 축 | (버튼 변형에 혼재: primary/secondary/ghost) | **solid · outline · ghost · transparent · inverse · static** | Priority와 Style 분리 — 컴포넌트 재편 시 적용 |
-| 축약 허용 추가 | — | **bdr · comp · w · h · 2xs · 2xl** | |
+| 축약 허용 추가 | — | **border · comp · w · h · 2xs · 2xl** | |
 | 여백 | inset → **padding** / stack → **gap.y** / inline → **gap.x** / sectionGap → **gap.section** | | margin 신설 |
 | 테두리 굵기 | borderWidth(0/1/2/4) | **border** — 사다리 step-0(0) · special.hairline(1) · step-1(2) · step-2(4) | |
 

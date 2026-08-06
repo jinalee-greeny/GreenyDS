@@ -425,7 +425,7 @@
             }
           }
         },
-        "bdr": {
+        "border": {
           "default": {
             "$value": "{color.cool-gray.300}",
             "$type": "color",
@@ -926,7 +926,7 @@
             }
           }
         },
-        "bdr": {
+        "border": {
           "default": {
             "$value": "{color.cool-gray.700}",
             "$type": "color",

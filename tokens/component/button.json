@@ -57,9 +57,9 @@
           "$value": "{semantic.color.fg.disabled}",
           "ref": "color.fg.disabled"
         },
-        "bdr": {
-          "$value": "{semantic.color.bdr.default}",
-          "ref": "color.bdr.default"
+        "border": {
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
         }
       },
       "ghost": {
@@ -144,15 +144,15 @@
         "$value": "{semantic.typography.label}",
         "ref": "typography.label"
       },
-      "border": {
+      "borderWidth": {
         "focused": {
-          "$value": "{semantic.border.focused}",
-          "ref": "border.focused"
+          "$value": "{semantic.borderWidth.focused}",
+          "ref": "borderWidth.focused"
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.bdr.focused}",
-        "ref": "color.bdr.focused"
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

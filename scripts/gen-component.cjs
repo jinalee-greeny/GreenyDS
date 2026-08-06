@@ -93,7 +93,7 @@ function surfacesFor(mode){ // 입력 필드가 놓이는 표면 집합
 }
 // 시맨틱 JSON에 신설 역할을 주입(참조 전용 성립). 각 모드별 resolved 기록.
 function injectSemanticAdditions(){
-  const add = { color:{}, size:{}, "border":{}, "focus-offset":{} };
+  const add = { color:{}, size:{}, "borderWidth":{}, "focus-offset":{} };
   for (const mode of ["light","dark"]) {
     const bg = SEM.color[mode].bg, fg = SEM.color[mode].fg;
     // ① bg.action-disabled — 공용 단일(세 변형 공유). 기존 action-primary.disabled를 이 값으로 통일.
@@ -137,11 +137,11 @@ function injectSemanticAdditions(){
   };
   // ⑤ focus-offset(px 고정) ⑥ border 상태(#16 개정)
   SEM["focus-offset"] = { "$value":"2px", "$type":"dimension", "$extensions":{ px:2, rule:{ type:"fixed", why:"포커스 링 오프셋 — 헤어라인 정밀(§5.5-⑤)" } } };
-  SEM["border"] = {
+  SEM["borderWidth"] = {
     "$description":"굵기 상태 역할(#16 개정 · 결정 #40) — dimension 사다리·센티널 참조",
     "default":{ "$value":"{dimension.special.hairline}", "$type":"dimension", "$extensions":{ px:1 } },
     "selected":{ "$value":"{dimension.px.step-1}", "$type":"dimension", "$extensions":{ px:2 } },
-    "focused":{ "$value":"{dimension.px.step-1}", "$type":"dimension", "$extensions":{ px:2, why:"bdr.focused 색과 쌍" } }
+    "focused":{ "$value":"{dimension.px.step-1}", "$type":"dimension", "$extensions":{ px:2, why:"border.focused 색과 쌍" } }
   };
 }
 
@@ -170,7 +170,7 @@ function computedChildRadius(outerTier, insetKey){
 
 // ---- Button (변형 primary/secondary/ghost — action 3계열) ----
 function buildButton(){
-  const variant = (name, bgRole, fgRole, bdrRole) => {
+  const variant = (name, bgRole, fgRole, borderRole) => {
     const o = { "bg":{
         "default": a(`color.bg.${bgRole}.default`),
         "hover":   a(`color.bg.${bgRole}.hover`),
@@ -178,7 +178,7 @@ function buildButton(){
         "disabled":a(`color.bg.action-disabled`) },
       "fg": a(`color.fg.${fgRole}`),
       "fg-disabled": a(`color.fg.disabled`) };
-    if (bdrRole) o["bdr"] = a(`color.bdr.${bdrRole}`);
+    if (borderRole) o["border"] = a(`color.border.${borderRole}`);
     return o;
   };
   return { "component":{ "button":{
@@ -192,20 +192,20 @@ function buildButton(){
     "padding-x":{ "sm":a("spacing.gap.x.md"),"md":a("spacing.gap.x.lg"),"lg":a("spacing.gap.x.lg") },
     "gap":      a("spacing.gap.x.sm"),
     "typography":a("typography.label"),
-    "border":{ "focused":a("border.focused") },
-    "focus-color":a("color.bdr.focused"),
+    "borderWidth":{ "focused":a("borderWidth.focused") },
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
 // ---- Input ----
 function buildInput(){
   return { "component":{ "input":{
-    "$description":"Input — 표면·bdr 3상태·placeholder, 높이 sm/md/lg",
+    "$description":"Input — 표면·border 3상태·placeholder, 높이 sm/md/lg",
     "bg":       { "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
     "fg":       { "default":a("color.fg.primary"), "placeholder":a("color.fg.placeholder"), "disabled":a("color.fg.disabled") },
-    "bdr":   { "default":a("color.bdr.default"), "hover":a("color.bdr.strong"),
-                  "focused":a("color.bdr.focused"), "error":a("color.bdr.error"), "disabled":a("color.bdr.subtle") },
-    "border":{ "default":a("border.default"), "focused":a("border.focused") },
+    "border":   { "default":a("color.border.default"), "hover":a("color.border.strong"),
+                  "focused":a("color.border.focused"), "error":a("color.border.error"), "disabled":a("color.border.subtle") },
+    "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
     "height":   { "sm":a("size.control.sm"),"md":a("size.control.md"),"lg":a("size.control.lg") },
     "radius":   a("radius.control"),
     "padding-x":a("spacing.padding.md"),
@@ -221,7 +221,7 @@ function buildSelect(){
     "trigger":{
       "bg":       { "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
       "fg":       { "default":a("color.fg.primary"), "placeholder":a("color.fg.placeholder"), "disabled":a("color.fg.disabled") },
-      "bdr":   { "default":a("color.bdr.default"), "hover":a("color.bdr.strong"), "focused":a("color.bdr.focused"), "disabled":a("color.bdr.subtle") },
+      "border":   { "default":a("color.border.default"), "hover":a("color.border.strong"), "focused":a("color.border.focused"), "disabled":a("color.border.subtle") },
       "height":   { "sm":a("size.control.sm"),"md":a("size.control.md"),"lg":a("size.control.lg") },
       "radius":   a("radius.control"),
       "icon":     a("size.icon.md") },
@@ -230,14 +230,14 @@ function buildSelect(){
       "elevation":a("elevation.raised"),
       "radius":   a("radius.container"),
       "padding":  a("spacing.padding.sm"),
-      "bdr":   a("color.bdr.subtle") },
+      "border":   a("color.border.subtle") },
     "item":{
       "fg":       a("color.fg.primary"),
       "bg-hover": a("color.bg.action-ghost.hover"),
       "radius":   computedChildRadius("container","sm"),      // 중첩: 12−8=4
       "selected":{ "bg":a("color.bg.brand-subtle"), "fg":a("color.fg.brand"),
                    "$extensions":{ rule:{ type:"component-state", state:"selected", why:"컴포넌트 고유 상태 — Tabs와 반복 시 시맨틱 승격 검토(§4.2-3)" } } } },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -247,7 +247,7 @@ function buildCard(){
     "$description":"Card — 열린 컨테이너(고정 높이 금지), radius 중첩 공식 첫 적용처",
     "bg":        a("color.bg.surface"),
     "bg-raised": a("color.bg.surface-raised"),
-    "bdr":    a("color.bdr.subtle"),
+    "border":    a("color.border.subtle"),
     "radius":    a("radius.container"),
     "elevation":{ "resting":a("elevation.resting"), "raised":a("elevation.raised") },
     "padding":     a("spacing.padding.lg"),
@@ -273,10 +273,10 @@ function buildSwitch(){
       "height":{ "sm":a("size.icon.md"), "md":a("size.icon.lg") } },   // 20 / 24
     "knob":{
       "bg":a("color.bg.control-knob"),
-      "bdr":a("color.bdr.subtle"),                              // off-트랙(밝음) 위 경계
+      "border":a("color.border.subtle"),                              // off-트랙(밝음) 위 경계
       "size":{ "sm":computedKnob("md"), "md":computedKnob("lg") },     // 16 / 20
       "motion":a("motion.control") },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -292,10 +292,10 @@ function buildTabs(){
       "typography":a("typography.label") },
     "indicator":{
       "color":a("color.fg.brand"),
-      "thickness":a("border.selected"),
+      "thickness":a("borderWidth.selected"),
       "motion":a("motion.control"),
       "$extensions":{ rule:{ type:"component-state", state:"selected", why:"Select.item.selected와 반복 — 시맨틱 승격 후보(컨펌 큐, §0.3)" } } },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -306,7 +306,7 @@ function buildModal(){
     "scrim":a("color.bg.scrim"),
     "surface":a("color.bg.surface-overlay"),
     "elevation":a("elevation.overlay"),
-    "bdr":a("color.bdr.subtle"),
+    "border":a("color.border.subtle"),
     "radius":a("radius.overlay"),
     "padding":a("spacing.padding.lg"),
     "gap":a("spacing.gap.y.md"),
@@ -322,7 +322,7 @@ function buildToast(){
     "$description":"Toast — 중립 base + 상태 4계열(success/error/warning/info), raised 쌍 + 모션",
     "bg":a("color.bg.surface-raised"),
     "elevation":a("elevation.raised"),
-    "bdr":a("color.bdr.subtle"),
+    "border":a("color.border.subtle"),
     "radius":a("radius.container"),
     "padding":a("spacing.padding.md"),
     "gap":a("spacing.gap.x.md"),
@@ -368,38 +368,38 @@ function buildCheckbox(){
         "indeterminate":a("color.bg.action-primary.default"),
         "disabled":a("color.bg.action-disabled")
       },
-      "bdr":{
-        "default":a("color.bdr.default"),
-        "hover":a("color.bdr.strong"),
-        "focused":a("color.bdr.focused"),
-        "error":a("color.bdr.error"),
-        "disabled":a("color.bdr.subtle")
+      "border":{
+        "default":a("color.border.default"),
+        "hover":a("color.border.strong"),
+        "focused":a("color.border.focused"),
+        "error":a("color.border.error"),
+        "disabled":a("color.border.subtle")
       },
-      "border":{ "default":a("border.default"), "focused":a("border.focused") },
+      "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
       "fg":a("color.fg.on-action"),
       "fg-indeterminate":a("color.fg.on-action"),
       "size":{ "sm":a("size.icon.sm"),"md":a("size.icon.md"),"lg":a("size.icon.lg") },
       "radius":computedScale("radius.control", RADIUS_PX.control, 0.5, "박스가 16~24px로 작아 control(8px) 그대로면 과도하게 둥글다 — 새 radius 역할 발명 대신 규칙 실체화(§0 예외ⓐ)")
     },
     "label":{ "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") }, "typography":a("typography.label"), "gap":a("spacing.gap.x.sm") },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
 // ---- Radio (원형 컨트롤 + 내부 점, 박스 sm/md/lg) ----
 function buildRadio(){
   return { "component":{ "radio":{
-    "$description":"Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 bdr.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
+    "$description":"Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 border.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
     "control":{
       "bg":{ "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
-      "bdr":{
-        "default":a("color.bdr.default"),
-        "hover":a("color.bdr.strong"),
-        "focused":a("color.bdr.focused"),
+      "border":{
+        "default":a("color.border.default"),
+        "hover":a("color.border.strong"),
+        "focused":a("color.border.focused"),
         "checked":a("color.fg.brand"),
-        "disabled":a("color.bdr.subtle")
+        "disabled":a("color.border.subtle")
       },
-      "border":{ "default":a("border.default"), "checked":a("border.selected"), "focused":a("border.focused") },
+      "borderWidth":{ "default":a("borderWidth.default"), "checked":a("borderWidth.selected"), "focused":a("borderWidth.focused") },
       "radius":a("radius.circle"),
       "size":{ "sm":a("size.icon.sm"),"md":a("size.icon.md"),"lg":a("size.icon.lg") }
     },
@@ -414,7 +414,7 @@ function buildRadio(){
       }
     },
     "label":{ "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") }, "typography":a("typography.label"), "gap":a("spacing.gap.x.sm") },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -431,12 +431,12 @@ function buildSlider(){
     "fill":{ "bg":a("color.bg.action-primary.default"), "bg-disabled":a("color.bg.action-disabled") },
     "thumb":{
       "bg":a("color.bg.control-knob"),
-      "bdr":a("color.bdr.subtle"),
+      "border":a("color.border.subtle"),
       "radius":a("radius.circle"),
       "size":a("size.icon.md"),
       "motion":a("motion.control")
     },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -464,7 +464,7 @@ function buildSegmented(){
       "typography":a("typography.label"),
       "motion":a("motion.control")
     },
-    "focus-color":a("color.bdr.focused"),
+    "focus-color":a("color.border.focused"),
     "focus-offset":a("focus-offset")
   }}};
 }
@@ -474,7 +474,7 @@ function buildTooltip(){
     "$description":"Tooltip — 소형 오버레이 버블(surface-overlay+elevation.overlay 쌍, Modal과 동형이나 radius.control로 축소). 반전(inverted, 라이트에서도 다크 버블) 스타일은 bg.inverse 시맨틱 부재 — 새로 발명하지 않고 1차 범위 밖으로 기록(향후 승격 후보).",
     "bg":a("color.bg.surface-overlay"),
     "elevation":a("elevation.overlay"),
-    "bdr":a("color.bdr.subtle"),
+    "border":a("color.border.subtle"),
     "radius":a("radius.control"),
     "fg":a("color.fg.primary"),
     "padding":a("spacing.padding.sm"),
@@ -497,10 +497,10 @@ function buildBadge(){
 }
 // ---- Banner (페이지 인라인 상태 배너 — Toast와 의도적 차별화) ----
 function buildBanner(){
-  const status = (nm) => ({ "bg":a(`color.bg.${nm}-subtle`), "fg":a(`color.fg.${nm}`), "bdr":a("color.bdr.subtle") });
+  const status = (nm) => ({ "bg":a(`color.bg.${nm}-subtle`), "fg":a(`color.fg.${nm}`), "border":a("color.border.subtle") });
   return { "component":{ "banner":{
-    "$description":"Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — bdr는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 bdr.subtle로 통일(Toast와 동일 절제).",
-    "base":{ "bg":a("color.bg.subtle"), "fg":a("color.fg.primary"), "bdr":a("color.bdr.subtle") },
+    "$description":"Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — border는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 border.subtle로 통일(Toast와 동일 절제).",
+    "base":{ "bg":a("color.bg.subtle"), "fg":a("color.fg.primary"), "border":a("color.border.subtle") },
     "status":{ "success":status("success"), "error":status("error"), "warning":status("warning"), "info":status("info") },
     "radius":a("radius.container"),
     "padding":a("spacing.padding.md"),
@@ -579,9 +579,9 @@ function runChecks(comps){
     ck("C-1", contrast(resolveSem(mode,"color.fg.placeholder").hex,surf)>=4.5, `${mode} input placeholder×surface <4.5`);
     // C-1: Card title fg.primary × surface ≥ 7
     ck("C-1", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7, `${mode} card title <7`);
-    // W-1: bdr.focused 비텍스트 대비 ≥ 3 (시맨틱이 이미 보장 — 승계 검증)
-    const fmin = SEM.color[mode].bdr.focused.$extensions.contrastMin;
-    ck("W-1", fmin>=3, `${mode} bdr.focused contrastMin ${fmin}<3`);
+    // W-1: border.focused 비텍스트 대비 ≥ 3 (시맨틱이 이미 보장 — 승계 검증)
+    const fmin = SEM.color[mode].border.focused.$extensions.contrastMin;
+    ck("W-1", fmin>=3, `${mode} border.focused contrastMin ${fmin}<3`);
     // E-1: Select menu·Card 는 surface-raised ↔ elevation.raised 쌍
     ck("E-1", !!resolveSem(mode,"color.bg.surface-raised") && !!SEM.elevation.raised, `${mode} raised 쌍 결손`);
   }
@@ -752,7 +752,7 @@ const resolved = { light: expand("light"), dark: expand("dark"),
     light: flatSem("light"), dark: flatSem("dark") },
   size: { control: {sm:36,md:44,lg:52}, icon:{sm:16,md:20,lg:24} } };
 function flatSem(mode){
-  const bg=SEM.color[mode].bg, fg=SEM.color[mode].fg, sk=SEM.color[mode].bdr;
+  const bg=SEM.color[mode].bg, fg=SEM.color[mode].fg, sk=SEM.color[mode].border;
   const g=(o,k)=> (o[k].$extensions&&o[k].$extensions.resolved)||o[k].$value;
   return {
     surface:g(bg,"surface"), "surface-raised":g(bg,"surface-raised"), subtle:g(bg,"subtle"),
@@ -765,8 +765,8 @@ function flatSem(mode){
     "fg-primary":g(fg,"primary"), "fg-secondary":g(fg,"secondary"), "fg-placeholder":g(fg,"placeholder"),
     "fg-on-action":g(fg,"on-action"), "fg-brand":g(fg,"brand"), "fg-disabled":g(fg,"disabled"),
     "fg-success":g(fg,"success"), "fg-error":g(fg,"error"), "fg-warning":g(fg,"warning"), "fg-info":g(fg,"info"),
-    "bdr-default":g(sk,"default"), "bdr-strong":g(sk,"strong"), "bdr-focused":g(sk,"focused"),
-    "bdr-subtle":g(sk,"subtle"), "bdr-error":g(sk,"error")
+    "border-default":g(sk,"default"), "border-strong":g(sk,"strong"), "border-focused":g(sk,"focused"),
+    "border-subtle":g(sk,"subtle"), "border-error":g(sk,"error")
   };
 }
 fs.mkdirSync(path.join(OUT,"build"),{recursive:true});

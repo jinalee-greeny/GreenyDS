@@ -43,9 +43,9 @@
           "$value": "{semantic.color.bg.control-knob}",
           "ref": "color.bg.control-knob"
         },
-        "bdr": {
-          "$value": "{semantic.color.bdr.subtle}",
-          "ref": "color.bdr.subtle"
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
         },
         "radius": {
           "$value": "{semantic.radius.circle}",
@@ -61,8 +61,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.bdr.focused}",
-        "ref": "color.bdr.focused"
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

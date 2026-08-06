@@ -1,7 +1,7 @@
 {
   "component": {
     "input": {
-      "$description": "Input — 표면·bdr 3상태·placeholder, 높이 sm/md/lg",
+      "$description": "Input — 표면·border 3상태·placeholder, 높이 sm/md/lg",
       "bg": {
         "default": {
           "$value": "{semantic.color.bg.surface}",
@@ -26,36 +26,36 @@
           "ref": "color.fg.disabled"
         }
       },
-      "bdr": {
-        "default": {
-          "$value": "{semantic.color.bdr.default}",
-          "ref": "color.bdr.default"
-        },
-        "hover": {
-          "$value": "{semantic.color.bdr.strong}",
-          "ref": "color.bdr.strong"
-        },
-        "focused": {
-          "$value": "{semantic.color.bdr.focused}",
-          "ref": "color.bdr.focused"
-        },
-        "error": {
-          "$value": "{semantic.color.bdr.error}",
-          "ref": "color.bdr.error"
-        },
-        "disabled": {
-          "$value": "{semantic.color.bdr.subtle}",
-          "ref": "color.bdr.subtle"
-        }
-      },
       "border": {
         "default": {
-          "$value": "{semantic.border.default}",
-          "ref": "border.default"
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
+        },
+        "hover": {
+          "$value": "{semantic.color.border.strong}",
+          "ref": "color.border.strong"
         },
         "focused": {
-          "$value": "{semantic.border.focused}",
-          "ref": "border.focused"
+          "$value": "{semantic.color.border.focused}",
+          "ref": "color.border.focused"
+        },
+        "error": {
+          "$value": "{semantic.color.border.error}",
+          "ref": "color.border.error"
+        },
+        "disabled": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        }
+      },
+      "borderWidth": {
+        "default": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "focused": {
+          "$value": "{semantic.borderWidth.focused}",
+          "ref": "borderWidth.focused"
         }
       },
       "height": {

@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>프리셋 컨피규레이터 — 내부 베타 v1.3.1</title>
+<title>프리셋 컨피규레이터 — 내부 베타 v1.3.2</title>
 <style>
   /* ═══ Apple 워싱 토큰 레이어 (v1.3) ═══
      GreenyDS 아키텍처 그대로 빌드한 하나의 프리셋:
-     ① dimension 사다리(step-0…14 + 센티널) ② 시맨틱 역할(bg/fg/bdr — KDX 어휘, 결정 #40)
+     ① dimension 사다리(step-0…14 + 센티널) ② 시맨틱 역할(bg/fg/border — KDX 어휘, 결정 #40)
      ③ 기존 UI 변수는 전부 별칭으로 시맨틱을 가리킴 — 하드코딩 없이 전면 교체. */
   :root{
     /* ① dimension 사다리 */
@@ -16,17 +16,17 @@
     /* ② 시맨틱 — Apple 시드(#0071e3 · Apple 중립 그레이)로 해석한 역할 */
     --bg-page:#f5f5f7;--bg-surface:#ffffff;--bg-subtle:#fafafc;
     --fg-primary:#1d1d1f;--fg-secondary:#6e6e73;--fg-tertiary:#86868b;
-    --bdr-default:#d2d2d7;--bdr-subtle:#e8e8ed;
+    --border-default:#d2d2d7;--border-subtle:#e8e8ed;
     --bg-action-primary:#0071e3;--bg-action-primary-hover:#0077ed;--bg-action-primary-pressed:#0068d1;
-    --bg-brand-subtle:#eef5fd;--bdr-brand:#b9d9f7;--fg-brand:#0066cc;
+    --bg-brand-subtle:#eef5fd;--border-brand:#b9d9f7;--fg-brand:#0066cc;
     --fg-error:#d70015;--fg-success:#248a3d;--fg-warning:#b25000;--bg-warning-bar:#ff9f0a;
     --radius-control:var(--step-4);--radius-container:var(--step-5);--radius-overlay:var(--step-6);
     --elev-raised:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
     --elev-overlay:0 4px 10px rgba(0,0,0,.08),0 16px 44px rgba(0,0,0,.12);
     /* ③ 기존 변수 → 별칭 (기존 규칙 전체가 자동 워싱됨) */
     --bg:var(--bg-page);--fg:var(--fg-primary);--muted:var(--fg-secondary);--faint:var(--fg-tertiary);
-    --card:var(--bg-surface);--line:var(--bdr-default);--line2:var(--bdr-subtle);
-    --brand:var(--bg-action-primary);--brand050:var(--bg-brand-subtle);--brandln:var(--bdr-brand);
+    --card:var(--bg-surface);--line:var(--border-default);--line2:var(--border-subtle);
+    --brand:var(--bg-action-primary);--brand050:var(--bg-brand-subtle);--brandln:var(--border-brand);
     --l3:var(--fg-error);--l4:var(--fg-success);
     --mono:ui-monospace,'SF Mono',Menlo,monospace;}
   *{box-sizing:border-box}
@@ -175,7 +175,7 @@
 
   .forks{display:flex;gap:8px}
   .fk{flex:1;border:1.5px solid var(--line);border-radius:9px;padding:9px 8px;cursor:pointer;text-align:center;transition:.1s;background:#fff}
-  .fk:hover{border-color:var(--bdr-brand)}
+  .fk:hover{border-color:var(--border-brand)}
   .fk.on{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand050);background:var(--brand050)}
   .fk .l{font-size:11.5px;font-weight:700;margin-bottom:5px}
   .fk .fp{display:flex;gap:2px;justify-content:center;margin-bottom:4px}
@@ -190,7 +190,7 @@
   .seg{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;border:none;color:var(--fg)}
   .seg.on{background:var(--brand);color:#fff}
   .loadbtn{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--fg)}
-  .loadbtn:hover{border-color:var(--bdr-brand)}
+  .loadbtn:hover{border-color:var(--border-brand)}
   .why{display:block;background:var(--brand050);border:1px solid var(--brandln);color:var(--fg-brand);border-radius:10px;padding:6px 10px;font-size:10px;margin-top:9px;line-height:1.45}
   /* 결함 1 — input[type=text] 의 기본 min-width:auto(size=20 기준)가 flex 축소를 막아
      ↵ 버튼을 패널 밖 +3px 로 밀어냈다. min-width:0 이 근본 원인 해결이다. */
@@ -222,7 +222,7 @@
 
   .gallery{display:flex;flex-wrap:wrap;gap:8px}
   .gcard{border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;width:calc(50% - 4px);background:#fff}
-  .gcard:hover{border-color:var(--bdr-brand)}
+  .gcard:hover{border-color:var(--border-brand)}
   .gcard .sw{height:26px;display:flex}.gcard .sw i{flex:1}
   .gcard .nm{font-size:10.5px;font-weight:600;padding:5px 8px}
 
@@ -460,7 +460,7 @@
   .strow .miniramp{flex:1;display:flex;border-radius:5px;overflow:hidden;border:1px solid var(--line);height:18px}
   .strow .miniramp i{flex:1}
   .strow .rst{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:10px;padding:3px 7px;cursor:pointer;color:var(--muted);flex:none}
-  .strow .rst:hover{border-color:var(--bdr-brand)}
+  .strow .rst:hover{border-color:var(--border-brand)}
   .strow .ov{font-size:9px;font-family:var(--mono);color:var(--fg-brand);flex:none;width:14px;text-align:center}
   .improw{display:flex;gap:6px;margin-top:8px}
   .improw input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:11px}
@@ -500,7 +500,7 @@
   .panel,.dock{background:var(--bg-surface)}
   .panel{border-radius:0;box-shadow:none}
   .card,.blk{border-radius:var(--radius-container)}
-  input[type=text],input[type=number],select,textarea{border-radius:var(--radius-control);border-color:var(--bdr-default);transition:border-color .15s ease,box-shadow .15s ease}
+  input[type=text],input[type=number],select,textarea{border-radius:var(--radius-control);border-color:var(--border-default);transition:border-color .15s ease,box-shadow .15s ease}
   input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{outline:none;border-color:var(--bg-action-primary);box-shadow:0 0 0 3.5px rgba(0,113,227,.18)}
   input[type=range]{accent-color:var(--bg-action-primary)}
   input[type=checkbox],input[type=radio]{accent-color:var(--bg-action-primary)}
@@ -516,7 +516,7 @@
 </head>
 <body>
 <div class="top">
-  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.3.1 — Apple 워싱 · KDX 어휘 정렬 · 컴포넌트 스튜디오</span>
+  <span class="brand">프리셋 컨피규레이터</span><span class="tag">내부 베타 v1.3.2 — Apple 워싱 · KDX 어휘 정렬(border) · 컴포넌트 스튜디오</span>
   <div class="sp">
     <button class="tbtn" id="guideBtn" data-guide="">개념 가이드</button>
     <button class="tbtn" id="copyBtn">테마 링크 복사</button>
@@ -1178,7 +1178,7 @@ function fCard(R,TR,o){
 /* v1.2.1 — 좌측 액센트 바와 상태 점을 뺐다.
    상태 하나를 말하려고 바·점·테두리·라벨 색까지 네 겹을 쓰고 있었다.
    이제 한 겹이다 — soft 는 배경으로, 기본은 라벨 색으로. 테두리는
-   두 변형 모두 bdr.subtle 로 통일한다. */
+   두 변형 모두 border.subtle 로 통일한다. */
 function fToast(R,TR,o){
   o=o||{}; const k=o.status||"success", m=F_ST[k], fg=R[m[1]], rcont=radTier("container"), soft=o.v==="soft";
   return '<div style="display:flex;align-items:center;background:'+(soft?R[m[2]]:R.S.raised)+
@@ -1612,11 +1612,11 @@ function tokenModel(){
     ["color.fg.success",R.fgSucc,"color.success"],
     ["color.fg.info",R.fgInfo,"color.info"],
     ["color.fg.link",R.link,"color.info"],
-    ["color.bdr.default",R.strokeDefault,"color.neutral"],
-    ["color.bdr.subtle",R.strokeSubtle,"color.neutral"],
-    ["color.bdr.strong",R.strokeStrong,"color.neutral"],
-    ["color.bdr.focused",R.focus,"color.brand"],
-    ["color.bdr.error",R.strokeDanger,"color.error"]
+    ["color.border.default",R.strokeDefault,"color.neutral"],
+    ["color.border.subtle",R.strokeSubtle,"color.neutral"],
+    ["color.border.strong",R.strokeStrong,"color.neutral"],
+    ["color.border.focused",R.focus,"color.brand"],
+    ["color.border.error",R.strokeDanger,"color.error"]
   ];};
   MODES.forEach(function(mm){const m=mm[0],R=mm[1];
     SEMC(R).forEach(function(a){
@@ -1715,29 +1715,29 @@ function tokenModel(){
     ["button","button.secondary.bg",R.asDef,"color.action.secondary"],
     ["button","button.secondary.bg-hover",R.asHover,"color.action.secondary-hover"],
     ["button","button.secondary.fg",R.fgPrimary,"color.fg.primary"],
-    ["button","button.secondary.border",R.strokeDefault,"color.bdr.default"],
+    ["button","button.secondary.border",R.strokeDefault,"color.border.default"],
     ["button","button.ghost.fg",R.fgPrimary,"color.fg.primary"],
     ["button","button.ghost.bg-hover",R.asDef,"color.action.secondary"],
-    ["button","button.focus-ring",R.focus,"color.bdr.focused"],
+    ["button","button.focus-ring",R.focus,"color.border.focused"],
     ["button","button.disabled.bg",R.disabled,"color.action.disabled"],
     ["button","button.disabled.fg",R.fgDisabled,"color.fg.disabled"],
     ["input","input.bg",R.light?"#ffffff":R.S.raised,R.light?null:"color.bg.raised"],
     ["input","input.fg",R.fgPrimary,"color.fg.primary"],
     ["input","input.placeholder",R.fgPlaceholder,"color.fg.placeholder"],
-    ["input","input.border",R.strokeDefault,"color.bdr.default"],
-    ["input","input.border-focused",R.focus,"color.bdr.focused"],
-    ["input","input.border-error",R.strokeDanger,"color.bdr.error"],
+    ["input","input.border",R.strokeDefault,"color.border.default"],
+    ["input","input.border-focused",R.focus,"color.border.focused"],
+    ["input","input.border-error",R.strokeDanger,"color.border.error"],
     ["input","input.caption.error.fg",R.fgDanger,"color.fg.error"],
     ["input","input.disabled.bg",R.disabled,"color.action.disabled"],
     ["input","input.disabled.fg",R.fgDisabled,"color.fg.disabled"],
-    ["input","input.disabled.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["input","input.disabled.border",R.strokeSubtle,"color.border.subtle"],
     ["select","select.trigger.bg",R.S.surface,"color.bg.surface"],
-    ["select","select.trigger.border",R.strokeDefault,"color.bdr.default"],
-    ["select","select.trigger.border-focused",R.focus,"color.bdr.focused"],
+    ["select","select.trigger.border",R.strokeDefault,"color.border.default"],
+    ["select","select.trigger.border-focused",R.focus,"color.border.focused"],
     ["select","select.disabled.bg",R.disabled,"color.action.disabled"],
     ["select","select.disabled.fg",R.fgDisabled,"color.fg.disabled"],
     ["select","select.menu.bg",R.S.raised,"color.bg.raised"],
-    ["select","select.menu.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["select","select.menu.border",R.strokeSubtle,"color.border.subtle"],
     ["select","select.menu.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
     ["select","select.item.fg",R.fgPrimary,"color.fg.primary"],
     ["select","select.item.selected.bg",R.brandSub,"color.bg.brand-subtle"],
@@ -1745,16 +1745,16 @@ function tokenModel(){
     ["switch","switch.track.on",R.ap,"color.action.primary"],
     ["switch","switch.track.off",R.asDef,"color.action.secondary"],
     ["switch","switch.knob.bg",R.knob,"color.action.knob"],
-    ["switch","switch.knob.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["switch","switch.knob.border",R.strokeSubtle,"color.border.subtle"],
     ["switch","switch.track.disabled",R.disabled,"color.action.disabled"],
     ["switch","switch.knob.disabled",R.fgDisabled,"color.fg.disabled"],
     ["tabs","tabs.selected.fg",R.fgBrand,"color.fg.brand"],
     ["tabs","tabs.rest.fg",R.fgSecondary,"color.fg.secondary"],
     ["tabs","tabs.disabled.fg",R.fgDisabled,"color.fg.disabled"],
-    ["tabs","tabs.divider",R.strokeSubtle,"color.bdr.subtle"],
+    ["tabs","tabs.divider",R.strokeSubtle,"color.border.subtle"],
     ["tabs","tabs.indicator",R.fgBrand,"color.fg.brand"],
     ["card","card.bg",R.S.surface,"color.bg.surface"],
-    ["card","card.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["card","card.border",R.strokeSubtle,"color.border.subtle"],
     ["card","card.title.fg",R.fgPrimary,"color.fg.primary"],
     ["card","card.body.fg",R.fgSecondary,"color.fg.secondary"],
     ["card","card.shadow.resting",shadow(R,"resting"),"elevation.resting","shadow"],
@@ -1762,7 +1762,7 @@ function tokenModel(){
     ["card","card.shadow.overlay",shadow(R,"overlay"),"elevation.overlay","shadow"],
     ["card","card.shadow.spotlight",shadow(R,"spotlight"),"elevation.spotlight","shadow"],
     ["toast","toast.bg",R.S.raised,"color.bg.raised"],
-    ["toast","toast.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["toast","toast.border",R.strokeSubtle,"color.border.subtle"],
     ["toast","toast.fg",R.fgPrimary,"color.fg.primary"],
     ["toast","toast.status.success",R.fgSucc,"color.fg.success"],
     ["toast","toast.status.error",R.fgDanger,"color.fg.error"],
@@ -1774,7 +1774,7 @@ function tokenModel(){
     ["toast","toast.soft.info.bg",R.infoSub,"color.bg.info-subtle"],
     ["toast","toast.shadow",shadow(R,"raised"),"elevation.raised","shadow"],
     ["modal","modal.bg",R.S.overlay,"color.bg.overlay"],
-    ["modal","modal.border",R.strokeSubtle,"color.bdr.subtle"],
+    ["modal","modal.border",R.strokeSubtle,"color.border.subtle"],
     ["modal","modal.scrim",R.scrim,"color.bg.scrim"],
     ["modal","modal.title.fg",R.fgPrimary,"color.fg.primary"],
     ["modal","modal.body.fg",R.fgSecondary,"color.fg.secondary"],

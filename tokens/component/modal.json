@@ -14,9 +14,9 @@
         "$value": "{semantic.elevation.overlay}",
         "ref": "elevation.overlay"
       },
-      "bdr": {
-        "$value": "{semantic.color.bdr.subtle}",
-        "ref": "color.bdr.subtle"
+      "border": {
+        "$value": "{semantic.color.border.subtle}",
+        "ref": "color.border.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.overlay}",

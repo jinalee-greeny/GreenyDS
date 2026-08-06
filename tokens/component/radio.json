@@ -1,7 +1,7 @@
 {
   "component": {
     "radio": {
-      "$description": "Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 bdr.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
+      "$description": "Radio — 원형(radius.circle 센티넬) + 내부 점. checked 링·점은 색 인벤토리에 border.brand가 없어 fg.brand 재사용(Tabs.indicator.color 선례와 동형).",
       "control": {
         "bg": {
           "default": {
@@ -13,40 +13,40 @@
             "ref": "color.bg.subtle"
           }
         },
-        "bdr": {
+        "border": {
           "default": {
-            "$value": "{semantic.color.bdr.default}",
-            "ref": "color.bdr.default"
+            "$value": "{semantic.color.border.default}",
+            "ref": "color.border.default"
           },
           "hover": {
-            "$value": "{semantic.color.bdr.strong}",
-            "ref": "color.bdr.strong"
+            "$value": "{semantic.color.border.strong}",
+            "ref": "color.border.strong"
           },
           "focused": {
-            "$value": "{semantic.color.bdr.focused}",
-            "ref": "color.bdr.focused"
+            "$value": "{semantic.color.border.focused}",
+            "ref": "color.border.focused"
           },
           "checked": {
             "$value": "{semantic.color.fg.brand}",
             "ref": "color.fg.brand"
           },
           "disabled": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         },
-        "border": {
+        "borderWidth": {
           "default": {
-            "$value": "{semantic.border.default}",
-            "ref": "border.default"
+            "$value": "{semantic.borderWidth.default}",
+            "ref": "borderWidth.default"
           },
           "checked": {
-            "$value": "{semantic.border.selected}",
-            "ref": "border.selected"
+            "$value": "{semantic.borderWidth.selected}",
+            "ref": "borderWidth.selected"
           },
           "focused": {
-            "$value": "{semantic.border.focused}",
-            "ref": "border.focused"
+            "$value": "{semantic.borderWidth.focused}",
+            "ref": "borderWidth.focused"
           }
         },
         "radius": {
@@ -141,8 +141,8 @@
         }
       },
       "focus-color": {
-        "$value": "{semantic.color.bdr.focused}",
-        "ref": "color.bdr.focused"
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
       },
       "focus-offset": {
         "$value": "{semantic.focus-offset}",

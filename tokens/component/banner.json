@@ -1,7 +1,7 @@
 {
   "component": {
     "banner": {
-      "$description": "Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — bdr는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 bdr.subtle로 통일(Toast와 동일 절제).",
+      "$description": "Banner — 페이지 흐름 내 인라인 배너(비-플로팅, elevation 없음). 상태 4계열은 Toast(중립 bg+강조색만)와 달리 배경 전체를 상태색으로 물들인다(실물 alert 컴포넌트 관행) — border는 색 인벤토리에 success/warning/info 전용이 없어 전 상태 border.subtle로 통일(Toast와 동일 절제).",
       "base": {
         "bg": {
           "$value": "{semantic.color.bg.subtle}",
@@ -11,9 +11,9 @@
           "$value": "{semantic.color.fg.primary}",
           "ref": "color.fg.primary"
         },
-        "bdr": {
-          "$value": "{semantic.color.bdr.subtle}",
-          "ref": "color.bdr.subtle"
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
         }
       },
       "status": {
@@ -26,9 +26,9 @@
             "$value": "{semantic.color.fg.success}",
             "ref": "color.fg.success"
           },
-          "bdr": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+          "border": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         },
         "error": {
@@ -40,9 +40,9 @@
             "$value": "{semantic.color.fg.error}",
             "ref": "color.fg.error"
           },
-          "bdr": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+          "border": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         },
         "warning": {
@@ -54,9 +54,9 @@
             "$value": "{semantic.color.fg.warning}",
             "ref": "color.fg.warning"
           },
-          "bdr": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+          "border": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         },
         "info": {
@@ -68,9 +68,9 @@
             "$value": "{semantic.color.fg.info}",
             "ref": "color.fg.info"
           },
-          "bdr": {
-            "$value": "{semantic.color.bdr.subtle}",
-            "ref": "color.bdr.subtle"
+          "border": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
           }
         }
       },

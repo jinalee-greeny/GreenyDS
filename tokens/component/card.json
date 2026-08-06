@@ -10,9 +10,9 @@
         "$value": "{semantic.color.bg.surface-raised}",
         "ref": "color.bg.surface-raised"
       },
-      "bdr": {
-        "$value": "{semantic.color.bdr.subtle}",
-        "ref": "color.bdr.subtle"
+      "border": {
+        "$value": "{semantic.color.border.subtle}",
+        "ref": "color.border.subtle"
       },
       "radius": {
         "$value": "{semantic.radius.container}",

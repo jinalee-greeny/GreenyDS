@@ -194,7 +194,7 @@
   .grp{margin-bottom:15px}
   .grp .gh{font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
   .grp .gh .pill{font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px}
-  .pill.bg{background:#eef2f7;color:#3a4a5e}.pill.fg{background:#f3eefe;color:#5b46af}.pill.stroke,.pill.bdr{background:#eafaf1;color:#046b45}
+  .pill.bg{background:#eef2f7;color:#3a4a5e}.pill.fg{background:#f3eefe;color:#5b46af}.pill.stroke,.pill.border{background:#eafaf1;color:#046b45}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:4px 9px;background:#fbfbfc;font-family:var(--mono)}
   .chip.hot{border-color:#d9d2fb;background:#f5f3ff;color:var(--brand-deep)}
@@ -441,7 +441,7 @@
     <div class="hs" style="margin:12px 0 0">💡 읽다가 처음 보는 말이 나오면 <a href="#glossary" style="color:var(--brand-deep);font-weight:700">용어집(PART 6)</a>에 있습니다. 기초 용어(hex, rem, WCAG…)부터 정리되어 있어요.</div>
   </div>
 
-  <div class="note warn" style="margin-top:16px"><b>v4.0 표준 정렬 안내 (결정 #40, 2026-08-04).</b> 이 문서의 토큰 구조·어휘는 KDX Design Token System Brief에 맞춰 재편된 <b>목표 표준</b>입니다. 주요 변경: 치수 원천을 dimension 사다리 하나로 통일 · <span class="mono">stroke→bdr</span> · <span class="mono">active→pressed</span> · <span class="mono">focus→focused</span> · <span class="mono">danger→error</span> · <span class="mono">inset/stack/inline→padding/gap/margin</span> · <span class="mono">fg.subtle→fg.tertiary</span> · selected 공용 승격. 산출물(토큰 파일·Figma 변수)은 이 표준으로 <b>단계적 이행 중</b>이며, 이행 완료 전까지 기존 이름이 산출물에 남아 있을 수 있습니다.</div>
+  <div class="note warn" style="margin-top:16px"><b>v4.0 표준 정렬 안내 (결정 #40, 2026-08-04).</b> 이 문서의 토큰 구조·어휘는 KDX Design Token System Brief에 맞춰 재편된 <b>목표 표준</b>입니다. 주요 변경: 치수 원천을 dimension 사다리 하나로 통일 · <span class="mono">stroke→border</span> · <span class="mono">active→pressed</span> · <span class="mono">focus→focused</span> · <span class="mono">danger→error</span> · <span class="mono">inset/stack/inline→padding/gap/margin</span> · <span class="mono">fg.subtle→fg.tertiary</span> · selected 공용 승격. 산출물(토큰 파일·Figma 변수)은 이 표준으로 <b>단계적 이행 중</b>이며, 이행 완료 전까지 기존 이름이 산출물에 남아 있을 수 있습니다.</div>
 
   <!-- ═══════════════ PART 1 ═══════════════ -->
   <div class="part c1" id="part1">
@@ -523,7 +523,7 @@
 
       <div class="card">
         <h3>패턴 2 · 용도 단어 = Semantic (역할)</h3>
-        <p class="sub">이름이 곧 사용처입니다. 자주 쓰는 접두어 3개만 익히면 대부분 읽힙니다: <b>bg</b>(background, 배경) · <b>fg</b>(foreground, 글자/아이콘) · <b>bdr</b>(border, 선/테두리).</p>
+        <p class="sub">이름이 곧 사용처입니다. 자주 쓰는 접두어 3개만 익히면 대부분 읽힙니다: <b>bg</b>(background, 배경) · <b>fg</b>(foreground, 글자/아이콘) · <b>border</b>(border, 선/테두리).</p>
         <table>
           <thead><tr><th style="width:230px">이름</th><th>읽는 법</th></tr></thead>
           <tbody>
@@ -576,10 +576,10 @@
           <thead><tr><th style="width:280px">이름</th><th style="width:110px">계층</th><th>뜻</th></tr></thead>
           <tbody>
             <tr><td class="tmono">coolGray.100</td><td><span class="tag neu">Primitive</span></td><td>차가운 회색 램프의 100번(아주 밝은) 단계</td></tr>
-            <tr><td class="tmono">bdr.focused</td><td><span class="tag">Semantic</span></td><td>키보드 포커스 표시용 테두리 색</td></tr>
+            <tr><td class="tmono">border.focused</td><td><span class="tag">Semantic</span></td><td>키보드 포커스 표시용 테두리 색</td></tr>
             <tr><td class="tmono">modal.scrim</td><td><span class="tag neu">Component</span></td><td>모달 뒤 어두운 반투명 막(scrim)의 색 — '배경 막' 역할을 가리킴</td></tr>
             <tr><td class="tmono">gap.section</td><td><span class="tag">Semantic</span></td><td>페이지 섹션 사이의 큰 여백 (화면 크기에 따라 자동으로 달라지는 유일한 여백)</td></tr>
-            <tr><td class="tmono">input.bdr.error</td><td><span class="tag neu">Component</span></td><td>입력창이 오류 상태일 때의 테두리 색</td></tr>
+            <tr><td class="tmono">input.border.error</td><td><span class="tag neu">Component</span></td><td>입력창이 오류 상태일 때의 테두리 색</td></tr>
           </tbody>
         </table>
         <div class="note info" style="margin-top:12px"><b>여기까지가 읽는 법의 전부입니다.</b> 직접 이름을 지어야 하거나, 어떤 이름이 규칙에 맞는지 판단해야 할 때는 정식 규칙 전문 — 문법·어휘 사전·작명 8원칙·참조 규칙 — 이 <a href="#rules" style="color:var(--brand-deep);font-weight:700">바로 다음 섹션(3 · 토큰 규칙 상세)</a>에 있습니다.</div>
@@ -662,7 +662,7 @@
         <table>
           <thead><tr><th style="width:150px">묶음</th><th style="width:330px">어휘</th><th>규칙</th></tr></thead>
           <tbody>
-            <tr><td><b>카테고리</b> (색)</td><td class="tmono">bg · fg · bdr</td><td>배경 / 글자·아이콘 / 선·테두리(border). 색 역할은 반드시 셋 중 하나로 시작.</td></tr>
+            <tr><td><b>카테고리</b> (색)</td><td class="tmono">bg · fg · border</td><td>배경 / 글자·아이콘 / 선·테두리(border). 색 역할은 반드시 셋 중 하나로 시작.</td></tr>
             <tr><td><b>카테고리</b> (비색상)</td><td class="tmono">gap(x·y·section) · padding · margin · w · h<br>display · heading · title · body · label · caption<br>control · container · overlay(radius)<br>resting · raised · overlay · spotlight(그림자)</td><td>여백·치수 5종 · 글자 역할(title·caption은 GreenyDS 확장, number·link는 풀 등재) · 모서리 3티어 · 그림자 4역할. 각 묶음 안에서만 조합.</td></tr>
             <tr><td><b>상태</b></td><td class="tmono">default · hover · pressed · focused<br>selected · unselected · disabled</td><td>항상 이름의 <b>맨 끝</b>. 상태를 가질 수 있는 곳은 <b>상호작용 역할(액션·링크)과 선택형·입력 컴포넌트</b>. selected/unselected는 결정 #40에서 공용 상태로 승격(과거 Q-012 비승격 판정을 공식 번복).</td></tr>
             <tr><td><b>상태색</b> (Status)</td><td class="tmono">info · success · warning · error</td><td>안내 / 성공 / 주의 / 오류. 입력 오류 표시도 error를 사용(과거 invalid 폐지).</td></tr>
@@ -672,7 +672,7 @@
             <tr><td><b>접두</b></td><td class="tmono">on…</td><td>"색 있는 배경 <b>위에</b> 올라가는 것" — onBrand(브랜드색 위 글자), onAction(버튼 위 글자). 위·아래 관계를 이름에 새기는 유일한 접두.</td></tr>
             <tr><td><b>위계</b> (Priority)</td><td class="tmono">primary · secondary · tertiary · quaternary<br>neutral · brand · accent</td><td>정보 위계 4단 + 브랜드 축. 글자색 위계는 primary → secondary → tertiary 순(과거 fg.subtle은 fg.tertiary로). disabled는 위계가 아니라 <b>상태</b>입니다.</td></tr>
             <tr><td><b>스타일</b> (Style)</td><td class="tmono">solid · outline · ghost · transparent · inverse · static</td><td>시각 스타일 축 — 위계(Priority)와 분리해서 씁니다. 버튼의 채움/외곽선/고스트 변형이 여기 속합니다.</td></tr>
-            <tr><td><b>축약</b> (허용)</td><td class="tmono">fg · bg · bdr · comp · info<br>2xs · xs · sm · md · lg · xl · 2xl~6xl<br>x · y · w · h<br>typo (패밀리 이름 전용)</td><td><b>정해진 목록</b> — 여기 없는 축약은 쓸 수 없습니다. <span class="mono">typo</span>는 패밀리(컬렉션) 이름에만 쓰고 토큰 이름에는 등장하지 않습니다.</td></tr>
+            <tr><td><b>축약</b> (허용)</td><td class="tmono">fg · bg · border · comp · info<br>2xs · xs · sm · md · lg · xl · 2xl~6xl<br>x · y · w · h<br>typo (패밀리 이름 전용)</td><td><b>정해진 목록</b> — 여기 없는 축약은 쓸 수 없습니다. <span class="mono">typo</span>는 패밀리(컬렉션) 이름에만 쓰고 토큰 이름에는 등장하지 않습니다.</td></tr>
             <tr><td><b>케이싱</b></td><td class="tmono">lineHeight · letterSpacing<br>2xl · 500 · 3</td><td>축약은 전부 소문자 · 두 단어 한 개념은 첫 글자 소문자 camelCase(lineHeight) · 숫자로 시작하는 이름 허용(2xl·500) · <b>대문자 시작·복수형 금지</b>.</td></tr>
             <tr><td><b>축약</b> (금지)</td><td class="tmono">btn · pri · sec · txt · clr · sz · wt · ff · fs · lh · ls · pad · mgn · err …</td><td>임의 축약 일체 금지. 새 축약이 필요하면 <b>승격 절차로 위 허용 목록에 등재된 뒤에만</b> 사용. 대문자·복수형도 금지.</td></tr>
           </tbody>
@@ -689,7 +689,7 @@
             <tr><td><b>3 · 모드를 이름에 넣지 않는다</b></td><td class="tmono">bg.surface.base</td><td class="tmono">bg.surface.base-dark <span style="font-family:inherit;color:var(--muted)">— 라이트/다크는 엔진이 전개한다. 이름에 새기면 모드가 2배로 불어난다.</span></td></tr>
             <tr><td><b>4 · 컴포넌트 이름을 Semantic에 넣지 않는다</b></td><td class="tmono">bg.action.primary</td><td class="tmono">bg.button <span style="font-family:inherit;color:var(--muted)">— 버튼 말고도 쓰이는 순간 이름이 좁아서 못 쓰게 된다. 컴포넌트 귀속은 Component 계층의 몫.</span></td></tr>
             <tr><td><b>5 · 전부 소문자, 축약은 공인된 것만</b></td><td class="tmono">bg · fg · sm · md · lg</td><td class="tmono">Bg · BTN · pri <span style="font-family:inherit;color:var(--muted)">— 대문자는 표기 변환(카멜 등)에서 정보가 깨지고, 사적 축약은 해독 불가.</span></td></tr>
-            <tr><td><b>6 · 단수형으로 쓴다</b></td><td class="tmono">bdr.default</td><td class="tmono">bdrs.defaults <span style="font-family:inherit;color:var(--muted)">— 단·복수 혼재는 오타의 온상.</span></td></tr>
+            <tr><td><b>6 · 단수형으로 쓴다</b></td><td class="tmono">border.default</td><td class="tmono">borders.defaults <span style="font-family:inherit;color:var(--muted)">— 단·복수 혼재는 오타의 온상.</span></td></tr>
             <tr><td><b>7 · 이름에 넣지 않는 것 4가지</b></td><td style="font-size:12.8px"><span class="tmono">step-3</span> · <span class="tmono">elevation.1</span></td><td style="font-size:12.8px"><b>패밀리</b>(spatial…) · <b>계층</b>(component…) · <b>단위</b>(rem/px) · <b>모드</b>(light/dark)는 전부 이름 밖입니다. 이들은 컬렉션·파일·모드 같은 <b>산출 축</b>이 표현합니다. <span class="mono">elevation-light-elevation-1</span>(27자)이 <span class="mono">--elevation-1</span>(12자)이 되는 이유.</td></tr>
             <tr><td><b>8 · 새 단어는 최후의 수단</b></td><td style="font-size:12.8px">기존 어휘 조합으로 먼저 시도</td><td style="font-size:12.8px">즉석 신조어 — 어휘 사전(13-3)에 없는 단어가 필요하면 승격 요청으로. 단어 하나도 시스템 자산입니다.</td></tr>
           </tbody>
@@ -719,7 +719,7 @@
               <tr><td class="tmono">pressed</td><td>기본값에서 <b>2단계</b> 이동 (같은 방향)</td></tr>
               <tr><td class="tmono">selected</td><td>결정 #40으로 공용 상태 승격 — 선택형 컨트롤(탭·세그먼트·체크 계열)의 선택 표시. 산식은 컴포넌트 재편 단계에서 확정</td></tr>
               <tr><td class="tmono">disabled</td><td>공용 비활성 색 <b>하나</b>로 통일 (역할별로 만들지 않음)</td></tr>
-              <tr><td class="tmono">focused</td><td>색 이동이 아니라 <b>별도의 포커스 테두리</b>(bdr.focused + 굵기·간격)로 표현</td></tr>
+              <tr><td class="tmono">focused</td><td>색 이동이 아니라 <b>별도의 포커스 테두리</b>(border.focused + 굵기·간격)로 표현</td></tr>
             </tbody>
           </table>
           <div class="why" style="margin-bottom:0"><span class="ic">왜?</span><div>산식이면 <b>모든 컴포넌트의 상태 감각이 동일</b>해지고, 브랜드가 바뀌어도 상태가 자동으로 따라옵니다. 단, 버튼처럼 <b>위에 얹힌 글자와의 대비</b>를 지키는 색은 모드와 무관하게 항상 어두워지는 쪽으로 이동합니다 — 이동 후에도 글자 대비 검사를 다시 통과해야 하는 것은 동일합니다.</div></div>
@@ -920,7 +920,7 @@
         <div class="rh"><span class="rp">디자인 DESIGN</span><h3>디자인은 "역할"을 다룹니다 — 값이 아니라 역할과 입력값을 조작합니다</h3></div>
         <p class="rsub">계층마다 고치는 방법이 다릅니다. 이 경로를 지키는 것이 시스템을 지키는 핵심입니다.</p>
         <ul>
-          <li><b>화면 작업의 언어는 역할 이름:</b> 여백은 <span class="mono">gap / padding / margin</span>, 글자는 <span class="mono">heading / body / caption</span> 등 6역할, 색은 <span class="mono">bg / fg / bdr</span>. "카드 패딩은 <span class="mono">padding.lg</span>"처럼 지정하면, 나중에 밀도 정책이 바뀌어도 화면이 자동으로 따라옵니다.</li>
+          <li><b>화면 작업의 언어는 역할 이름:</b> 여백은 <span class="mono">gap / padding / margin</span>, 글자는 <span class="mono">heading / body / caption</span> 등 6역할, 색은 <span class="mono">bg / fg / border</span>. "카드 패딩은 <span class="mono">padding.lg</span>"처럼 지정하면, 나중에 밀도 정책이 바뀌어도 화면이 자동으로 따라옵니다.</li>
           <li><b>원재료(Primitive) 값이 마음에 안 들면 → 입력값을 조정:</b> "브랜드 600이 좀 탁해요"의 해법은 600 값 수정이 아니라, 설정 도구에서 <b>대표색·채도 곡선을 조정</b>하는 것입니다. 그러면 램프 전체가 다시 계산되고 대비 검사도 자동으로 다시 통과됩니다. 값 하나를 직접 고치면 그 값만 엔진 밖의 고아가 됩니다.</li>
           <li><b>역할 연결(Semantic)은 토큰 편집 도구에서:</b> "보조 글자색을 한 단계 진하게" 같은 역할-원재료 연결 변경은 Tokens Studio 등 GUI에서 합니다. 원본은 저장소의 표준 JSON 하나이므로 Figma와 코드가 항상 같이 움직입니다.</li>
           <li><b>Figma에서는 JSON을 볼 일이 없습니다.</b> 원재료·역할이 <b>Variables 컬렉션</b>으로 들어옵니다(컬렉션 = 5 패밀리, 라이트/다크는 모드). 이름에 하이픈이 없고 계층이 <b>폴더</b>로 접혀 있어, 폴더를 타고 들어가 <b>마지막 이름만 고르면</b> 됩니다 — Figma가 첫 번째 지원 대상입니다. 컴포넌트 계층이 제공되기 전까지는 <b>역할 토큰으로 컴포넌트를 직접 구성</b>합니다.</li>
@@ -1192,7 +1192,7 @@
   </div>
 
   <div class="foot mono">
-    Core System 개념 가이드 v4.0 · 2026-08-04 — KDX 표준 정렬(결정 #40) 반영<br>
+    Core System 개념 가이드 v4.1 · 2026-08-06 — KDX 표준 정렬(결정 #40) 반영<br>
     값 예시는 기본 설정 기준이며 브랜드 설정에 따라 달라집니다 · 소통은 언제나 토큰 이름으로
   </div>
 </div>
@@ -1249,7 +1249,7 @@ $("elev").innerHTML=ELEV.map(([n,sh])=>`<div class="ei"><div class="box" style="
 const SEM=[
  ["bg","배경","page(페이지 바닥) · surface.base(카드·패널) · surface.raised(떠 있는 표면) · surface.overlay(모달) · subtle(연한 강조 배경) · brand · brandSubtle · error/warning/success/info-subtle(상태 연한 배경) · action.primary/secondary/ghost(버튼 3계열, 각 +hover·pressed) · action.disabled · scrim(모달 뒤 막) · controlKnob(스위치 손잡이)","surface,action-primary"],
  ["fg","글자·아이콘","primary(본문, 대비≥7) · secondary(보조, ≥4.5) · tertiary(3차, ≥3) · disabled · placeholder(입력 안내) · onBrand/onAction(색 배경 위 글자) · brand · error/warning/success/info(상태 글자, ≥4.5) · link(+상태)","primary,secondary,link"],
- ["bdr","선·테두리","default(기본 테두리) · subtle(연한 구분선) · strong(진한 테두리, ≥3) · focused(키보드 포커스, ≥3) · error(오류 테두리, ≥3) · selected(선택 표시, ≥3)","default,focused"],
+ ["border","선·테두리","default(기본 테두리) · subtle(연한 구분선) · strong(진한 테두리, ≥3) · focused(키보드 포커스, ≥3) · error(오류 테두리, ≥3) · selected(선택 표시, ≥3)","default,focused"],
 ];
 $("semcolor").innerHTML=SEM.map(([k,ko,roles,hot])=>{
   const hots=hot.split(",").filter(Boolean);

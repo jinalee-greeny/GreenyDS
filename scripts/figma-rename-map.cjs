@@ -89,12 +89,12 @@ try {
 /* ── ② Semantic (§2 어휘 교체) ────────────────────────────────────────────── */
 const S = rd('tokens.semantic.json');
 const VOCAB = {
-  'stroke': 'bdr', 'focus': 'focused', 'active': 'pressed', 'danger': 'error',
+  'stroke': 'border', 'focus': 'focused', 'active': 'pressed', 'danger': 'error',
   'subtle→tertiary(fg만)': null, 'inset': 'padding', 'stack': 'gap/y', 'inline': 'gap/x', 'section-gap': 'gap/section'
 };
 ['bg', 'fg', 'stroke'].forEach((cat) => {
   const node = S.semantic.color.light[cat]; if (!node) return;
-  const newCat = cat === 'stroke' ? 'bdr' : cat;
+  const newCat = cat === 'stroke' ? 'border' : cat;
   ks(node).forEach((role) => {
     let nr = role;
     if (cat === 'fg' && role === 'subtle') nr = 'tertiary';

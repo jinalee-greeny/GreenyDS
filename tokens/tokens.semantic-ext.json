@@ -477,7 +477,7 @@
             }
           }
         },
-        "bdr": {
+        "border": {
           "default": {
             "$value": "{color.cool-gray.300}",
             "$type": "color",
@@ -1029,7 +1029,7 @@
             }
           }
         },
-        "bdr": {
+        "border": {
           "default": {
             "$value": "{color.cool-gray.700}",
             "$type": "color",
@@ -1720,7 +1720,7 @@
         }
       }
     },
-    "border": {
+    "borderWidth": {
       "$description": "굵기 상태 역할(#16 개정 · 결정 #40) — dimension 사다리·센티널 참조",
       "default": {
         "$value": "{dimension.special.hairline}",
@@ -1741,7 +1741,7 @@
         "$type": "dimension",
         "$extensions": {
           "px": 2,
-          "why": "bdr.focused 색과 쌍"
+          "why": "border.focused 색과 쌍"
         }
       }
     }

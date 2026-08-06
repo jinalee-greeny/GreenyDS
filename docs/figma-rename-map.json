@@ -1356,37 +1356,37 @@
     {
       "collection": "Semantic",
       "old": "color/stroke/default",
-      "new": "color/bdr/default",
+      "new": "color/border/default",
       "changed": true,
-      "why": "어휘 교체(§2): stroke.default → bdr.default"
+      "why": "어휘 교체(§2): stroke.default → border.default"
     },
     {
       "collection": "Semantic",
       "old": "color/stroke/subtle",
-      "new": "color/bdr/subtle",
+      "new": "color/border/subtle",
       "changed": true,
-      "why": "어휘 교체(§2): stroke.subtle → bdr.subtle"
+      "why": "어휘 교체(§2): stroke.subtle → border.subtle"
     },
     {
       "collection": "Semantic",
       "old": "color/stroke/strong",
-      "new": "color/bdr/strong",
+      "new": "color/border/strong",
       "changed": true,
-      "why": "어휘 교체(§2): stroke.strong → bdr.strong"
+      "why": "어휘 교체(§2): stroke.strong → border.strong"
     },
     {
       "collection": "Semantic",
       "old": "color/stroke/focus",
-      "new": "color/bdr/focused",
+      "new": "color/border/focused",
       "changed": true,
-      "why": "어휘 교체(§2): stroke.focus → bdr.focused"
+      "why": "어휘 교체(§2): stroke.focus → border.focused"
     },
     {
       "collection": "Semantic",
       "old": "color/stroke/danger",
-      "new": "color/bdr/error",
+      "new": "color/border/error",
       "changed": true,
-      "why": "어휘 교체(§2): stroke.danger → bdr.error"
+      "why": "어휘 교체(§2): stroke.danger → border.error"
     },
     {
       "collection": "Semantic",
