@@ -1,0 +1,167 @@
+{
+  "component": {
+    "counter": {
+      "$description": "Counter — 수량 입력(−/숫자/+). 이름은 'Stepper' 를 쓰지 않는다: 진행 단계형(progressSteps)과 같은 이름을 다투기 때문(§4 메모 1 판정, 2026-08-06). 버튼은 정사각(폭=높이)이라 sm 에서도 터치타깃이 한 축으로 무너지지 않는다.",
+      "field": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        }
+      },
+      "button": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "pressed": {
+            "$value": "{semantic.color.bg.action-ghost.pressed}",
+            "ref": "color.bg.action-ghost.pressed"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "width": {
+          "sm": {
+            "$value": "2.25rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 36,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.sm × 1 (정사각)",
+                "why": "−/+ 버튼은 폭=높이. 폭을 따로 주면 sm(36px)에서 가로 터치타깃이 먼저 무너진다"
+              }
+            }
+          },
+          "md": {
+            "$value": "2.75rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 44,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.md × 1 (정사각)",
+                "why": "−/+ 버튼은 폭=높이"
+              }
+            }
+          },
+          "lg": {
+            "$value": "3.25rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 52,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.lg × 1 (정사각)",
+                "why": "−/+ 버튼은 폭=높이"
+              }
+            }
+          }
+        }
+      },
+      "border": {
+        "default": {
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
+        },
+        "hover": {
+          "$value": "{semantic.color.border.strong}",
+          "ref": "color.border.strong"
+        },
+        "focused": {
+          "$value": "{semantic.color.border.focused}",
+          "ref": "color.border.focused"
+        },
+        "error": {
+          "$value": "{semantic.color.border.error}",
+          "ref": "color.border.error"
+        },
+        "disabled": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        }
+      },
+      "borderWidth": {
+        "default": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "focused": {
+          "$value": "{semantic.borderWidth.focused}",
+          "ref": "borderWidth.focused"
+        }
+      },
+      "height": {
+        "sm": {
+          "$value": "{semantic.size.control.sm}",
+          "ref": "size.control.sm"
+        },
+        "md": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        },
+        "lg": {
+          "$value": "{semantic.size.control.lg}",
+          "ref": "size.control.lg"
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.control}",
+        "ref": "radius.control"
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

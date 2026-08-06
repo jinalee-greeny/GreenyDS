@@ -713,6 +713,64 @@ function runChecks(comps){
     }
   }
   // S-3: 비인터랙티브 열린 요소(Badge·Banner)에 고정 높이 토큰 금지
+  /* ===== Wave 4-A 검사 (§3 입력/폼) ===== */
+  for (const mode of ["light","dark"]){
+    const surf = resolveSem(mode,"color.bg.surface").hex;
+    // F-1: 도움말은 읽어야 하는 문장이다 — 본문 대비 4.5 를 받는다(fg.tertiary 3:1 로 내리지 않은 근거)
+    ck("F-1", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5,
+       `${mode} field.help fg.secondary×surface ${round2(contrast(resolveSem(mode,"color.fg.secondary").hex,surf))}<4.5`);
+    // F-2: 오류 메시지도 텍스트다
+    ck("F-2", contrast(resolveSem(mode,"color.fg.error").hex,surf)>=4.5,
+       `${mode} field.error fg.error×surface ${round2(contrast(resolveSem(mode,"color.fg.error").hex,surf))}<4.5`);
+    // F-3: Textarea 본문·placeholder — Input 과 같은 기준을 각자 통과해야 한다(같은 시맨틱을 가리키는지 대조가 아니라 실제 대비로)
+    ck("F-3", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7, `${mode} textarea fg×surface <7`);
+    ck("F-3", contrast(resolveSem(mode,"color.fg.placeholder").hex,surf)>=4.5, `${mode} textarea placeholder×surface <4.5`);
+    // F-4: Counter 버튼 아이콘·숫자는 필드 표면에 얹힌다 — 본문급 7:1
+    //      hover/pressed 는 알파 오버레이라 합성 전 값으로는 기계 검사가 불가능하다(Button.ghost 와 동일 한계).
+    ck("F-4", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7,
+       `${mode} counter.button fg.primary×surface ${round2(contrast(resolveSem(mode,"color.fg.primary").hex,surf))}<7`);
+    // F-11 [선재 결함 상시 보고] Button.secondary 는 fg.primary 를 action-secondary 위에 얹는데
+    //      다크 pressed 에서 4.34 로 AA(4.5) 미달이다. Wave 1 부터 있었고 어떤 검사도 이 페어를 보지 않았다.
+    //      값 산식은 시맨틱이 유일 소유(§0.2)이고 고치면 눌림 색이 실제로 바뀌므로 독단 수정하지 않는다 —
+    //      컨펌 큐 Q-015 로 상정하고, 그때까지 매 런 이 줄로 보고한다.
+    for (const st of ["default","hover","pressed"]){
+      const bg2 = resolveSem(mode,`color.bg.action-secondary.${st}`).hex;
+      const c2 = contrast(resolveSem(mode,"color.fg.primary").hex,bg2);
+      ck("F-11", c2>=4.5,
+         `${mode} button.secondary ${st}: fg.primary×action-secondary ${round2(c2)}<4.5 — 선재 결함, Q-015 판정 대기`,
+         "△");
+    }
+  }
+  {
+    const field = buildField().component.field;
+    const ta = buildTextarea().component.textarea;
+    const cn = buildCounter().component.counter;
+    // F-5: 열린 컨테이너에 고정 높이 금지 — Field 는 껍데기, Textarea 는 내용이 늘어난다
+    ck("F-5", !("height" in field), `field 에 고정 높이 토큰 존재(§3.1 위반)`);
+    ck("F-5", !("height" in ta), `textarea 에 고정 높이 토큰 존재 — min-height 만 허용(§3.1 위반)`);
+    // F-6: Field 는 컨트롤 자신의 토큰을 갖지 않는다 — 가지면 Input 과 두 벌이 된다
+    ["bg","border","borderWidth","radius"].forEach(k=>
+      ck("F-6", !(k in field), `field 에 컨트롤 토큰 '${k}' 존재 — 껍데기가 컨트롤을 흉내내면 Input 과 두 벌이 된다`));
+    // F-7: Textarea min-height 재계산 대조 — control.lg × 2
+    ck("F-7", ta["min-height"].$extensions.px===CONTROL_PX.lg*2,
+       `textarea.min-height 재계산 불일치: ${ta["min-height"].$extensions.px} ≠ ${CONTROL_PX.lg*2}`);
+    // F-8: Counter 버튼 정사각 — 폭 == 그 크기의 컨트롤 높이 (CONFIRM-QUEUE 실행순서 6 '정사각 게이트')
+    ["sm","md","lg"].forEach(t=>
+      ck("F-8", cn.button.width[t].$extensions.px===CONTROL_PX[t],
+         `counter.button.width.${t} ${cn.button.width[t].$extensions.px} ≠ height ${CONTROL_PX[t]} (정사각 위반)`));
+    // F-9: CONTROL_PX 상수가 실제 size.control 과 갈라지면 F-7·F-8 이 통째로 거짓말이 된다
+    const szc = buildSize().size.control;
+    ["sm","md","lg"].forEach(t=>
+      ck("F-9", CONTROL_PX[t]===szc[t].$extensions.px,
+         `CONTROL_PX.${t}=${CONTROL_PX[t]} 이 size.control.${t}=${szc[t].$extensions.px} 과 어긋남 — 값 사본 표류`));
+    // F-10: 'stepper' 는 토큰 '이름'에 등장하지 않는다 (§4 메모 1 판정 — 수량/진행 두 뜻을 다투는 이름).
+    //       $description 같은 산문은 제외한다 — 판정 근거를 적은 문장까지 걸리면 검사가 근거 기록을 벌한다.
+    const nameHas = (node) => Object.keys(node).some(k =>
+      (!k.startsWith("$") && /stepper/i.test(k)) ||
+      (!k.startsWith("$") && node[k] && typeof node[k]==="object" && nameHas(node[k])));
+    ck("F-10", !nameHas(cn), `counter 토큰 '이름'에 stepper 잔존`);
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -732,10 +790,108 @@ function runChecks(comps){
  * ============================================================ */
 injectSemanticAdditions();
 const size = buildSize(), motion = buildMotion();
+
+/* ============================================================
+ * Wave 4-A — CDS_Components §3 입력/폼 (2026-08-06)
+ *   분류 판정에서 "신규 토큰 세트"로 가려진 것만 등재한다.
+ *   조합으로 성립하는 것(SearchField·Combobox·Dropdown/Context menu·TimePicker)은
+ *   토큰 파일을 만들지 않는다 — 별칭만 복사한 파일은 인벤토리가 아니라 중복이다.
+ * ============================================================ */
+
+// ---- Field (Form field wrapper) — §4 메모 2 판정: 독립 등재 ----
+// 왜 독립인가: label/help/error 묶음을 Input·Select·Textarea·Counter·Checkbox·Radio 가 전부 쓴다.
+// 지금은 checkbox.label · radio.label 처럼 각자 들고 있어, 묶는 곳이 없으면 6곳이 따로 표류한다.
+// 열린 컨테이너다 — 고정 높이 토큰을 갖지 않는다(§3.1, Card 선례).
+function buildField(){
+  return { "component":{ "field":{
+    "$description":"Field — 라벨·필수 표시·도움말·오류를 컨트롤에 묶는 껍데기(Form field wrapper). 컨트롤 자신의 토큰은 갖지 않는다 — Input·Select·Textarea·Counter 가 각자 소유. 열린 컨테이너라 고정 높이 없음(§3.1).",
+    "label":{
+      "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") },
+      "typography":a("typography.label"),
+      "gap":a("spacing.gap.y.sm")
+    },
+    "required":{
+      "fg":a("color.fg.error"),
+      "$extensions":{ why:"필수 표시(*)는 색만으로 말하지 않는다 — 색은 보조 신호이고 문자 자체가 1차 신호다(결정 #38 '한 겹으로만 말한다'의 역방향 적용)" }
+    },
+    "help":{
+      "fg":a("color.fg.secondary"),
+      "typography":a("typography.caption"),
+      "gap":a("spacing.gap.y.sm"),
+      "$extensions":{ why:"fg.tertiary(목표 3:1)가 아니라 fg.secondary(4.5:1). 도움말은 장식이 아니라 읽어야 하는 문장이라 본문 대비 기준을 받는다 — 새 역할을 만들지 않고 기존 인벤토리에서 맞는 것을 골랐다(§0.5)" }
+    },
+    "error":{
+      "fg":a("color.fg.error"),
+      "typography":a("typography.caption"),
+      "gap":a("spacing.gap.y.sm")
+    },
+    "gap":a("spacing.gap.y.md")
+  }}};
+}
+
+// ---- Textarea — Input 과 같은 표면, 높이만 열려 있다 ----
+// Input 토큰을 참조하지 않는다(§0.1 컴포넌트→컴포넌트 참조 금지) — 같은 시맨틱을 각자 가리킨다.
+function buildTextarea(){
+  return { "component":{ "textarea":{
+    "$description":"Textarea — 표면·border·타이포는 Input 과 같은 시맨틱을 가리키되 높이가 열려 있다. height 대신 min-height 만 갖는다(§3.1 — 고정 높이는 내용이 잘리는 컨트롤에만).",
+    "bg":       { "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
+    "fg":       { "default":a("color.fg.primary"), "placeholder":a("color.fg.placeholder"), "disabled":a("color.fg.disabled") },
+    "border":   { "default":a("color.border.default"), "hover":a("color.border.strong"),
+                  "focused":a("color.border.focused"), "error":a("color.border.error"), "disabled":a("color.border.subtle") },
+    "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
+    "min-height":computedScale("size.control.lg", 52, 2, "3줄 입력이 보이는 최소 높이. lg 컨트롤 2개분으로 잡아 사다리 밖 임의 px 을 만들지 않는다(§0 예외ⓐ 규칙 실체화)"),
+    "radius":   a("radius.control"),
+    "padding":  a("spacing.padding.md"),
+    "typography":a("typography.body"),
+    "resize-handle":a("color.fg.tertiary"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- Counter (수량 입력) — §4 메모 1 판정: "Stepper" 이름을 쓰지 않는다 ----
+// 수량 입력형과 진행 단계형이 같은 이름을 다투므로, 이름 자체를 갈랐다:
+//   수량 = counter · 진행 = progressSteps. 토큰 어디에도 stepper 는 등장하지 않는다.
+const CONTROL_PX = { sm:36, md:44, lg:52 };
+function computedSquare(sizeKey, why){
+  const v = CONTROL_PX[sizeKey];
+  return { "$value":`${px2rem(v)}rem`, "$type":"dimension", "$extensions":{ px:v, rule:{ type:"scale", formula:`size.control.${sizeKey} × 1 (정사각)`, why } } };
+}
+function buildCounter(){
+  return { "component":{ "counter":{
+    "$description":"Counter — 수량 입력(−/숫자/+). 이름은 'Stepper' 를 쓰지 않는다: 진행 단계형(progressSteps)과 같은 이름을 다투기 때문(§4 메모 1 판정, 2026-08-06). 버튼은 정사각(폭=높이)이라 sm 에서도 터치타깃이 한 축으로 무너지지 않는다.",
+    "field":{
+      "bg":       { "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
+      "fg":       { "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") },
+      "typography":a("typography.body"),
+      "padding-x":a("spacing.padding.sm")
+    },
+    "button":{
+      // 왜 action-secondary 가 아닌가: 다크 action-secondary.pressed 는 fg.primary 와 대비 4.34 로 AA 미달이다
+      // (아래 F-11 이 매 런 보고). 새 컴포넌트를 이미 알려진 미달 페어 위에 얹지 않는다.
+      // 버튼은 필드 표면에 얹히고 눌림만 ghost 알파로 말한다 — Button.ghost 와 같은 처리.
+      "bg":{ "default":a("color.bg.surface"), "hover":a("color.bg.action-ghost.hover"),
+             "pressed":a("color.bg.action-ghost.pressed"), "disabled":a("color.bg.subtle") },
+      "fg":{ "default":a("color.fg.primary"), "disabled":a("color.fg.disabled") },
+      "icon":a("size.icon.md"),
+      "width":{ "sm":computedSquare("sm","−/+ 버튼은 폭=높이. 폭을 따로 주면 sm(36px)에서 가로 터치타깃이 먼저 무너진다"),
+                "md":computedSquare("md","−/+ 버튼은 폭=높이"),
+                "lg":computedSquare("lg","−/+ 버튼은 폭=높이") }
+    },
+    "border":   { "default":a("color.border.default"), "hover":a("color.border.strong"),
+                  "focused":a("color.border.focused"), "error":a("color.border.error"), "disabled":a("color.border.subtle") },
+    "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
+    "height":   { "sm":a("size.control.sm"),"md":a("size.control.md"),"lg":a("size.control.lg") },
+    "radius":   a("radius.control"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
-               buildTooltip(), buildBadge(), buildBanner()];
+               buildTooltip(), buildBadge(), buildBanner(),
+               buildField(), buildTextarea(), buildCounter()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -743,7 +899,8 @@ const OUT = process.env.OUT_DIR ? path.join(ROOT, process.env.OUT_DIR) : ROOT;
 fs.mkdirSync(path.join(OUT, "tokens/component"), { recursive:true });
 const outDir = path.join(OUT, "tokens/component");
 const names = ["button","input","select","card","switch","tabs","modal","toast",
-               "checkbox","radio","slider","segmented","tooltip","badge","banner"];
+               "checkbox","radio","slider","segmented","tooltip","badge","banner",
+               "field","textarea","counter"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -808,10 +965,14 @@ fs.writeFileSync(path.join(OUT,"build/component.resolved.json"), JSON.stringify(
 fs.writeFileSync(path.join(OUT,"build/checks.json"), JSON.stringify(checks,null,2));
 
 // 리포트
-const fail = checks.filter(c=>!c.ok);
+// ✗(하드)와 △(권고)를 가른다 — validate-tokens.cjs 와 같은 규약.
+// △ 는 빌드를 막지 않되 매 런 화면에 남는다: 조용해지면 아무도 다시 안 본다.
+const fail = checks.filter(c=>!c.ok && c.sev!=="△");
+const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
-console.log("=== A3 Wave 1 검사 리포트 ===");
+console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8종 + Wave3 7종) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4-A 3) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log("전 검사 ✗ 0건 — Wave 1+2+3 아키텍처 통과 ✓");
+console.log(`전 검사 ✗ 0건 — Wave 1+2+3+4 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);

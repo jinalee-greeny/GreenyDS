@@ -1,0 +1,71 @@
+{
+  "component": {
+    "field": {
+      "$description": "Field — 라벨·필수 표시·도움말·오류를 컨트롤에 묶는 껍데기(Form field wrapper). 컨트롤 자신의 토큰은 갖지 않는다 — Input·Select·Textarea·Counter 가 각자 소유. 열린 컨테이너라 고정 높이 없음(§3.1).",
+      "label": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "required": {
+        "fg": {
+          "$value": "{semantic.color.fg.error}",
+          "ref": "color.fg.error"
+        },
+        "$extensions": {
+          "why": "필수 표시(*)는 색만으로 말하지 않는다 — 색은 보조 신호이고 문자 자체가 1차 신호다(결정 #38 '한 겹으로만 말한다'의 역방향 적용)"
+        }
+      },
+      "help": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        },
+        "$extensions": {
+          "why": "fg.tertiary(목표 3:1)가 아니라 fg.secondary(4.5:1). 도움말은 장식이 아니라 읽어야 하는 문장이라 본문 대비 기준을 받는다 — 새 역할을 만들지 않고 기존 인벤토리에서 맞는 것을 골랐다(§0.5)"
+        }
+      },
+      "error": {
+        "fg": {
+          "$value": "{semantic.color.fg.error}",
+          "ref": "color.fg.error"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "gap": {
+        "$value": "{semantic.spacing.gap.y.md}",
+        "ref": "spacing.gap.y.md"
+      }
+    }
+  }
+}

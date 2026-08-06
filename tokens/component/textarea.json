@@ -1,0 +1,95 @@
+{
+  "component": {
+    "textarea": {
+      "$description": "Textarea — 표면·border·타이포는 Input 과 같은 시맨틱을 가리키되 높이가 열려 있다. height 대신 min-height 만 갖는다(§3.1 — 고정 높이는 내용이 잘리는 컨트롤에만).",
+      "bg": {
+        "default": {
+          "$value": "{semantic.color.bg.surface}",
+          "ref": "color.bg.surface"
+        },
+        "disabled": {
+          "$value": "{semantic.color.bg.subtle}",
+          "ref": "color.bg.subtle"
+        }
+      },
+      "fg": {
+        "default": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "placeholder": {
+          "$value": "{semantic.color.fg.placeholder}",
+          "ref": "color.fg.placeholder"
+        },
+        "disabled": {
+          "$value": "{semantic.color.fg.disabled}",
+          "ref": "color.fg.disabled"
+        }
+      },
+      "border": {
+        "default": {
+          "$value": "{semantic.color.border.default}",
+          "ref": "color.border.default"
+        },
+        "hover": {
+          "$value": "{semantic.color.border.strong}",
+          "ref": "color.border.strong"
+        },
+        "focused": {
+          "$value": "{semantic.color.border.focused}",
+          "ref": "color.border.focused"
+        },
+        "error": {
+          "$value": "{semantic.color.border.error}",
+          "ref": "color.border.error"
+        },
+        "disabled": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        }
+      },
+      "borderWidth": {
+        "default": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "focused": {
+          "$value": "{semantic.borderWidth.focused}",
+          "ref": "borderWidth.focused"
+        }
+      },
+      "min-height": {
+        "$value": "6.5rem",
+        "$type": "dimension",
+        "$extensions": {
+          "px": 104,
+          "rule": {
+            "type": "scale",
+            "formula": "size.control.lg × 2",
+            "why": "3줄 입력이 보이는 최소 높이. lg 컨트롤 2개분으로 잡아 사다리 밖 임의 px 을 만들지 않는다(§0 예외ⓐ 규칙 실체화)"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{semantic.radius.control}",
+        "ref": "radius.control"
+      },
+      "padding": {
+        "$value": "{semantic.spacing.padding.md}",
+        "ref": "spacing.padding.md"
+      },
+      "typography": {
+        "$value": "{semantic.typography.body}",
+        "ref": "typography.body"
+      },
+      "resize-handle": {
+        "$value": "{semantic.color.fg.tertiary}",
+        "ref": "color.fg.tertiary"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}
