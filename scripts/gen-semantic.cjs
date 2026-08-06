@@ -14,6 +14,12 @@ const TSTEPS=["xs","sm","base","md","lg","xl","2xl","3xl","4xl","5xl","6xl"];
 const BPS=["mobile","tablet","desktop"];
 let NEUTRAL="cool-gray";
 let DARK_LADDER={page:"950",surface:"900",overlayBase:"800"};
+// 사다리 칸 배정 — 현행 값을 그대로 상수화(기본 동작 불변). config 로 덮을 수 있다.
+let RADIUS_TIERS={control:3,container:4,overlay:5};
+let SPACING_ROLES={
+  padding:{sm:3,md:5,lg:7},
+  gap:{y:{sm:3,md:5,lg:8}, x:{sm:2,md:3,lg:5}, section:{mobile:10,tablet:11,desktop:11}}
+};
 let TARGETS={fgPrimary:7,fgSecondary:4.5,fgSubtle:3,fgStatus:4.5,onFill:4.5,strokeStrong:3,focus:3,strokeDanger:3,minTextPx:12};
 // 섭동 매트릭스용 프리셋 오버라이드 (PRESET 미설정 시 기본 동작 완전 불변)
 if(process.env.PRESET){ const cfg=require(process.env.PRESET);
@@ -21,6 +27,22 @@ if(process.env.PRESET){ const cfg=require(process.env.PRESET);
   if(cfg.neutral) NEUTRAL=cfg.neutral;
   if(cfg.darkLadder) DARK_LADDER={...DARK_LADDER,...cfg.darkLadder};
   if(cfg.targets) TARGETS={...TARGETS,...cfg.targets};
+  // 컨피규레이터 export 연결(B2a): 모서리·간격 역할의 사다리 칸 배정을 config 로 연다.
+  // 값이 아니라 "몇 번 칸이냐"만 받는다 — 사다리 밖 임의 px 이 들어오는 길을 만들지 않기 위해서(결정 #40).
+  if(cfg.radiusTiers) RADIUS_TIERS={...RADIUS_TIERS,...cfg.radiusTiers};
+  if(cfg.spacingRoles) SPACING_ROLES=mergeSpacing(SPACING_ROLES,cfg.spacingRoles);
+}
+function assertStep(n,where){
+  if(!Number.isInteger(n)||n<0||n>14) throw new Error(`${where}: 사다리 칸은 0~14 정수여야 합니다(받은 값 ${JSON.stringify(n)}).`);
+  return n;
+}
+function mergeSpacing(base,over){
+  const out=JSON.parse(JSON.stringify(base));
+  for(const k of Object.keys(over||{})){
+    if(k==='gap'){ for(const ax of Object.keys(over.gap||{})) out.gap[ax]={...out.gap[ax],...over.gap[ax]}; }
+    else out[k]={...out[k],...over[k]};
+  }
+  return out;
 }
 const hexRgb=h=>{h=h.replace('#','');return [0,1,2].map(i=>parseInt(h.substr(i*2,2),16));};
 const rgbHex=a=>'#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
@@ -147,15 +169,16 @@ function buildTypography(){
   return out;
 }
 const dim=(p,extra={})=>({"$value":alias(p),"$type":"dimension","$extensions":extra});
-function buildSpacing(){return {"$description":"간격 역할 (결정 #40 KDX 정렬 — padding/gap/margin)",
-  "padding":{"$extensions":{why:"컴포넌트 안쪽 여백"},"sm":dim("dimension.rem.step-3"),"md":dim("dimension.rem.step-5"),"lg":dim("dimension.rem.step-7")},
+const step=(n,where,extra)=>dim("dimension.rem.step-"+assertStep(n,where),extra);
+function buildSpacing(){const R=SPACING_ROLES;return {"$description":"간격 역할 (결정 #40 KDX 정렬 — padding/gap/margin)",
+  "padding":{"$extensions":{why:"컴포넌트 안쪽 여백"},"sm":step(R.padding.sm,"padding.sm"),"md":step(R.padding.md,"padding.md"),"lg":step(R.padding.lg,"padding.lg")},
   "gap":{"$extensions":{why:"요소 사이 간격 — y=수직, x=수평, section=페이지 섹션"},
-    "y":{"sm":dim("dimension.rem.step-3"),"md":dim("dimension.rem.step-5"),"lg":dim("dimension.rem.step-8")},
-    "x":{"sm":dim("dimension.rem.step-2"),"md":dim("dimension.rem.step-3"),"lg":dim("dimension.rem.step-5")},
-    "section":{"$extensions":{rule:{type:"breakpoint-binding"}},"mobile":dim("dimension.rem.step-10"),"tablet":dim("dimension.rem.step-11"),"desktop":dim("dimension.rem.step-11")}}};}
-function buildRadius(){return {"$description":"radius 역할 — dimension 사다리 칸 배정 (결정 #40 · Q-014)",
-  "control":dim("dimension.rem.step-3",{why:"버튼·인풋"}),"container":dim("dimension.rem.step-4",{why:"카드·패널"}),
-  "overlay":dim("dimension.rem.step-5",{why:"모달·팝오버"}),"pill":dim("dimension.special.full"),"circle":dim("dimension.special.full",{why:"결정 #40 — special.full로 리타깃(50% 폐지, Figma 호환)"})};}
+    "y":{"sm":step(R.gap.y.sm,"gap.y.sm"),"md":step(R.gap.y.md,"gap.y.md"),"lg":step(R.gap.y.lg,"gap.y.lg")},
+    "x":{"sm":step(R.gap.x.sm,"gap.x.sm"),"md":step(R.gap.x.md,"gap.x.md"),"lg":step(R.gap.x.lg,"gap.x.lg")},
+    "section":{"$extensions":{rule:{type:"breakpoint-binding"}},"mobile":step(R.gap.section.mobile,"gap.section.mobile"),"tablet":step(R.gap.section.tablet,"gap.section.tablet"),"desktop":step(R.gap.section.desktop,"gap.section.desktop")}}};}
+function buildRadius(){const T=RADIUS_TIERS;return {"$description":"radius 역할 — dimension 사다리 칸 배정 (결정 #40 · Q-014)",
+  "control":step(T.control,"radius.control",{why:"버튼·인풋"}),"container":step(T.container,"radius.container",{why:"카드·패널"}),
+  "overlay":step(T.overlay,"radius.overlay",{why:"모달·팝오버"}),"pill":dim("dimension.special.full"),"circle":dim("dimension.special.full",{why:"결정 #40 — special.full로 리타깃(50% 폐지, Figma 호환)"})};}
 function buildElevation(){
   const pair=(n,why)=>({"$extensions":{why},"light":{"$value":alias(`elevation.light.elevation-${n}`),"$type":"shadow"},"dark":{"$value":alias(`elevation.dark.elevation-${n}`),"$type":"shadow","$extensions":{note:"δ는 bg.surface-* 합성에 반영"}}});
   return {"$description":"elevation 역할","resting":pair(0,"평면"),"raised":pair(1,"카드·드롭다운"),"overlay":pair(3,"모달·팝오버"),"spotlight":pair(5,"최상위 강조")};}

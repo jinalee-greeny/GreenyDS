@@ -32,7 +32,9 @@ fs.mkdirSync(path.join(outAbs, 'tokens'), { recursive: true });
 const primPath = path.join(outAbs, 'tokens', 'tokens.primitive.json');
 const semPath = path.join(outAbs, 'tokens', 'tokens.semantic.json');
 const semCfgPath = path.join(outAbs, '_semantic-cfg.json');
-fs.writeFileSync(semCfgPath, JSON.stringify(cfg.semantic || {}));
+// gen-semantic·gen-component 는 같은 PRESET 파일을 읽는다. 그래서 semantic 키와
+// 모션 키를 한 파일에 합쳐 쓴다 — config 상단의 motion 을 소비자별로 나눠 적지 않기 위해서.
+fs.writeFileSync(semCfgPath, JSON.stringify({ ...(cfg.semantic || {}), ...(cfg.motion ? { motion: cfg.motion } : {}) }));
 
 const run = (args, extraEnv) =>
   execFileSync('node', args, { cwd: ROOT, env: { ...process.env, ...extraEnv }, stdio: 'pipe' }).toString();
@@ -46,5 +48,16 @@ run([path.join(ROOT, 'scripts/gen-semantic.cjs'), semPath], env);
 run([path.join(ROOT, 'scripts/gen-component.cjs')], { ...env, SEM_PATH: semPath, OUT_DIR: outRel });
 // 4) css + flat
 run([path.join(ROOT, 'scripts/build-css.cjs')], { ...env, BUILD_DIR: path.join(outAbs, 'build') });
+// 5) Figma 변수 페이로드 — 컨피규레이터 export 가 Figma 까지 닿으려면 이 단계가 있어야 한다.
+//    gen-figma-vars 는 tokens.semantic-ext.json 을 요구하므로 --emit-semantic-ext 를 먼저 돌린다.
+run([path.join(ROOT, 'scripts/gen-component.cjs'), '--emit-semantic-ext'], { ...env, SEM_PATH: semPath, OUT_DIR: outRel });
+run([path.join(ROOT, 'scripts/gen-figma-vars.cjs')], {
+  TOKENS_DIR: path.join(outAbs, 'tokens'),
+  FIGMA_OUT: path.join(outAbs, 'build', 'figma')
+});
 
-console.log('apply-config ✓ →', outRel, '(primitive·semantic·component·css)');
+const fig = JSON.parse(fs.readFileSync(path.join(outAbs, 'build', 'figma', 'variables.json'), 'utf8'));
+const fams = fig.collections.filter((c) => ['color', 'typo', 'spatial', 'visual', 'motion'].includes(c.name));
+console.log('apply-config ✓ →', outRel, '(primitive·semantic·component·css·figma)');
+console.log('  figma 패밀리 컬렉션:', fams.map((c) => c.name + ' ' + c.variables.length).join(' · '),
+  '· 합계', fams.reduce((n, c) => n + c.variables.length, 0));

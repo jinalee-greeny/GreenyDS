@@ -1828,7 +1828,7 @@ function tsChain(M,t){
 const BASE_TOKENS=flatTokens(tokenModel());
 
 /* ── 렌더 ──────────────────────────────────────────────────────────────── */
-let TSPANE="tree", TSFMT="dtcg", TSCODE="";
+let TSPANE="tree", TSFMT="config", TSCODE="";   // 기본은 정본(config) — 사본이 먼저 보이면 사본을 납품하게 된다
 const TSOPEN=new Set(["color.brand","color.bg · light","button · 색 (light)","button"]);
 
 function tsEsc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -1926,6 +1926,74 @@ function paneDiff(M){
     '<div class="tgrp">'+body+'</div>';
 }
 
+/* ── config 내보내기 — 파이프라인 정본 입력 ──────────────────────────────────
+   왜 이게 "정본"인가: 아래 세 형식(DTCG·CSS·Figma)은 브라우저가 다시 계산한 사본이다.
+   사본을 납품하면 엔진이 둘이 된다(결정 #2 "엔진은 하나"). config 한 장을 내보내고
+   `node scripts/apply-config.cjs --config greenyds.config.json` 이 전 산출물을 만들면
+   컨피규레이터와 리포가 같은 엔진을 통과한다.
+   ⚠ 지금 파이프라인이 받지 못하는 조작은 meta.unmapped 에 전부 적는다 — 조용히
+   떨어뜨리면 "내보냈는데 안 바뀐다"가 되고, 그건 사본보다 나쁘다. */
+function ladderPx(){ /* dimension 사다리 실제 px (basePx 반영) */
+  const M=[0,.25,.5,1,1.5,2,2.5,3,4,5,6,8,10,12,16];
+  return M.map(function(m){return Math.round(state.dens*m*10000)/10000;});
+}
+function stepOf(px){ const L=ladderPx(), i=L.indexOf(px); return i<0?null:i; }
+function snap100(ms){ return Math.max(0,Math.round(ms/100)*100); }
+function exportConfig(){
+  const un=[], ramps=[{id:"brand",seed:state.seed}];
+  const SS={error:"red",warning:"amber",success:"green",info:"blue"};
+  Object.keys(SS).forEach(function(k){ const v=state.statusSeeds[k];
+    if(/^#[0-9a-fA-F]{6}$/.test(v||"")) ramps.push({id:SS[k],seed:v}); });
+
+  // 모서리 — 사다리 칸으로만 표현된다. 칸 밖 px 은 config 로 옮길 수 없다.
+  const radTiers={}, RD={control:state.rad, container:state.rad+4, overlay:state.rad+8};
+  Object.keys(RD).forEach(function(t){
+    const px=(state.radTiers[t]==null)?RD[t]:state.radTiers[t], s=stepOf(px);
+    if(s==null) un.push("radius."+t+" = "+px+"px — dimension 사다리 칸이 아니라 config 로 옮길 수 없습니다");
+    else radTiers[t]=s;
+  });
+
+  const base=snap100(state.motion);
+  const durations={instant:0,fast:Math.max(100,base-100),base:base,slow:base+100,slower:base+300};
+
+  // 파이프라인에 아직 입력 지점이 없는 조작 — 전부 명시한다.
+  un.push("간격 역할(spRoles·density) — 컨피규레이터는 'md 기준 ±1' 모델이고 파이프라인은 sm·md·lg 를 각각 지정합니다. 두 모델이 달라 자동 변환하면 기본값이 조용히 바뀝니다");
+  un.push("서체 슬롯(제목/본문) · 역할별 타이포 override — gen-tokens 는 패밀리 목록만 받습니다");
+  un.push("그림자 강도(elev) · dp 역할값 — elevation 은 tint 만 config 로 열려 있습니다");
+  un.push("easing 프리셋 · reduced-motion — 모션 역할의 곡선 배정은 아직 코드 고정입니다");
+  un.push("다크 모드 on/off — 산출물은 항상 light·dark 두 모드를 냅니다(끄기는 소비 레이어 몫)");
+
+  return JSON.stringify({
+    "$schema":"greenyds.config/1",
+    meta:{
+      name:"컨피규레이터 export",
+      configurator:(document.title.match(/v[\d.]+/)||["v?"])[0],  // 버전 사본을 만들지 않는다 — title 에서 읽는다(BC-37)
+      share:shareString(),
+      howToApply:"node scripts/apply-config.cjs --config greenyds.config.json --out build/my-tokens",
+      produces:"primitive · semantic · component · css · figma(5 패밀리 컬렉션)",
+      unmapped:un
+    },
+    primitive:{
+      color:{ramps:ramps},
+      typography:{breakpoints:{desktop:{base:state.tbase,ratio:state.tratio}}},
+      dimension:{basePx:state.dens},
+      elevation:{tint:Math.round(state.shadowTint)/100}
+    },
+    semantic:{
+      neutral:state.neutral==="warm"?"warm-gray":"cool-gray",
+      targets:{fgPrimary:state.aa==="AAA"?7:4.5},
+      radiusTiers:radTiers
+    },
+    motion:{durations:durations}
+  },null,2);
+}
+function downloadText(name,text,mime){
+  const b=new Blob([text],{type:(mime||"text/plain")+";charset=utf-8"});
+  const u=URL.createObjectURL(b), a=document.createElement("a");
+  a.href=u; a.download=name; document.body.appendChild(a); a.click();
+  document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(u);},1000);
+}
+
 /* ── 내보내기 미리보기 ─────────────────────────────────────────────────── */
 function tsPath(t){return t.mode?("mode."+t.mode+"."+t.name):t.name;}
 function cssv(n){return "--"+String(n).replace(/\./g,"-");}
@@ -1993,19 +2061,24 @@ function exportFigma(M){
   });
   return out.join("\n");
 }
+const EXPORT_FILE={config:["greenyds.config.json","application/json"],dtcg:["greeny-tokens.dtcg.json","application/json"],
+  css:["greeny-tokens.css","text/css"],figma:["greeny-figma-paste.txt","text/plain"]};
 function paneExport(M){
-  TSCODE=(TSFMT==="dtcg")?exportDTCG(M):(TSFMT==="css")?exportCSS(M):exportFigma(M);
-  const fmts=[["dtcg","DTCG JSON"],["css","CSS 변수"],["figma","Figma Variables"]];
-  const note='<div class="tsnote"><b>내보내기 미리보기</b> — 지금 설정이 세 형식으로 어떻게 나가는지 미리 봅니다. 아직 <b>파일 저장은 없습니다</b>(B1 파이프라인 연결 예정). 지금은 복사해서 쓰세요.</div>';
+  TSCODE=(TSFMT==="config")?exportConfig():(TSFMT==="dtcg")?exportDTCG(M):(TSFMT==="css")?exportCSS(M):exportFigma(M);
+  const fmts=[["config","config (정본)"],["dtcg","DTCG JSON"],["css","CSS 변수"],["figma","Figma 붙여넣기"]];
+  const note=(TSFMT==="config")
+    ? '<div class="tsnote"><b>이게 정본 산출입니다.</b> 이 파일 하나를 저장해 <code>node scripts/apply-config.cjs --config greenyds.config.json</code> 으로 돌리면 primitive · semantic · component · CSS · <b>Figma 5 패밀리 변수 페이로드</b>가 전부 나옵니다 — 브라우저가 다시 계산한 사본이 아니라 <b>리포와 같은 엔진</b>을 통과한 산출입니다(결정 #2).</div>'
+    : '<div class="tsnote"><b>미리보기 사본입니다.</b> 지금 설정이 이 형식으로 어떻게 보이는지 확인하는 용도이고, 납품은 <b>config (정본)</b> 탭에서 받으세요 — 사본을 납품하면 엔진이 둘이 됩니다(결정 #2).</div>';
   const CAP={
+    config:"파이프라인이 실제로 받는 파라미터만 담깁니다. <b>아직 받지 못하는 조작은 <code>meta.unmapped</code> 에 이유와 함께 전부 적혀 있습니다</b> — 조용히 떨어뜨리지 않습니다.",
     dtcg:"별칭 <code>{…}</code> 이 3계층 참조를 그대로 드러냅니다. shadow 는 아직 CSS 문자열입니다(composite 매핑은 B1 과제). 본문은 <b>순수 JSON</b> — 그대로 <code>JSON.parse</code> 를 통과합니다.",
     css:"참조가 있는 토큰은 값이 아니라 <code>var(--…)</code> 로 나갑니다 — 계보가 CSS 에서도 살아 있습니다. 다크는 <code>[data-theme=\"dark\"]</code> 블록입니다.",
-    figma:"붙여넣기용 텍스트입니다. <code>→</code> 는 별칭 — Figma 에서 해당 변수를 참조하도록 연결하세요. 컬렉션·모드 구조는 그대로 옮겨집니다."
+    figma:"손으로 옮길 때만 쓰는 텍스트입니다. 실제 동기화는 config → <code>apply-config</code> → <code>build/figma/variables.json</code> 경로를 쓰세요 — 5 패밀리 컬렉션(결정 #43)으로 나갑니다."
   };
   const cap='<div class="tscap"><span>'+CAP[TSFMT]+'</span><i>'+TSCODE.length.toLocaleString()+'자 · '+TSCODE.split("\n").length.toLocaleString()+'줄</i></div>';
   return note+'<div class="tsfmt" id="tsFmt">'+
     fmts.map(function(f){return '<button data-f="'+f[0]+'"'+(TSFMT===f[0]?' class="on"':'')+'>'+f[1]+'</button>';}).join("")+
-    '<button class="cp" id="tsCopy">전체 복사</button></div>'+
+    '<button class="cp" id="tsDl">파일로 저장</button><button class="cp" id="tsCopy">전체 복사</button></div>'+
     cap+'<div class="tscode">'+tsEsc(TSCODE)+'</div>';
 }
 
@@ -2019,10 +2092,17 @@ function bindStudio(){
   const fm=document.getElementById("tsFmt");
   if(fm){
     fm.querySelectorAll("button[data-f]").forEach(function(b){ b.onclick=function(){ TSFMT=b.dataset.f; renderStudio(); }; });
+    const LBL={config:"config (정본)",dtcg:"DTCG JSON",css:"CSS 변수",figma:"Figma 붙여넣기"};
     const cp=document.getElementById("tsCopy");
     if(cp) cp.onclick=function(){
       if(navigator.clipboard)navigator.clipboard.writeText(TSCODE);
-      toast("✓ "+({dtcg:"DTCG JSON",css:"CSS 변수",figma:"Figma Variables"}[TSFMT])+" 복사됨 — "+TSCODE.length+"자");
+      toast("✓ "+LBL[TSFMT]+" 복사됨 — "+TSCODE.length+"자");
+    };
+    const dl=document.getElementById("tsDl");
+    if(dl) dl.onclick=function(){
+      const f=EXPORT_FILE[TSFMT];
+      downloadText(f[0],TSCODE,f[1]);
+      toast("✓ "+f[0]+" 저장됨"+(TSFMT==="config"?" — apply-config 로 돌리면 전 산출물이 나옵니다":""));
     };
   }
 }
@@ -2385,7 +2465,7 @@ $("exportBtn").onclick=()=>{
   const vb=document.querySelector('#viewSeg button[data-view="tokens"]'); if(vb)vb.click();
   setStudioTab("export");
   toast($("exportBtn").dataset.ok==="1"
-    ? "✓ 검증 통과 — 내보내기 미리보기 (파일 저장은 B1 파이프라인 연결 예정)"
+    ? "✓ 검증 통과 — config (정본) 를 파일로 저장하면 apply-config 가 전 산출물을 만듭니다"
     : "⚠ 검증 미통과 — 미리보기는 열지만, 대비를 먼저 맞춰주세요");
 };
 initStatusRows();initSpacingRows();renderGallery();render();

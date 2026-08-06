@@ -175,10 +175,38 @@ Text Style 6건은 반대로 **텍스트 노드 375개가 실제로 물고 있�
 
 ---
 
+## 6-b. 컨피규레이터 export 는 사본이 아니라 **입력**이다
+
+브라우저가 계산한 DTCG·CSS·Figma 텍스트를 납품하면 **엔진이 둘이 된다**(결정 #2 "엔진은 하나").
+그래서 컨피규레이터의 정본 산출은 **`greenyds.config.json` 한 장**이고, 산출물은 리포 파이프라인이 만든다.
+
+```
+컨피규레이터 → greenyds.config.json → apply-config → primitive · semantic · component · css · build/figma/variables.json
+```
+
+**왕복 검증(실측 2026-08-06).** 기본 설정에서 export 한 config 를 `apply-config` 에 넣으면
+`tokens.primitive.json` · `tokens.semantic.json` · `tokens/component/*.json`(15) · `build/figma/variables.json` 이
+리포 정본과 **바이트 동일**하다. 두 표면이 같은 엔진을 통과한다는 뜻이다 — 이 등식이 깨지면 export 가 거짓말을 하고 있는 것이다.
+
+**config 가 여는 파라미터.** `primitive.color.ramps[].seed` · `primitive.typography.breakpoints.*` ·
+`primitive.dimension.basePx` · `primitive.elevation.tint` · `semantic.neutral` · `semantic.targets` ·
+`semantic.radiusTiers` · `semantic.spacingRoles` · `motion.durations`.
+
+**규칙은 코드가 지킨다 — config 로 못 깨뜨린다.**
+- `radiusTiers` · `spacingRoles` 는 **사다리 칸 번호(0~14)** 만 받는다. 임의 px 이 들어오는 길을 만들지 않는다(결정 #40).
+- `motion.durations` 는 **0 시작 · 단조 증가 · 100ms 그리드**를 강제한다. 깨면 하드 실패(진아 지시 2026-08-06).
+
+**아직 못 받는 조작은 숨기지 않는다.** 컨피규레이터가 노출하는 knob 중 파이프라인 입력이 없는 것은
+export 파일의 `meta.unmapped` 에 **이유와 함께 전건 기록**된다(간격 역할 모델 불일치 · 서체 슬롯 · 그림자 강도 ·
+easing 프리셋 · 다크 on/off). 조용히 떨어뜨리면 "내보냈는데 안 바뀐다"가 되고, 그건 사본을 주는 것보다 나쁘다.
+
+---
+
 ## 7. 트리거 주체
 
 | 일 | 주체 |
 |---|---|
+| 컨피규레이터 설정 → 전 산출물(Figma 포함) | **누구나** — `config (정본)` 저장 후 `node scripts/apply-config.cjs --config greenyds.config.json` |
 | 토큰 값·이름 변경 → 페이로드 재생성 | **HQ** (`gen-component --emit-semantic-ext` → `gen-figma-vars`) |
 | Figma 파일에 실제 반영 | **HQ**(MCP 쓰기) 또는 진아님(플러그인 손 왕복) |
 | 구 이름이 남은 파일 이행 | `figma-rename-map.json` 순서대로 — **병합 8건 주의** |

@@ -18,7 +18,9 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const OUT = path.join(ROOT, 'build', 'figma');
+// 격리 실행(apply-config)용 경로 오버라이드. 미설정이면 리포 정본 경로 — 기본 동작 완전 불변.
+const TOK = process.env.TOKENS_DIR ? path.resolve(process.cwd(), process.env.TOKENS_DIR) : path.join(ROOT, 'tokens');
+const OUT = process.env.FIGMA_OUT ? path.resolve(process.cwd(), process.env.FIGMA_OUT) : path.join(ROOT, 'build', 'figma');
 const REM_BASE = 16; // 결정 #28 ④-1 — rem 파생 기준 root=16px 을 빌드 상수로 명시
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -93,7 +95,9 @@ const normLogical = (p) => p.replace(/^dimension\.(rem|px)\./, 'dimension.step.'
 /* ────────────────────────────────────────────────────────────────────────────
  * 3. 소스 로드
  * ──────────────────────────────────────────────────────────────────────────── */
-const rd = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
+// tokens/* 는 TOK 아래에서, 그 밖의 경로는 ROOT 기준에서 읽는다.
+const rd = (p) => JSON.parse(fs.readFileSync(
+  p.startsWith('tokens/') ? path.join(TOK, p.slice('tokens/'.length)) : path.join(ROOT, p), 'utf8'));
 
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -168,7 +172,7 @@ function build() {
   // 시맨틱은 '확장본'이 SSOT다. tokens.semantic.json 은 gen-semantic 산출만 담고 있어
   // 결정 #17·#21이 시맨틱으로 확정한 8역할(action-disabled·placeholder·scrim·control-knob·
   // motion·size·focus-offset·border)이 빠져 있다 → gen-component --emit-semantic-ext 산출을 쓴다.
-  const EXT = path.join(ROOT, 'tokens', 'tokens.semantic-ext.json');
+  const EXT = path.join(TOK, 'tokens.semantic-ext.json');
   if (!fs.existsSync(EXT)) throw new Error('tokens/tokens.semantic-ext.json 없음 — `node scripts/gen-component.cjs --emit-semantic-ext` 를 먼저 실행하세요.');
   const S = rd('tokens/tokens.semantic-ext.json');
   const M = rd('tokens/tokens.motion.json');

@@ -53,7 +53,22 @@ function buildSize() {
 // ms, 단조 증가 · 100ms 그리드 (진아 지시 2026-08-06 "모션도 해당 방향으로 정리").
 // 구값 0/120/200/320/480 은 간격이 120·80·120·160 으로 불규칙했다. 100 그리드로 스냅해
 // 사람이 외울 수 있는 사다리로 만든다 — 값을 고를 때 "그 사이 어딘가"를 발명하지 않게 된다.
-const DURATION = { instant: 0, fast: 100, base: 200, slow: 300, slower: 500 };
+// 컨피규레이터 export 연결(B2a): config 로 지속시간 사다리를 열되 규칙은 코드가 지킨다 —
+// 0 부터 시작 · 단조 증가 · 전부 100ms 그리드. 규칙을 깨는 값은 하드 실패시킨다.
+const DURATION = (() => {
+  const D = { instant: 0, fast: 100, base: 200, slow: 300, slower: 500, ...(PCFG.motion && PCFG.motion.durations) };
+  const keys = ['instant', 'fast', 'base', 'slow', 'slower'];
+  let prev = -1;
+  for (const k of keys) {
+    const v = D[k];
+    if (!Number.isInteger(v) || v < 0) throw new Error(`motion.durations.${k}: 0 이상 정수 ms 여야 합니다(받은 값 ${JSON.stringify(v)}).`);
+    if (v % 100 !== 0) throw new Error(`motion.durations.${k}=${v}: 100ms 그리드를 벗어납니다(진아 지시 2026-08-06).`);
+    if (v <= prev && !(k === 'instant')) throw new Error(`motion.durations.${k}=${v}: 단조 증가여야 합니다(직전 ${prev}).`);
+    prev = v;
+  }
+  if (D.instant !== 0) throw new Error(`motion.durations.instant=${D.instant}: 즉시는 0 이어야 합니다.`);
+  return D;
+})();
 const EASING = {                                                                 // cubic-bezier 4튜플 (x∈[0,1])
   "linear":     [0, 0, 1, 1],
   "standard":   [0.2, 0, 0, 1],       // 일반 UI 상태 전이 (ease-out 우세)
