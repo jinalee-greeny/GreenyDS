@@ -1,0 +1,182 @@
+{
+  "component": {
+    "progressSteps": {
+      "$description": "ProgressSteps — 진행 단계. 수량 입력형(counter)과 이름을 다투는 'Stepper' 를 쓰지 않는다(§4 메모 1 판정, 2026-08-06). 스텝 원은 radius.circle 소비라 F-12 정사각 게이트 대상. 열린 컨테이너(단계 수가 가변)라 고정 높이 없음.",
+      "step": {
+        "bg": {
+          "complete": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "current": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "upcoming": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          },
+          "error": {
+            "$value": "{semantic.color.bg.error-subtle}",
+            "ref": "color.bg.error-subtle"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.action-disabled}",
+            "ref": "color.bg.action-disabled"
+          }
+        },
+        "fg": {
+          "complete": {
+            "$value": "{semantic.color.fg.on-action}",
+            "ref": "color.fg.on-action"
+          },
+          "current": {
+            "$value": "{semantic.color.fg.on-action}",
+            "ref": "color.fg.on-action"
+          },
+          "upcoming": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "error": {
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "border": {
+          "current": {
+            "$value": "{semantic.color.fg.brand}",
+            "ref": "color.fg.brand"
+          },
+          "upcoming": {
+            "$value": "{semantic.color.border.default}",
+            "ref": "color.border.default"
+          },
+          "error": {
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
+          }
+        },
+        "borderWidth": {
+          "current": {
+            "$value": "{semantic.borderWidth.selected}",
+            "ref": "borderWidth.selected"
+          },
+          "upcoming": {
+            "$value": "{semantic.borderWidth.default}",
+            "ref": "borderWidth.default"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "sm": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          },
+          "md": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "$extensions": {
+          "square": "size",
+          "why": "radius.circle 소비 — 정사각 전제(F-12). size 를 한 값으로 선언해 width/height 분리를 원천 차단"
+        }
+      },
+      "connector": {
+        "bg": {
+          "complete": {
+            "$value": "{semantic.color.bg.action-primary.default}",
+            "ref": "color.bg.action-primary.default"
+          },
+          "upcoming": {
+            "$value": "{semantic.color.bg.action-secondary.default}",
+            "ref": "color.bg.action-secondary.default"
+          }
+        },
+        "thickness": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.25",
+              "why": "연결선 두께 — Slider.track·FileUpload.progress 와 같은 규칙(§0 예외ⓐ)"
+            }
+          }
+        },
+        "$extensions": {
+          "why": "action-secondary 를 배경으로만 쓴다 — 이 위에 텍스트를 얹지 않으므로 Q-015 의 미달 페어(fg.primary×action-secondary)가 성립하지 않는다. Slider.track 과 같은 사용"
+        }
+      },
+      "label": {
+        "fg": {
+          "complete": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "current": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "upcoming": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "error": {
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "description": {
+          "fg": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "typography": {
+            "$value": "{semantic.typography.caption}",
+            "ref": "typography.caption"
+          }
+        }
+      },
+      "gap": {
+        "x": {
+          "$value": "{semantic.spacing.gap.x.md}",
+          "ref": "spacing.gap.x.md"
+        },
+        "y": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

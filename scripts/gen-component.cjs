@@ -827,6 +827,67 @@ function runChecks(comps){
     comps.forEach(c=>{ const nm=Object.keys(c.component)[0]; walkCircle(c.component[nm], [], nm); });
   }
 
+  /* ===== Wave 5 검사 (§3 탐색) ===== */
+  for (const mode of ["light","dark"]){
+    const surf = resolveSem(mode,"color.bg.surface").hex;
+    const sub  = resolveSem(mode,"color.bg.subtle").hex;
+    // N-1: 현재 위치(current)는 본문급이다 — 경로에서 유일하게 '내용'인 항목
+    ck("N-1", contrast(resolveSem(mode,"color.fg.primary").hex,surf)>=7, `${mode} breadcrumb.item.current fg.primary×surface <7`);
+    // N-2: 조상 링크는 secondary — 읽히되 현재를 덮지 않아야 한다
+    ck("N-2", contrast(resolveSem(mode,"color.fg.secondary").hex,surf)>=4.5, `${mode} breadcrumb.item.default fg.secondary×surface <4.5`);
+    // N-3: 구분자·'…' 는 기호지 내용이 아니다 — 비텍스트 하한 3:1
+    ck("N-3", contrast(resolveSem(mode,"color.fg.tertiary").hex,surf)>=3, `${mode} breadcrumb.separator fg.tertiary×surface <3`);
+    // N-4: 완료·현재 스텝의 체크/숫자 × action-primary 채움 (Button primary 와 같은 페어를 이 컴포넌트에서 재검증)
+    ck("N-4", contrast(resolveSem(mode,"color.fg.on-action").hex,resolveSem(mode,"color.bg.action-primary.default").hex)>=4.5,
+       `${mode} progressSteps.step.complete on-action×fill <4.5`);
+    // N-5: 아직 안 온 스텝의 숫자 — bg.subtle 위 텍스트라 4.5. fg.tertiary(3:1)로 내리면 숫자가 안 읽힌다.
+    ck("N-5", contrast(resolveSem(mode,"color.fg.secondary").hex,sub)>=4.5,
+       `${mode} progressSteps.step.upcoming fg.secondary×bg.subtle ${round2(contrast(resolveSem(mode,"color.fg.secondary").hex,sub))}<4.5`);
+    // N-6: 오류 스텝 자기-페어링 (Banner·FileUpload 와 같은 패턴)
+    ck("N-6", contrast(resolveSem(mode,"color.fg.error").hex,resolveSem(mode,"color.bg.error-subtle").hex)>=4.5,
+       `${mode} progressSteps.step.error fg×own-subtle-bg <4.5`);
+    // N-7: NavBar 비선택 항목 — unselected 는 secondary 단계라 본문 기준을 받는다
+    ck("N-7", contrast(resolveSem(mode,"color.fg.unselected").hex,surf)>=4.5,
+       `${mode} navBar.item.default fg.unselected×surface ${round2(contrast(resolveSem(mode,"color.fg.unselected").hex,surf))}<4.5`);
+  }
+  {
+    const bc = buildBreadcrumb().component.breadcrumb;
+    const pg = buildPagination().component.pagination;
+    const nb = buildNavBar().component.navBar;
+    const ps = buildProgressSteps().component.progressSteps;
+    // N-8: 탐색 4종은 전부 열린 컨테이너다 — 항목 수가 가변이라 고정 높이를 가질 수 없다.
+    //      단 '항목' 자신은 닫힌 클릭 타깃이라 height 를 갖는다(Q-007 스코프 그대로).
+    [["breadcrumb",bc],["pagination",pg],["progressSteps",ps]].forEach(([nm,c])=>
+      ck("N-8", !("height" in c), `${nm} 루트에 고정 높이 토큰 존재(§3.1 위반)`));
+    // N-9: NavBar 는 진아 판정(2026-08-06 '패딩 파생')대로 바에 높이 토큰이 없어야 한다.
+    //      판정을 산문으로만 적어두면 다음 사람이 편의상 height 를 넣는다 — 검사로 고정한다.
+    ck("N-9", !("height" in nb.bar), `navBar.bar 에 고정 높이 토큰 존재 — 진아 판정 2026-08-06 '패딩 파생' 위반`);
+    ck("N-9", !!nb.bar["padding-y"] && !!nb.item.height,
+       `navBar 바 높이 파생 재료 결손(padding-y 또는 item.height 없음) — 높이가 어디서도 나오지 않는다`);
+    // N-10: 페이지 버튼 정사각 — 자릿수가 늘어도 칸이 흔들리지 않아야 한다(Counter F-8 과 같은 규칙)
+    ["sm","md"].forEach(t=>
+      ck("N-10", pg.page.size[t].$extensions.px===CONTROL_PX[t],
+         `pagination.page.size.${t} ${pg.page.size[t].$extensions.px} ≠ 컨트롤 높이 ${CONTROL_PX[t]} (정사각 위반)`));
+    // N-11: 'stepper' 는 진행 단계형에도 남기지 않는다 (§4 메모 1 — 두 뜻을 다투는 이름)
+    const nameHasS = (node) => Object.keys(node).some(k =>
+      (!k.startsWith("$") && /stepper/i.test(k)) ||
+      (!k.startsWith("$") && node[k] && typeof node[k]==="object" && nameHasS(node[k])));
+    ck("N-11", !nameHasS(ps), `progressSteps 토큰 '이름'에 stepper 잔존`);
+    // N-12: Pagination 은 action-secondary 를 쓰지 않는다 — Q-015 미달 페어 회피가 의도임을 고정한다.
+    //       판정이 나면 이 검사를 지우거나 뒤집으면 된다. 지금은 '왜 안 썼는지'를 코드가 기억한다.
+    //       ⚠ 산문($description)이 아니라 '참조(ref)'만 본다 — F-10 과 같은 함정이다.
+    //          회피 이유를 적어둔 문장이 검사에 걸리면, 검사가 근거 기록을 벌하게 된다.
+    const refsOf = (node, out=[]) => {
+      for (const [k,v] of Object.entries(node)){
+        if (k.startsWith("$")) continue;
+        if (v && typeof v==="object"){ if (v.ref) out.push(v.ref); else refsOf(v, out); }
+      }
+      return out;
+    };
+    ck("N-12", !refsOf(pg).some(r=>r.includes("action-secondary")),
+       `pagination 이 action-secondary 를 참조한다 — Q-015 판정 전까지 회피 대상(의도치 않은 재도입)`);
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -1044,12 +1105,148 @@ function buildDatePicker(){
   }}};
 }
 
+
+/* ============================================================
+ * Wave 5 — CDS_Components §3 탐색 4종 (2026-08-06)
+ *   전부 3-A(신규 토큰 세트). Q-016(Menu·Popover 추출)에 걸리는 것은 3-B 조합 4종이지
+ *   이 넷이 아니다 — NavBar 의 드롭다운은 나중에 Menu 와 '조합'할 문제이고,
+ *   NavBar 자신의 토큰(바 표면·항목·인디케이터)에는 Menu 가 들어가지 않는다.
+ * ============================================================ */
+
+// ---- Breadcrumb ----
+// 링크 색을 fg.link(파랑)로 하지 않았다. 브레드크럼은 '읽는 경로'가 1차 기능이라
+// 항목마다 파란색이 켜지면 현재 위치가 묻힌다 — 위계는 색이 아니라 primary/secondary 단계로 말한다.
+function buildBreadcrumb(){
+  return { "component":{ "breadcrumb":{
+    "$description":"Breadcrumb — 경로 항목 + 구분자. 링크 항목을 fg.link(파랑)로 칠하지 않는다: 항목마다 색이 켜지면 '지금 어디인가'(current)가 묻힌다. 위계는 fg.secondary→fg.primary 단계로 말한다. 열린 컨테이너라 고정 높이 없음.",
+    "item":{
+      "fg":{ "default":a("color.fg.secondary"), "hover":a("color.fg.primary"),
+             "current":a("color.fg.primary"), "disabled":a("color.fg.disabled") },
+      "bg":{ "hover":a("color.bg.action-ghost.hover") },
+      "radius":a("radius.control"),
+      "padding-x":a("spacing.padding.sm"),
+      "typography":a("typography.label")
+    },
+    "separator":{ "fg":a("color.fg.tertiary"), "size":a("size.icon.sm") },
+    "overflow":{ "fg":a("color.fg.tertiary"), "bg-hover":a("color.bg.action-ghost.hover"),
+                 "$extensions":{ why:"경로가 길 때 접는 '…' 손잡이. 구분자와 같은 단계(tertiary) — 둘 다 경로를 읽는 데 필요한 보조 기호지 내용이 아니다" } },
+    "gap":a("spacing.gap.x.sm"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- Pagination ----
+// 페이지 버튼은 정사각(Counter 선례) — 자릿수가 늘어도 칸이 흔들리지 않는다.
+// action-secondary 를 쓰지 않는다: Q-015(다크 pressed 4.34<4.5) 판정 전이라
+// 알려진 미달 페어 위에 새 컴포넌트를 얹지 않는다. Counter 와 같은 회피.
+function buildPagination(){
+  return { "component":{ "pagination":{
+    "$description":"Pagination — 페이지 버튼(정사각) + 이전/다음 + 접힘 '…'. 현재 페이지는 공용 selected 역할을 소비한다(결정 #40 ② 실행분). action-secondary 미사용 — Q-015 판정 전까지 알려진 AA 미달 페어를 피한다(Counter 와 같은 처리).",
+    "page":{
+      "bg":{ "default":a("color.bg.unselected"), "hover":a("color.bg.action-ghost.hover"),
+             "current":a("color.bg.selected"), "disabled":a("color.bg.unselected") },
+      "fg":{ "default":a("color.fg.primary"), "current":a("color.fg.selected"),
+             "disabled":a("color.fg.disabled") },
+      "radius":a("radius.control"),
+      "typography":a("typography.label"),
+      "size":{ "sm":computedSquare("sm","페이지 버튼은 폭=높이. 폭을 자릿수에 맡기면 1과 10 의 칸이 달라져 줄이 흔들린다"),
+               "md":computedSquare("md","페이지 버튼은 폭=높이") }
+    },
+    "nav":{
+      "fg":{ "default":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+      "bg-hover":a("color.bg.action-ghost.hover"),
+      "icon":a("size.icon.md")
+    },
+    "overflow":{ "fg":a("color.fg.tertiary") },
+    "gap":a("spacing.gap.x.sm"),
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- NavBar (진아 판정 2026-08-06: 별도 등재 · 높이는 패딩 파생) ----
+// 높이 토큰을 두지 않는다 — Q-007 이 정한 "size.control 은 닫힌 컨트롤 전용, 열린 컨테이너는
+// 높이 토큰 금지" 스코프를 그대로 지킨다. 바 높이는 padding + 항목 높이에서 나온다.
+// 항목이 Tabs 와 겹치지만 별도 등재한다 — 같은 시맨틱을 각자 가리키는 방식(Textarea↔Input 선례).
+function buildNavBar(){
+  return { "component":{ "navBar":{
+    "$description":"NavBar — 앱 상단 바. 고정 높이 토큰이 없다(진아 판정 2026-08-06 '패딩 파생'): Q-007 의 '열린 컨테이너는 높이 토큰 금지' 스코프를 그대로 지킨다. 항목 토큰이 Tabs 와 겹치지만 별도 등재(진아 판정 '별도 등재') — 컴포넌트간 참조(§0.1) 대신 같은 시맨틱을 각자 가리킨다. 드롭다운은 Q-016 의 Menu 와 '조합'할 문제이지 이 파일의 의존성이 아니다.",
+    "bar":{
+      "bg":a("color.bg.surface"),
+      "bg-scrolled":a("color.bg.surface-raised"),
+      "border":a("color.border.subtle"),
+      "borderWidth":a("borderWidth.default"),
+      "elevation":{ "resting":a("elevation.resting"), "scrolled":a("elevation.raised") },
+      "padding-x":a("spacing.padding.lg"),
+      "padding-y":a("spacing.padding.sm"),
+      "gap":a("spacing.gap.x.lg"),
+      "$extensions":{ why:"height 없음 — 바 높이 = padding-y×2 + item.height. 밀도를 바꾸면 바도 함께 움직인다(진아 판정 2026-08-06)" }
+    },
+    "item":{
+      "fg":{ "default":a("color.fg.unselected"), "hover":a("color.fg.primary"),
+             "selected":a("color.fg.selected"), "disabled":a("color.fg.disabled") },
+      "bg":{ "hover":a("color.bg.action-ghost.hover"), "selected":a("color.bg.unselected") },
+      "height":a("size.control.md"),
+      "radius":a("radius.control"),
+      "padding-x":a("spacing.padding.sm"),
+      "typography":a("typography.label"),
+      "$extensions":{ why:"item.height 는 닫힌 컨트롤(클릭 타깃)이라 size.control 이 맞다 — 바 자체와 달리 Q-007 스코프 안이다" }
+    },
+    "indicator":{
+      "color":a("color.fg.brand"),
+      "thickness":a("borderWidth.selected"),
+      "motion":a("motion.control"),
+      "$extensions":{ rule:{ type:"component-state", state:"selected", why:"Tabs.indicator 와 같은 장치 — 값이 완전히 같다(CS-1 마커로 추적). 수렴이 더 쌓이면 §0.3 일반 절차로 승격 상정 대상" } }
+    },
+    "brand":{ "fg":a("color.fg.primary"), "typography":a("typography.title"), "icon":a("size.icon.lg") },
+    "divider":{ "color":a("color.border.subtle"), "thickness":a("borderWidth.default") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- ProgressSteps (진행 단계 — §4 메모 1 판정으로 'Stepper' 이름을 쓰지 않는다) ----
+// 스텝 원은 radius.circle 소비 → F-12(정사각 게이트)가 자동으로 지킨다.
+function buildProgressSteps(){
+  return { "component":{ "progressSteps":{
+    "$description":"ProgressSteps — 진행 단계. 수량 입력형(counter)과 이름을 다투는 'Stepper' 를 쓰지 않는다(§4 메모 1 판정, 2026-08-06). 스텝 원은 radius.circle 소비라 F-12 정사각 게이트 대상. 열린 컨테이너(단계 수가 가변)라 고정 높이 없음.",
+    "step":{
+      "bg":{ "complete":a("color.bg.action-primary.default"), "current":a("color.bg.action-primary.default"),
+             "upcoming":a("color.bg.subtle"), "error":a("color.bg.error-subtle"), "disabled":a("color.bg.action-disabled") },
+      "fg":{ "complete":a("color.fg.on-action"), "current":a("color.fg.on-action"),
+             "upcoming":a("color.fg.secondary"), "error":a("color.fg.error"), "disabled":a("color.fg.disabled") },
+      "border":{ "current":a("color.fg.brand"), "upcoming":a("color.border.default"), "error":a("color.fg.error") },
+      "borderWidth":{ "current":a("borderWidth.selected"), "upcoming":a("borderWidth.default") },
+      "radius":a("radius.circle"),
+      "size":{ "sm":a("size.icon.lg"), "md":a("size.control.sm") },
+      "typography":a("typography.label"),
+      "$extensions":{ square:"size", why:"radius.circle 소비 — 정사각 전제(F-12). size 를 한 값으로 선언해 width/height 분리를 원천 차단" }
+    },
+    "connector":{
+      "bg":{ "complete":a("color.bg.action-primary.default"), "upcoming":a("color.bg.action-secondary.default") },
+      "thickness":computedScale("size.icon.sm", ICON_PX.sm, 0.25, "연결선 두께 — Slider.track·FileUpload.progress 와 같은 규칙(§0 예외ⓐ)"),
+      "$extensions":{ why:"action-secondary 를 배경으로만 쓴다 — 이 위에 텍스트를 얹지 않으므로 Q-015 의 미달 페어(fg.primary×action-secondary)가 성립하지 않는다. Slider.track 과 같은 사용" }
+    },
+    "label":{
+      "fg":{ "complete":a("color.fg.primary"), "current":a("color.fg.primary"),
+             "upcoming":a("color.fg.secondary"), "error":a("color.fg.error"), "disabled":a("color.fg.disabled") },
+      "typography":a("typography.label"),
+      "description":{ "fg":a("color.fg.secondary"), "typography":a("typography.caption") }
+    },
+    "gap":{ "x":a("spacing.gap.x.md"), "y":a("spacing.gap.y.sm") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
                buildTooltip(), buildBadge(), buildBanner(),
                buildField(), buildTextarea(), buildCounter(),
-               buildFileUpload(), buildDatePicker()];
+               buildFileUpload(), buildDatePicker(),
+               buildBreadcrumb(), buildPagination(), buildNavBar(), buildProgressSteps()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -1058,7 +1255,8 @@ fs.mkdirSync(path.join(OUT, "tokens/component"), { recursive:true });
 const outDir = path.join(OUT, "tokens/component");
 const names = ["button","input","select","card","switch","tabs","modal","toast",
                "checkbox","radio","slider","segmented","tooltip","badge","banner",
-               "field","textarea","counter","file-upload","date-picker"];
+               "field","textarea","counter","file-upload","date-picker",
+               "breadcrumb","pagination","nav-bar","progress-steps"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -1130,7 +1328,7 @@ const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5 + Wave5 4) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
 if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
-console.log(`전 검사 ✗ 0건 — Wave 1+2+3+4 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);
+console.log(`전 검사 ✗ 0건 — Wave 1~5 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);

@@ -1,0 +1,80 @@
+{
+  "component": {
+    "breadcrumb": {
+      "$description": "Breadcrumb — 경로 항목 + 구분자. 링크 항목을 fg.link(파랑)로 칠하지 않는다: 항목마다 색이 켜지면 '지금 어디인가'(current)가 묻힌다. 위계는 fg.secondary→fg.primary 단계로 말한다. 열린 컨테이너라 고정 높이 없음.",
+      "item": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "hover": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "current": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "bg": {
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        }
+      },
+      "separator": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "size": {
+          "$value": "{semantic.size.icon.sm}",
+          "ref": "size.icon.sm"
+        }
+      },
+      "overflow": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        },
+        "bg-hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "$extensions": {
+          "why": "경로가 길 때 접는 '…' 손잡이. 구분자와 같은 단계(tertiary) — 둘 다 경로를 읽는 데 필요한 보조 기호지 내용이 아니다"
+        }
+      },
+      "gap": {
+        "$value": "{semantic.spacing.gap.x.sm}",
+        "ref": "spacing.gap.x.sm"
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "component": {
+    "navBar": {
+      "$description": "NavBar — 앱 상단 바. 고정 높이 토큰이 없다(진아 판정 2026-08-06 '패딩 파생'): Q-007 의 '열린 컨테이너는 높이 토큰 금지' 스코프를 그대로 지킨다. 항목 토큰이 Tabs 와 겹치지만 별도 등재(진아 판정 '별도 등재') — 컴포넌트간 참조(§0.1) 대신 같은 시맨틱을 각자 가리킨다. 드롭다운은 Q-016 의 Menu 와 '조합'할 문제이지 이 파일의 의존성이 아니다.",
+      "bar": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface}",
+          "ref": "color.bg.surface"
+        },
+        "bg-scrolled": {
+          "$value": "{semantic.color.bg.surface-raised}",
+          "ref": "color.bg.surface-raised"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "borderWidth": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        },
+        "elevation": {
+          "resting": {
+            "$value": "{semantic.elevation.resting}",
+            "ref": "elevation.resting"
+          },
+          "scrolled": {
+            "$value": "{semantic.elevation.raised}",
+            "ref": "elevation.raised"
+          }
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.lg}",
+          "ref": "spacing.padding.lg"
+        },
+        "padding-y": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.lg}",
+          "ref": "spacing.gap.x.lg"
+        },
+        "$extensions": {
+          "why": "height 없음 — 바 높이 = padding-y×2 + item.height. 밀도를 바꾸면 바도 함께 움직인다(진아 판정 2026-08-06)"
+        }
+      },
+      "item": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.unselected}",
+            "ref": "color.fg.unselected"
+          },
+          "hover": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "selected": {
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "bg": {
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "selected": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          }
+        },
+        "height": {
+          "$value": "{semantic.size.control.md}",
+          "ref": "size.control.md"
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "$extensions": {
+          "why": "item.height 는 닫힌 컨트롤(클릭 타깃)이라 size.control 이 맞다 — 바 자체와 달리 Q-007 스코프 안이다"
+        }
+      },
+      "indicator": {
+        "color": {
+          "$value": "{semantic.color.fg.brand}",
+          "ref": "color.fg.brand"
+        },
+        "thickness": {
+          "$value": "{semantic.borderWidth.selected}",
+          "ref": "borderWidth.selected"
+        },
+        "motion": {
+          "$value": "{semantic.motion.control}",
+          "ref": "motion.control"
+        },
+        "$extensions": {
+          "rule": {
+            "type": "component-state",
+            "state": "selected",
+            "why": "Tabs.indicator 와 같은 장치 — 값이 완전히 같다(CS-1 마커로 추적). 수렴이 더 쌓이면 §0.3 일반 절차로 승격 상정 대상"
+          }
+        }
+      },
+      "brand": {
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.title}",
+          "ref": "typography.title"
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.lg}",
+          "ref": "size.icon.lg"
+        }
+      },
+      "divider": {
+        "color": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "thickness": {
+          "$value": "{semantic.borderWidth.default}",
+          "ref": "borderWidth.default"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

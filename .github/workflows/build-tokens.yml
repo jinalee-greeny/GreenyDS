@@ -32,13 +32,13 @@ jobs:
       - name: Generate semantic layer
         run: node scripts/gen-semantic.cjs tokens/tokens.semantic.json
 
-      # 컴포넌트 재생성 + 20종 아키텍처 검사 558건(✗0 하드 게이트 · △ 는 리포트만)
+      # 컴포넌트 재생성 + 24종 아키텍처 검사 677건(✗0 하드 게이트 · △ 는 리포트만)
       #   Wave 1+2 8종(191건) + Wave 3 7종(Checkbox·Radio·Slider·Segmented·Tooltip·Badge·Banner)
       #   CS-1(거버넌스) 포함 — segmented.selected의 component-state 마커 결손 시 실패(Q-009/Q-012 추적 장치)
       - name: Generate + check component layer
         run: node scripts/gen-component.cjs
 
-      # 섭동 매트릭스 — 6 프리셋 × 558 = 3,348검사 (엔진 적응 하드 게이트)
+      # 섭동 매트릭스 — 6 프리셋 × 677 = 4,062검사 (엔진 적응 하드 게이트)
       - name: Perturbation matrix (engine adaptation gate)
         run: node scripts/perturb.cjs
 

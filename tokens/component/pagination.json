@@ -1,0 +1,113 @@
+{
+  "component": {
+    "pagination": {
+      "$description": "Pagination — 페이지 버튼(정사각) + 이전/다음 + 접힘 '…'. 현재 페이지는 공용 selected 역할을 소비한다(결정 #40 ② 실행분). action-secondary 미사용 — Q-015 판정 전까지 알려진 AA 미달 페어를 피한다(Counter 와 같은 처리).",
+      "page": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "current": {
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "current": {
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "size": {
+          "sm": {
+            "$value": "2.25rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 36,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.sm × 1 (정사각)",
+                "why": "페이지 버튼은 폭=높이. 폭을 자릿수에 맡기면 1과 10 의 칸이 달라져 줄이 흔들린다"
+              }
+            }
+          },
+          "md": {
+            "$value": "2.75rem",
+            "$type": "dimension",
+            "$extensions": {
+              "px": 44,
+              "rule": {
+                "type": "scale",
+                "formula": "size.control.md × 1 (정사각)",
+                "why": "페이지 버튼은 폭=높이"
+              }
+            }
+          }
+        }
+      },
+      "nav": {
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "bg-hover": {
+          "$value": "{semantic.color.bg.action-ghost.hover}",
+          "ref": "color.bg.action-ghost.hover"
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        }
+      },
+      "overflow": {
+        "fg": {
+          "$value": "{semantic.color.fg.tertiary}",
+          "ref": "color.fg.tertiary"
+        }
+      },
+      "gap": {
+        "$value": "{semantic.spacing.gap.x.sm}",
+        "ref": "spacing.gap.x.sm"
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}
