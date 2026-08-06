@@ -1,0 +1,263 @@
+{
+  "component": {
+    "datePicker": {
+      "$description": "DatePicker — 트리거(Input 동형) + 달력 팝오버. Time picker 는 같은 표면을 쓰므로 별도 컴포넌트로 등재하지 않는다(§3-B 조합 판정). 날짜 칸은 정사각 + radius.circle — 전제는 검사 F-12 가 지킨다.",
+      "trigger": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "placeholder": {
+            "$value": "{semantic.color.fg.placeholder}",
+            "ref": "color.fg.placeholder"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "border": {
+          "default": {
+            "$value": "{semantic.color.border.default}",
+            "ref": "color.border.default"
+          },
+          "hover": {
+            "$value": "{semantic.color.border.strong}",
+            "ref": "color.border.strong"
+          },
+          "focused": {
+            "$value": "{semantic.color.border.focused}",
+            "ref": "color.border.focused"
+          },
+          "error": {
+            "$value": "{semantic.color.border.error}",
+            "ref": "color.border.error"
+          },
+          "disabled": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
+          }
+        },
+        "borderWidth": {
+          "default": {
+            "$value": "{semantic.borderWidth.default}",
+            "ref": "borderWidth.default"
+          },
+          "focused": {
+            "$value": "{semantic.borderWidth.focused}",
+            "ref": "borderWidth.focused"
+          }
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          },
+          "lg": {
+            "$value": "{semantic.size.control.lg}",
+            "ref": "size.control.lg"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "padding-x": {
+          "$value": "{semantic.spacing.padding.md}",
+          "ref": "spacing.padding.md"
+        },
+        "icon": {
+          "$value": "{semantic.size.icon.md}",
+          "ref": "size.icon.md"
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        }
+      },
+      "panel": {
+        "bg": {
+          "$value": "{semantic.color.bg.surface-raised}",
+          "ref": "color.bg.surface-raised"
+        },
+        "elevation": {
+          "$value": "{semantic.elevation.raised}",
+          "ref": "elevation.raised"
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "radius": {
+          "$value": "{semantic.radius.container}",
+          "ref": "radius.container"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        },
+        "$extensions": {
+          "why": "select.menu 와 동일한 떠 있는 표면 — Q-016 추출 대상. 판정 전까지 시맨틱을 각자 가리킨다(§0.1)"
+        }
+      },
+      "header": {
+        "typography": {
+          "$value": "{semantic.typography.title}",
+          "ref": "typography.title"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.primary}",
+          "ref": "color.fg.primary"
+        },
+        "nav": {
+          "fg": {
+            "default": {
+              "$value": "{semantic.color.fg.secondary}",
+              "ref": "color.fg.secondary"
+            },
+            "disabled": {
+              "$value": "{semantic.color.fg.disabled}",
+              "ref": "color.fg.disabled"
+            }
+          },
+          "bg-hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "size": {
+            "$value": "{semantic.size.icon.md}",
+            "ref": "size.icon.md"
+          }
+        }
+      },
+      "weekday": {
+        "fg": {
+          "$value": "{semantic.color.fg.secondary}",
+          "ref": "color.fg.secondary"
+        },
+        "typography": {
+          "$value": "{semantic.typography.caption}",
+          "ref": "typography.caption"
+        }
+      },
+      "day": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          },
+          "hover": {
+            "$value": "{semantic.color.bg.action-ghost.hover}",
+            "ref": "color.bg.action-ghost.hover"
+          },
+          "selected": {
+            "$value": "{semantic.color.bg.selected}",
+            "ref": "color.bg.selected"
+          },
+          "range": {
+            "$value": "{semantic.color.bg.brand-subtle}",
+            "ref": "color.bg.brand-subtle"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.unselected}",
+            "ref": "color.bg.unselected"
+          }
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "selected": {
+            "$value": "{semantic.color.fg.selected}",
+            "ref": "color.fg.selected"
+          },
+          "outside": {
+            "$value": "{semantic.color.fg.tertiary}",
+            "ref": "color.fg.tertiary"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        },
+        "today": {
+          "border": {
+            "$value": "{semantic.color.fg.brand}",
+            "ref": "color.fg.brand"
+          },
+          "borderWidth": {
+            "$value": "{semantic.borderWidth.selected}",
+            "ref": "borderWidth.selected"
+          },
+          "$extensions": {
+            "why": "색 인벤토리에 border.brand 가 없어 fg.brand 재사용 — Radio.control.border.checked·Tabs.indicator 선례와 동형(§0.5 새 역할 발명 금지)"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.circle}",
+          "ref": "radius.circle"
+        },
+        "size": {
+          "sm": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          },
+          "md": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        },
+        "$extensions": {
+          "square": "size",
+          "why": "radius.circle 소비 — 정사각 전제(Q-014 실행순서 6). size 를 한 값으로 선언해 width/height 분리 자체를 막는다"
+        }
+      },
+      "footer": {
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        },
+        "typography": {
+          "$value": "{semantic.typography.label}",
+          "ref": "typography.label"
+        },
+        "fg": {
+          "$value": "{semantic.color.fg.link.default}",
+          "ref": "color.fg.link.default"
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

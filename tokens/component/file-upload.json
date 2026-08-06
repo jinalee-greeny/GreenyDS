@@ -1,0 +1,219 @@
+{
+  "component": {
+    "fileUpload": {
+      "$description": "FileUpload — 드롭존 + 파일 행. 드롭존은 열린 컨테이너라 height 없이 min-height 만 갖는다. ⚠ 점선 테두리는 borderStyle 이고 이 시스템의 토큰 축(색·굵기)에 없다 — 스타일은 구현 레이어 몫으로 남기고 토큰으로 위장하지 않는다.",
+      "dropzone": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          },
+          "dragover": {
+            "$value": "{semantic.color.bg.brand-subtle}",
+            "ref": "color.bg.brand-subtle"
+          },
+          "disabled": {
+            "$value": "{semantic.color.bg.subtle}",
+            "ref": "color.bg.subtle"
+          }
+        },
+        "border": {
+          "default": {
+            "$value": "{semantic.color.border.default}",
+            "ref": "color.border.default"
+          },
+          "dragover": {
+            "$value": "{semantic.color.border.focused}",
+            "ref": "color.border.focused"
+          },
+          "focused": {
+            "$value": "{semantic.color.border.focused}",
+            "ref": "color.border.focused"
+          },
+          "error": {
+            "$value": "{semantic.color.border.error}",
+            "ref": "color.border.error"
+          },
+          "disabled": {
+            "$value": "{semantic.color.border.subtle}",
+            "ref": "color.border.subtle"
+          }
+        },
+        "borderWidth": {
+          "default": {
+            "$value": "{semantic.borderWidth.default}",
+            "ref": "borderWidth.default"
+          },
+          "focused": {
+            "$value": "{semantic.borderWidth.focused}",
+            "ref": "borderWidth.focused"
+          }
+        },
+        "radius": {
+          "$value": "{semantic.radius.container}",
+          "ref": "radius.container"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.lg}",
+          "ref": "spacing.padding.lg"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.y.sm}",
+          "ref": "spacing.gap.y.sm"
+        },
+        "min-height": {
+          "$value": "9.75rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 156,
+            "rule": {
+              "type": "scale",
+              "formula": "size.control.lg × 3",
+              "why": "아이콘 + 안내 2줄이 눌리지 않는 최소 높이. lg 컨트롤 3개분으로 잡아 사다리 밖 임의 px 을 만들지 않는다"
+            }
+          }
+        },
+        "icon": {
+          "size": {
+            "$value": "{semantic.size.icon.lg}",
+            "ref": "size.icon.lg"
+          },
+          "fg": {
+            "$value": "{semantic.color.fg.tertiary}",
+            "ref": "color.fg.tertiary"
+          }
+        },
+        "typography": {
+          "$value": "{semantic.typography.body}",
+          "ref": "typography.body"
+        },
+        "fg": {
+          "default": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "action": {
+            "$value": "{semantic.color.fg.link.default}",
+            "ref": "color.fg.link.default"
+          },
+          "disabled": {
+            "$value": "{semantic.color.fg.disabled}",
+            "ref": "color.fg.disabled"
+          }
+        }
+      },
+      "file": {
+        "bg": {
+          "default": {
+            "$value": "{semantic.color.bg.surface}",
+            "ref": "color.bg.surface"
+          },
+          "error": {
+            "$value": "{semantic.color.bg.error-subtle}",
+            "ref": "color.bg.error-subtle"
+          }
+        },
+        "border": {
+          "$value": "{semantic.color.border.subtle}",
+          "ref": "color.border.subtle"
+        },
+        "radius": {
+          "$value": "{semantic.radius.control}",
+          "ref": "radius.control"
+        },
+        "padding": {
+          "$value": "{semantic.spacing.padding.sm}",
+          "ref": "spacing.padding.sm"
+        },
+        "gap": {
+          "$value": "{semantic.spacing.gap.x.sm}",
+          "ref": "spacing.gap.x.sm"
+        },
+        "height": {
+          "sm": {
+            "$value": "{semantic.size.control.sm}",
+            "ref": "size.control.sm"
+          },
+          "md": {
+            "$value": "{semantic.size.control.md}",
+            "ref": "size.control.md"
+          }
+        },
+        "name": {
+          "fg": {
+            "$value": "{semantic.color.fg.primary}",
+            "ref": "color.fg.primary"
+          },
+          "typography": {
+            "$value": "{semantic.typography.label}",
+            "ref": "typography.label"
+          }
+        },
+        "meta": {
+          "fg": {
+            "$value": "{semantic.color.fg.secondary}",
+            "ref": "color.fg.secondary"
+          },
+          "typography": {
+            "$value": "{semantic.typography.caption}",
+            "ref": "typography.caption"
+          }
+        },
+        "error": {
+          "fg": {
+            "$value": "{semantic.color.fg.error}",
+            "ref": "color.fg.error"
+          },
+          "typography": {
+            "$value": "{semantic.typography.caption}",
+            "ref": "typography.caption"
+          }
+        },
+        "remove": {
+          "fg": {
+            "$value": "{semantic.color.fg.tertiary}",
+            "ref": "color.fg.tertiary"
+          },
+          "size": {
+            "$value": "{semantic.size.icon.sm}",
+            "ref": "size.icon.sm"
+          }
+        }
+      },
+      "progress": {
+        "track": {
+          "$value": "{semantic.color.bg.action-secondary.default}",
+          "ref": "color.bg.action-secondary.default"
+        },
+        "fill": {
+          "$value": "{semantic.color.bg.action-primary.default}",
+          "ref": "color.bg.action-primary.default"
+        },
+        "radius": {
+          "$value": "{semantic.radius.pill}",
+          "ref": "radius.pill"
+        },
+        "height": {
+          "$value": "0.25rem",
+          "$type": "dimension",
+          "$extensions": {
+            "px": 4,
+            "rule": {
+              "type": "scale",
+              "formula": "size.icon.sm × 0.25",
+              "why": "진행 막대 두께 — Slider.track 과 같은 규칙(§0 예외ⓐ)"
+            }
+          }
+        }
+      },
+      "focus-color": {
+        "$value": "{semantic.color.border.focused}",
+        "ref": "color.border.focused"
+      },
+      "focus-offset": {
+        "$value": "{semantic.focus-offset}",
+        "ref": "focus-offset"
+      }
+    }
+  }
+}

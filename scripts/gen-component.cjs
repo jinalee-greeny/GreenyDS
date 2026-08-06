@@ -771,6 +771,62 @@ function runChecks(comps){
     ck("F-10", !nameHas(cn), `counter 토큰 '이름'에 stepper 잔존`);
   }
 
+  /* ===== Wave 4-B 검사 (§3 입력/폼 잔여) ===== */
+  for (const mode of ["light","dark"]){
+    const sub = resolveSem(mode,"color.bg.subtle").hex;
+    // G-1: 드롭존 안내 문구는 bg.subtle 위에 놓인다 — surface 위가 아니다. 별도 페어라 따로 본다.
+    ck("G-1", contrast(resolveSem(mode,"color.fg.secondary").hex,sub)>=4.5,
+       `${mode} fileUpload.dropzone fg.secondary×bg.subtle ${round2(contrast(resolveSem(mode,"color.fg.secondary").hex,sub))}<4.5`);
+    // G-2: '찾아보기' 링크도 bg.subtle 위 — 링크는 fg.link 라 secondary 와 다른 값이다.
+    ck("G-2", contrast(resolveSem(mode,"color.fg.link.default").hex,sub)>=4.5,
+       `${mode} fileUpload.dropzone fg.link×bg.subtle ${round2(contrast(resolveSem(mode,"color.fg.link.default").hex,sub))}<4.5`);
+    // G-3: 오류 파일 행 — 자기 subtle 배경 위(Banner C-4 와 같은 자기-페어링)
+    ck("G-3", contrast(resolveSem(mode,"color.fg.error").hex,resolveSem(mode,"color.bg.error-subtle").hex)>=4.5,
+       `${mode} fileUpload.file.error fg×own-subtle-bg <4.5`);
+    // G-4: 선택된 날짜 — 공용 selected 역할 쌍(결정 #40 ② 실행분)의 첫 신규 소비처
+    ck("G-4", contrast(resolveSem(mode,"color.fg.selected").hex,resolveSem(mode,"color.bg.selected").hex)>=4.5,
+       `${mode} datePicker.day selected fg×bg ${round2(contrast(resolveSem(mode,"color.fg.selected").hex,resolveSem(mode,"color.bg.selected").hex))}<4.5`);
+    // G-5: 이번 달 밖 날짜(fg.tertiary)는 텍스트지만 보조 정보다 — 비텍스트 하한 3:1 로 본다.
+    //      이걸 4.5 로 올리면 '흐리게 보이는 다른 달'이라는 정보 자체가 사라진다.
+    ck("G-5", contrast(resolveSem(mode,"color.fg.tertiary").hex,resolveSem(mode,"color.bg.surface-raised").hex)>=3,
+       `${mode} datePicker.day.outside fg.tertiary×surface-raised <3`);
+  }
+  {
+    const fu = buildFileUpload().component.fileUpload;
+    const dp = buildDatePicker().component.datePicker;
+    // G-6: 드롭존은 열린 컨테이너 — 파일이 쌓이면 늘어난다
+    ck("G-6", !("height" in fu.dropzone), `fileUpload.dropzone 에 고정 높이 토큰 존재 — min-height 만 허용(§3.1 위반)`);
+    ck("G-6", fu.dropzone["min-height"].$extensions.px===CONTROL_PX.lg*3,
+       `fileUpload.dropzone.min-height 재계산 불일치: ${fu.dropzone["min-height"].$extensions.px} ≠ ${CONTROL_PX.lg*3}`);
+    // G-7: 달력 패널도 열린 컨테이너(월마다 5~6주로 행 수가 바뀐다)
+    ck("G-7", !("height" in dp.panel), `datePicker.panel 에 고정 높이 토큰 존재(§3.1 위반)`);
+    // G-8: 패널은 raised 쌍을 지킨다 — bg.surface-raised 를 쓰면 elevation.raised 도 함께(E-1 확장)
+    ck("G-8", !!dp.panel.bg && !!dp.panel.elevation, `datePicker.panel raised 쌍 결손(bg 만 있고 elevation 없음)`);
+  }
+  /* F-12 [Q-014 실행순서 6 완성] radius.circle 소비 노드는 정사각이어야 한다.
+   * Q-014 는 "50% ≡ 999px 등가는 정사각에서만 성립한다"며 이 검사를 요구했는데,
+   * 지금까지는 radio·slider 가 우연히 정사각이었을 뿐 규칙이 기계화되지 않았다.
+   * DatePicker.day 가 circle 을 쓰는 첫 신규 소비처라 여기서 닫는다.
+   * 판정 방식: 치수를 'size' 한 값으로 선언하게 하고 width/height 분리를 금지한다 —
+   *   한 값이면 정사각은 구조적으로 보장되고, 비교할 두 수가 아예 생기지 않는다. */
+  {
+    const walkCircle = (node, pathArr, comp) => {
+      if (!node || typeof node!=="object") return;
+      const r = node.radius;
+      if (r && r.ref === "radius.circle"){
+        const where = comp + "." + pathArr.join(".");
+        ck("F-12", "size" in node, `${where}: radius.circle 을 쓰는데 size 선언이 없다 — 정사각 전제를 확인할 수 없다`);
+        ck("F-12", !("width" in node && "height" in node),
+           `${where}: radius.circle 노드가 width·height 를 따로 갖는다 — 비정사각이면 원이 아니라 pill 로 렌더된다`);
+      }
+      for (const [k,v] of Object.entries(node)){
+        if (k.startsWith("$")) continue;
+        if (v && typeof v==="object" && !v.ref) walkCircle(v, [...pathArr,k], comp);
+      }
+    };
+    comps.forEach(c=>{ const nm=Object.keys(c.component)[0]; walkCircle(c.component[nm], [], nm); });
+  }
+
   const badge = buildBadge().component.badge, banner = buildBanner().component.banner;
   ck("S-3", !("height" in badge), `badge에 고정 높이 토큰 존재`);
   ck("S-3", !("height" in banner), `banner에 고정 높이 토큰 존재`);
@@ -887,11 +943,113 @@ function buildCounter(){
   }}};
 }
 
+
+/* ---- Wave 4-B — 입력/폼 잔여 2종 (2026-08-06) ---- */
+
+// ---- FileUpload (드롭존 + 파일 행) ----
+// 드롭존은 열린 컨테이너다 — 내용(파일 목록)이 늘어나므로 고정 높이를 갖지 않는다.
+function buildFileUpload(){
+  return { "component":{ "fileUpload":{
+    "$description":"FileUpload — 드롭존 + 파일 행. 드롭존은 열린 컨테이너라 height 없이 min-height 만 갖는다. ⚠ 점선 테두리는 borderStyle 이고 이 시스템의 토큰 축(색·굵기)에 없다 — 스타일은 구현 레이어 몫으로 남기고 토큰으로 위장하지 않는다.",
+    "dropzone":{
+      "bg":{ "default":a("color.bg.subtle"), "dragover":a("color.bg.brand-subtle"), "disabled":a("color.bg.subtle") },
+      "border":{ "default":a("color.border.default"), "dragover":a("color.border.focused"),
+                 "focused":a("color.border.focused"), "error":a("color.border.error"), "disabled":a("color.border.subtle") },
+      "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
+      "radius":a("radius.container"),
+      "padding":a("spacing.padding.lg"),
+      "gap":a("spacing.gap.y.sm"),
+      "min-height":computedScale("size.control.lg", 52, 3, "아이콘 + 안내 2줄이 눌리지 않는 최소 높이. lg 컨트롤 3개분으로 잡아 사다리 밖 임의 px 을 만들지 않는다"),
+      "icon":{ "size":a("size.icon.lg"), "fg":a("color.fg.tertiary") },
+      "typography":a("typography.body"),
+      "fg":{ "default":a("color.fg.secondary"), "action":a("color.fg.link.default"), "disabled":a("color.fg.disabled") }
+    },
+    "file":{
+      "bg":{ "default":a("color.bg.surface"), "error":a("color.bg.error-subtle") },
+      "border":a("color.border.subtle"),
+      "radius":a("radius.control"),
+      "padding":a("spacing.padding.sm"),
+      "gap":a("spacing.gap.x.sm"),
+      "height":{ "sm":a("size.control.sm"),"md":a("size.control.md") },
+      "name":{ "fg":a("color.fg.primary"), "typography":a("typography.label") },
+      "meta":{ "fg":a("color.fg.secondary"), "typography":a("typography.caption") },
+      "error":{ "fg":a("color.fg.error"), "typography":a("typography.caption") },
+      "remove":{ "fg":a("color.fg.tertiary"), "size":a("size.icon.sm") }
+    },
+    "progress":{
+      "track":a("color.bg.action-secondary.default"),
+      "fill":a("color.bg.action-primary.default"),
+      "radius":a("radius.pill"),
+      "height":computedScale("size.icon.sm", ICON_PX.sm, 0.25, "진행 막대 두께 — Slider.track 과 같은 규칙(§0 예외ⓐ)")
+    },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
+// ---- DatePicker (달력 그리드) ----
+// 날짜 칸은 radius.circle 을 쓴다 → Q-014 가 요구한 "circle 소비 노드는 정사각" 전제의 첫 신규 사례.
+// 그 전제는 이제 산문이 아니라 검사 F-12 가 기계로 지킨다.
+// ⚠ 떠 있는 표면(surface-raised + elevation.raised + radius.container)은 select.menu 와 같은 물건이다 —
+//   Q-016(Menu·Popover 추출)이 판정되면 이 블록이 그 추출 대상이 된다. 지금은 §0.1(컴포넌트간 참조 금지)에
+//   따라 같은 시맨틱을 각자 가리킨다(Textarea↔Input 과 같은 처리).
+function buildDatePicker(){
+  return { "component":{ "datePicker":{
+    "$description":"DatePicker — 트리거(Input 동형) + 달력 팝오버. Time picker 는 같은 표면을 쓰므로 별도 컴포넌트로 등재하지 않는다(§3-B 조합 판정). 날짜 칸은 정사각 + radius.circle — 전제는 검사 F-12 가 지킨다.",
+    "trigger":{
+      "bg":{ "default":a("color.bg.surface"), "disabled":a("color.bg.subtle") },
+      "fg":{ "default":a("color.fg.primary"), "placeholder":a("color.fg.placeholder"), "disabled":a("color.fg.disabled") },
+      "border":{ "default":a("color.border.default"), "hover":a("color.border.strong"),
+                 "focused":a("color.border.focused"), "error":a("color.border.error"), "disabled":a("color.border.subtle") },
+      "borderWidth":{ "default":a("borderWidth.default"), "focused":a("borderWidth.focused") },
+      "height":{ "sm":a("size.control.sm"),"md":a("size.control.md"),"lg":a("size.control.lg") },
+      "radius":a("radius.control"),
+      "padding-x":a("spacing.padding.md"),
+      "icon":a("size.icon.md"),
+      "typography":a("typography.body")
+    },
+    "panel":{
+      "bg":a("color.bg.surface-raised"),
+      "elevation":a("elevation.raised"),
+      "border":a("color.border.subtle"),
+      "radius":a("radius.container"),
+      "padding":a("spacing.padding.sm"),
+      "gap":a("spacing.gap.y.sm"),
+      "$extensions":{ why:"select.menu 와 동일한 떠 있는 표면 — Q-016 추출 대상. 판정 전까지 시맨틱을 각자 가리킨다(§0.1)" }
+    },
+    "header":{
+      "typography":a("typography.title"),
+      "fg":a("color.fg.primary"),
+      "nav":{ "fg":{ "default":a("color.fg.secondary"), "disabled":a("color.fg.disabled") },
+              "bg-hover":a("color.bg.action-ghost.hover"),
+              "size":a("size.icon.md") }
+    },
+    "weekday":{ "fg":a("color.fg.secondary"), "typography":a("typography.caption") },
+    "day":{
+      "bg":{ "default":a("color.bg.unselected"), "hover":a("color.bg.action-ghost.hover"),
+             "selected":a("color.bg.selected"), "range":a("color.bg.brand-subtle"),
+             "disabled":a("color.bg.unselected") },
+      "fg":{ "default":a("color.fg.primary"), "selected":a("color.fg.selected"),
+             "outside":a("color.fg.tertiary"), "disabled":a("color.fg.disabled") },
+      "today":{ "border":a("color.fg.brand"), "borderWidth":a("borderWidth.selected"),
+                "$extensions":{ why:"색 인벤토리에 border.brand 가 없어 fg.brand 재사용 — Radio.control.border.checked·Tabs.indicator 선례와 동형(§0.5 새 역할 발명 금지)" } },
+      "radius":a("radius.circle"),
+      "size":{ "sm":a("size.icon.lg"), "md":a("size.control.sm") },
+      "typography":a("typography.body"),
+      "$extensions":{ square:"size", why:"radius.circle 소비 — 정사각 전제(Q-014 실행순서 6). size 를 한 값으로 선언해 width/height 분리 자체를 막는다" }
+    },
+    "footer":{ "gap":a("spacing.gap.x.sm"), "typography":a("typography.label"), "fg":a("color.fg.link.default") },
+    "focus-color":a("color.border.focused"),
+    "focus-offset":a("focus-offset")
+  }}};
+}
+
 const comps = [buildButton(), buildInput(), buildSelect(), buildCard(),
                buildSwitch(), buildTabs(), buildModal(), buildToast(),
                buildCheckbox(), buildRadio(), buildSlider(), buildSegmented(),
                buildTooltip(), buildBadge(), buildBanner(),
-               buildField(), buildTextarea(), buildCounter()];
+               buildField(), buildTextarea(), buildCounter(),
+               buildFileUpload(), buildDatePicker()];
 runChecks(comps);
 
 // 출력물 (프리셋 런은 OUT_DIR로 격리 — 기준 tokens/ 미오염)
@@ -900,7 +1058,7 @@ fs.mkdirSync(path.join(OUT, "tokens/component"), { recursive:true });
 const outDir = path.join(OUT, "tokens/component");
 const names = ["button","input","select","card","switch","tabs","modal","toast",
                "checkbox","radio","slider","segmented","tooltip","badge","banner",
-               "field","textarea","counter"];
+               "field","textarea","counter","file-upload","date-picker"];
 comps.forEach((c,i)=>fs.writeFileSync(path.join(outDir, names[i]+".json"), JSON.stringify(c,null,2)));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.size.json"), JSON.stringify(size,null,2));
 fs.writeFileSync(path.join(OUT,"tokens/tokens.motion.json"), JSON.stringify(motion,null,2));
@@ -972,7 +1130,7 @@ const advis = checks.filter(c=>!c.ok && c.sev==="△");
 const byId = {}; checks.forEach(c=>{ (byId[c.id]=byId[c.id]||{pass:0,fail:0})[c.ok?"pass":"fail"]++; });
 console.log("=== 컴포넌트 검사 리포트 (Wave 1~4) ===");
 Object.entries(byId).forEach(([id,r])=>console.log(`  ${id}: ${r.fail===0?"✓":"✗"} (${r.pass} pass / ${r.fail} fail)`));
-console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4-A 3) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
+console.log(`컴포넌트 ${comps.length}종(Wave1+2 8 + Wave3 7 + Wave4 5) → tokens/component/*.json · 신설 primitive 2종(size·motion) — border-width는 결정 #40으로 dimension에 흡수 · 검증셋 → build/component.resolved.json`);
 if (advis.length){ console.warn("\n권고(△ — 빌드 비차단, 판정 대기):\n"+advis.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); }
 if (fail.length){ console.error("\n검사 실패:\n"+fail.map(f=>`  ${f.sev} [${f.id}] ${f.msg}`).join("\n")); process.exit(1); }
 console.log(`전 검사 ✗ 0건 — Wave 1+2+3+4 아키텍처 통과 ✓${advis.length?` (△ ${advis.length}건은 리포트만)`:""}`);
