@@ -28,23 +28,35 @@ BC-26(프로젝트 문서와 아티팩트가 갈라짐) · BC-37(빌드가 치�
 
 ---
 
-## 2. 구조 — 컬렉션은 계층축, 패밀리는 그룹
+## 2. 구조 — **컬렉션 축은 5 패밀리** (진아님 확정 2026-08-06)
 
 | 컬렉션 | 모드 | 최상위 그룹 |
 |---|---|---|
-| **Primitive** | Default | `color/` · `typo/` · `dimension/` · `spatial/`(size) · `motion/` |
-| **Semantic** | **Light · Dark** | `color/` · `spatial/` · `visual/` · `motion/` |
-| **Component** | Default | 컴포넌트 15종 이름 |
+| **color** | **Light · Dark** | `brand/` `coolGray/` `warmGray/` `red/` `amber/` `green/` `blue/` `alpha/` · `bg/` `fg/` `border/` |
+| **typo** | Value | `font/size/` `font/weight/` `font/family/` · `lineHeight/` |
+| **spatial** | Value | `dimension/step/` `dimension/special/` · `padding/` `gap/` `size/` |
+| **visual** | Value | `radius/` `borderWidth/` · `focusOffset` |
+| **motion** | Value | `duration/` `easing/` · `control/` `overlay/` `emphasis/` |
 
-**왜 계층이 컬렉션 축인가.** `naming-delivery-guideline.md` §4.3-b 가 primitive `size.*` 와 시맨틱 `size.*` 의
-이름 충돌을 "Figma 는 **컬렉션이 달라** 충돌 없음"으로 해소했다 — 이 문장이 성립하려면 두 계층이 서로 다른
-컬렉션이어야 한다. 같은 문서 §2-A 의 "5 패밀리 = 컬렉션 축" 표현과는 어긋나므로, **패밀리는 컬렉션 안의
-최상위 그룹으로 실현**한다(§3.3 의 `typo → font / size / xs` 같은 그룹 계층은 그대로 성립).
-→ ⚠ **이 한 줄은 총괄 확인 대상이다**(BC-44 미결 ①).
+**왜 패밀리가 컬렉션 축인가.** `naming-delivery-guideline.md` §2-A 가 처음부터 그렇게 적혀 있었고,
+진아님이 2026-08-06 확정했다("5패밀리 축이 맞음"). 계층(primitive/semantic)은 컬렉션이 아니라
+**같은 패밀리 안의 이름 깊이**로 드러난다 — `spatial/dimension/step/5`(원시) vs `spatial/padding/md`(시맨틱).
+디자이너가 Figma 에서 찾는 단위는 "이게 몇 층이냐"가 아니라 "색이냐 여백이냐"다.
+
+**§4.3-b 와의 충돌은 어떻게 풀렸나.** 가이드라인 §4.3-b 는 원시 `size.*` 와 시맨틱 `size.*` 의 이름 충돌을
+"Figma 는 **컬렉션이 달라** 충돌 없음"으로 해소했었다. 패밀리 축에서는 둘 다 `spatial` 안이라 그 해법이 성립하지 않는다.
+대신 **§4.3-b 의 원래 결론(원시 `size.*` 는 출력하지 않는다)을 그대로 실행**한다 —
+생성기가 원시 `size/control|icon/*` 6건을 떨어뜨리고(`dropped`), 시맨틱 쪽 같은 이름에 **값을 인라인**한다.
+그래서 `spatial/size/control/md = 44`(별칭 아님)이고, 자기참조는 0건이다.
+컬렉션 안 이름 충돌은 생성기의 하드 게이트로 막는다(충돌 시 `throw`).
 
 **왜 light/dark 가 경로가 아니라 모드인가.** Tokens Studio 공식 문서상 Theme Group→컬렉션, Theme→모드로
 매핑되고(상호운용 런 #2), 컴포넌트 레이어가 이미 모드중립 경로(`semantic.color.bg.…`)로 시맨틱을 참조한다.
 소스 JSON 만 `semantic.color.light.…` 로 모드를 경로에 두고 있어, 생성기가 그 세그먼트를 걷어 모드로 접는다.
+**모드가 필요한 패밀리는 `color` 하나뿐**이다 — 나머지 넷은 라이트/다크가 같은 값이라 단일 모드(`Value`)로 둔다.
+
+**컴포넌트 레이어(275)는 올리지 않는다** — 결정 #28 §2 "첫 출력은 primitive + semantic". 페이로드에는
+`(Component — 미배포, #28 §2)` 컬렉션으로 계산만 해두고 Figma 에는 만들지 않는다.
 
 **운영 전제(문서 확정 — 상호운용 런 #2):** 다중 모드는 **유료 Figma 플랜**(무료 1모드) + **Project 안 파일**
 (Drafts 불가)에서만 만들어진다. Tokens Studio 경로로 갈 경우 **Pro** 필요.
@@ -53,7 +65,7 @@ BC-26(프로젝트 문서와 아티팩트가 갈라짐) · BC-37(빌드가 치�
 
 ## 3. 이름 규칙 — 결정 #28 §3 "Figma 하이픈 0"
 
-- 점 경로 → `/` 그룹. **leaf 에 하이픈 0** (현재 산출물 실측: 세 컬렉션 전부 하이픈 0건).
+- 점 경로 → `/` 그룹. **leaf 에 하이픈 0** (현재 산출물 실측: 5 패밀리 전부 하이픈 0건 — Figma 실물 재확인 0건).
 - 하이픈 복합어의 그룹/camelCase 판정은 §4.2(c) 세칙을 **기계로** 적용한다 —
   *형제 2개 이상이 같은 접두를 공유 + 그 접두가 같은 층의 leaf 가 아님 + 전치사가 아님* → `/` 그룹, 아니면 camelCase.
   판정 결과와 근거는 `naming-decisions.json` 에 전건 남는다(사람 눈이 아니라 표로 감사한다).
@@ -84,8 +96,10 @@ BC-26(프로젝트 문서와 아티팩트가 갈라짐) · BC-37(빌드가 치�
 1. `node scripts/gen-component.cjs --emit-semantic-ext`
 2. `node scripts/gen-figma-vars.cjs`
 3. 대상 파일이 **Project 안**에 있는지 확인(Drafts 면 Dark 모드가 안 만들어진다).
-4. Primitive → Semantic → Component 순으로 만든다. **순서가 곧 별칭 조건이다** — 참조 대상 변수가
-   먼저 존재해야 alias 가 성립한다(Tokens Studio 문서 · 상호운용 런 #2).
+4. 컬렉션을 **먼저 전부 만들고 변수도 전부 만든 뒤, 두 번째 패스에서 값·별칭을 넣는다.**
+   패밀리 축에서는 `visual/radius/*` → `spatial/dimension/step/*` 처럼 **컬렉션을 가로지르는 별칭**이 생겨서,
+   "패밀리 하나씩 완성" 순서로는 참조 대상이 아직 없을 수 있다. 2패스면 순서 의존이 사라진다.
+   별칭은 이름으로 찾되 **같은 패밀리를 먼저** 보고, 없을 때만 다른 패밀리를 본다.
 5. Effect Style · Text Style 을 마지막에 만든다(변수 참조를 붙이려면 변수가 먼저 있어야 한다).
 
 ### 5-2. 이미 구 이름으로 올라가 있을 때 — **리네임이지 재생성이 아니다**
@@ -99,24 +113,64 @@ Figma 변수는 이름을 바꿔도 **id 가 유지되므로 바인딩이 살아
 - `radius/circle`(50%) → `dimension/special/full`(999px) 은 **값도 바뀐다**(Q-014). 원형이 필요한 곳은
   Figma 에서 999px 반경으로 그대로 원이 된다(999px 실측 통과 — 결정 #40).
 
-### 5-3. 검증(BC-2 — 수치와 스크린샷은 서로를 대체하지 않는다)
+### 5-3. 계층축 → 패밀리축 이행 — **shim 이지 삭제가 아니다**
+
+`variableCollectionId` 는 읽기 전용이라 변수를 다른 컬렉션으로 **옮길 수 없다.** 지우고 다시 만들면
+그 파일의 모든 바인딩이 끊긴다(Cover 페이지 한 장만 재어도 노드 바인딩 17건이 전부 P/S 직참조였다).
+그래서 **새 패밀리 컬렉션을 만들고, 옛 Primitive/Semantic 변수는 새 변수를 가리키는 투명 shim 으로 남긴다.**
+
+- shim 은 값을 갖지 않고 **별칭만** 갖는다 → 값의 SSOT 는 패밀리 컬렉션 하나뿐이다(결정 #29).
+- `scopes = []` + `hiddenFromPublishing = true` → 속성 피커·라이브러리 목록에 **안 보인다.**
+- 옛 이름 → 패밀리 이름 매핑은 손으로 적지 않는다. 생성기와 **같은 `FAMILY_OF` / `STRIP` 규칙**을 그대로 쓰고,
+  규칙으로 안 풀리는 폐기 어휘만 표로 명시한다(`motion/duration/moderate → duration/base`,
+  `motion/*/default → base|standard`, `size/radius/base → visual/radius/control`, `space/section/sm|md|lg → gap/section/mobile|tablet|desktop`).
+- 타입이 다르면 shim 을 걸지 않고 **불일치로 보고**한다(실측 0건).
+
+바인딩을 새 변수로 옮겨 붙이고 나면 그때 shim 을 지운다 — **순서가 반대면 바인딩이 죽는다.**
+
+### 5-4. 검증(BC-2 — 수치와 스크린샷은 서로를 대체하지 않는다)
 
 - 수치: 컬렉션별 변수 수 · 별칭 수 · 하이픈 0 · 이름 중복 0 · `skipped` 사유 전건.
 - 화면: 라이트/다크 모드 스위치로 Semantic 이 실제로 뒤집히는지, 컴포넌트 바인딩이 살아 있는지 눈으로.
 
 ---
 
-## 6. 현행 수치 (2026-08-05, warm-gray ×0.05 반영본)
+## 6. 현행 수치 (2026-08-06, 5 패밀리 이행 완료본)
+
+**페이로드**
+
+| 컬렉션 | 변수 | 모드 | 비고 |
+|---|---|---|---|
+| color | **156** | Light · Dark | 원시 107 · 시맨틱 49 |
+| typo | **51** | Value | 원시만(합성 타이포는 Text Style) |
+| spatial | **35** | Value | 원시 17 · 시맨틱 18 |
+| visual | **9** | Value | 별칭 8 · 리터럴 1(`focusOffset`) |
+| motion | **17** | Value | 별칭 8 · 리터럴 9 |
+| (Component — 미배포) | 275 | — | 미해결 별칭 **0** |
+| 떨어뜨린 원시 | 6 | — | `size/control|icon × sm|md|lg` (§2 참조, 값 인라인) |
+
+**Figma 실물 (파일 `6rj43tHkCSLaJIxeeXgJPD`)**
 
 | | 수 |
 |---|---|
-| Primitive 변수 | **190** |
-| Semantic 변수 | **79** (별칭 69 · 리터럴 10) |
-| Component 변수 | **275** (미해결 별칭 **0**) |
+| 새 패밀리 컬렉션 변수 | **268** (color 156 · typo 51 · spatial 35 · visual 9 · motion 17) |
+| 끊긴 별칭(dangling) | **0** |
+| 이름 하이픈 · 이름 중복 | **0 · 0** |
+| 자기참조 별칭 | **0** |
+| 옛 Primitive/Semantic → shim 전환 | **277** (타입 불일치 **0**) |
+| shim 이 안 걸린 잔여 레거시 | **30** — `Semantic::font/{6역할}/{5속성}` |
+| Text Style | **18** 신규(역할×브레이크포인트, 전부 정수 px) + 구 6건 잔존 |
 | Effect Style | 20 (primitive 12 + 시맨틱 역할 8) |
-| Text Style | 29 (합성 18 + 자간 11) |
-| 이름 중복 · 하이픈 | **0 · 0** |
 | 리네임 대조표 | 199행 (변경 55 · 불변 144 · 미매칭 **0** · 병합 8) |
+
+**잔여 레거시 30건이 왜 shim 이 안 되나.** 옛 파일의 `font/{역할}/{속성}` 은 데스크톱 전용 구세대 산물이고,
+지금 규약에서 합성 타이포는 변수가 아니라 **Text Style**(§4)이다. 그래서 대응하는 패밀리 변수가 없다.
+새 Text Style 18건을 만들어 뒀으므로 이 30건 + 구 Text Style 6건(`Font/Display` 등, 크기 76.3·48.8·12.8px 의
+정수 스냅 이전 값)은 **레거시 삭제 대상**이다 — 노드 바인딩 조사 후 삭제한다.
+
+**Text Style 이 무엇을 변수에 묶고 무엇을 리터럴로 두나.** `fontFamily` · `fontSize` · `fontWeight` 는 `typo`
+변수에 바인딩한다. `lineHeight` 는 **묶지 않는다** — Figma 의 lineHeight 변수는 px 로 해석되는데 우리 값은
+비율(1.6)이라 1.6px 이 되어 버린다. `letterSpacing` 은 애초에 변수가 되지 않는다(§4). 둘 다 `PERCENT` 리터럴로 넣는다.
 
 ---
 
@@ -127,4 +181,5 @@ Figma 변수는 이름을 바꿔도 **id 가 유지되므로 바인딩이 살아
 | 토큰 값·이름 변경 → 페이로드 재생성 | **HQ** (`gen-component --emit-semantic-ext` → `gen-figma-vars`) |
 | Figma 파일에 실제 반영 | **HQ**(MCP 쓰기) 또는 진아님(플러그인 손 왕복) |
 | 구 이름이 남은 파일 이행 | `figma-rename-map.json` 순서대로 — **병합 8건 주의** |
+| 계층축 파일 → 패밀리축 이행 | §5-3 shim. 바인딩 재연결 **전에** shim 을 지우지 않는다 |
 | 이름 규칙 판정이 이상해 보일 때 | `naming-decisions.json` 의 `why` 를 먼저 읽는다. 규칙이 틀렸으면 §4.2(c) 를 고치고 재생성 |

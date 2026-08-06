@@ -95,6 +95,73 @@ const normLogical = (p) => p.replace(/^dimension\.(rem|px)\./, 'dimension.step.'
  * ──────────────────────────────────────────────────────────────────────────── */
 const rd = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
 
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * 3-b. 컬렉션 축 = 5 패밀리 (진아 확정 2026-08-06 "5패밀리 축이 맞음")
+ *   결정 #28 §1 이 정한 color·typo·spatial·visual·motion 을 Figma 컬렉션으로 실현한다.
+ *   패밀리가 컬렉션이 되므로 이름에서 패밀리 세그먼트를 뗀다 — `color/brand/500` → `brand/500`.
+ *   (#28 §3 "이름에 넣지 않는 것: 패밀리·계층·단위·모드" 를 Figma 표면에서 그대로 지킨다.)
+ *
+ *   ⚠ 계층(primitive/semantic)이 이름에도 컬렉션에도 없으므로 같은 패밀리 안에서
+ *      두 계층이 한 이름을 쓰면 충돌한다. 실제 충돌은 `size` 한 곳뿐이며,
+ *      결정 #28 §4.3-b 가 CSS 에서 쓴 해법(primitive `size.*` 미출력)을 Figma 에도 적용한다.
+ * ──────────────────────────────────────────────────────────────────────────── */
+const FAMILY_OF = (n) =>
+  /^color\//.test(n) ? 'color'
+  : /^typo\//.test(n) ? 'typo'
+  : /^(dimension|spatial)\//.test(n) ? 'spatial'
+  : /^visual\//.test(n) ? 'visual'
+  : /^motion\//.test(n) ? 'motion' : null;
+const STRIP = (n) => n.replace(/^(color|typo|visual|motion|spatial)\//, '');
+
+function families(primVars, semVars, compVars) {
+  const FAM = { color: [], typo: [], spatial: [], visual: [], motion: [] };
+  const dropped = [];
+  // primitive — 모드 없음. color 만 Light/Dark 컬렉션에 들어가므로 두 모드에 같은 값을 넣는다.
+  for (const v of primVars) {
+    const f = FAMILY_OF(v.name);
+    if (!f) { dropped.push({ name: v.name, why: '패밀리 미배정' }); continue; }
+    // primitive spatial/size/* 미출력 — 시맨틱 size 와 이름이 겹친다(#28 §4.3-b 를 Figma 로 확장)
+    if (/^spatial\/size\//.test(v.name)) { dropped.push({ name: v.name, value: v.value, why: '시맨틱 size 와 이름 충돌 — 소비 대상은 시맨틱(#28 ④-5)' }); continue; }
+    FAM[f].push({ name: STRIP(v.name), layer: 'primitive', type: v.type, value: v.value, from: v.from });
+  }
+  // semantic — color 만 모드별, 나머지는 모드 중립
+  for (const v of semVars) {
+    const f = FAMILY_OF(v.name);
+    if (!f) { dropped.push({ name: v.name, why: '패밀리 미배정' }); continue; }
+    const one = v.modes.Light;
+    FAM[f].push(f === 'color'
+      ? { name: STRIP(v.name), layer: 'semantic', type: v.type, modes: v.modes, from: v.from }
+      : (() => {
+        // 별칭 대상이 미출력된 원시(size)면 별칭이 자기 자신을 가리키게 된다 → 값으로 인라인한다.
+        const a = one.alias ? STRIP(one.alias) : null;
+        const self = a && a === STRIP(v.name);
+        const inl = self ? (dropped.find((d) => STRIP(d.name) === a) || {}).value : null;
+        if (self && inl == null) throw new Error('자기참조 별칭인데 인라인할 원시 값을 못 찾음: ' + v.name);
+        return { name: STRIP(v.name), layer: 'semantic', type: v.type,
+                 value: self ? inl : one.value, alias: self ? null : a,
+                 inlinedFrom: self ? '원시 미출력 — 값 인라인' : undefined, from: v.from.Light };
+      })());
+  }
+  // 이름 충돌 하드 게이트 — 조용히 덮어쓰지 않는다
+  const collide = [];
+  for (const [f, list] of Object.entries(FAM)) {
+    const seen = new Set();
+    for (const v of list) { if (seen.has(v.name)) collide.push(f + '::' + v.name); seen.add(v.name); }
+  }
+  if (collide.length) throw new Error('패밀리 컬렉션 내 이름 충돌: ' + collide.join(', '));
+
+  return [
+    { name: 'color',   modes: ['Light', 'Dark'], variables: FAM.color },
+    { name: 'typo',    modes: ['Value'],         variables: FAM.typo },
+    { name: 'spatial', modes: ['Value'],         variables: FAM.spatial },
+    { name: 'visual',  modes: ['Value'],         variables: FAM.visual },
+    { name: 'motion',  modes: ['Value'],         variables: FAM.motion },
+    // 컴포넌트는 1차 아웃풋 범위 밖(#28 §2) — 페이로드에는 남기되 배포 대상 아님
+    { name: '(Component — 미배포, #28 §2)', modes: ['Default'], variables: compVars, deliver: false }
+  ].concat(dropped.length ? [{ name: '(dropped)', modes: [], variables: [], dropped }] : []);
+}
+
 function build() {
   NAMING_LOG.length = 0;
   const P = rd('tokens/tokens.primitive.json');
@@ -293,12 +360,15 @@ function build() {
     $generatedBy: 'scripts/gen-figma-vars.cjs',
     $why: 'KDX 표준 정렬 Phase ④ — Figma 변수 재동기화 페이로드(결정 #40). 손으로 옮기지 않는다.',
     remBase: REM_BASE,
-    collections: [
-      { name: 'Primitive', modes: ['Default'], variables: primVars },
-      { name: 'Semantic', modes: ['Light', 'Dark'], variables: semVars },
-      { name: 'Component', modes: ['Default'], variables: compVars }
-    ],
-    effectStyles, textStyles, skipped,
+    collections: families(primVars, semVars, compVars),
+    // 텍스트 스타일이 참조하는 변수 경로도 5패밀리 축(컬렉션명 접두 제거)으로 맞춘다 — #28 §2-A
+    effectStyles,
+    textStyles: textStyles.map((s) => (s.axis !== 'composite' ? s : {
+      ...s,
+      fontFamily: STRIP(s.fontFamily), fontWeight: STRIP(s.fontWeight),
+      fontSize: STRIP(s.fontSize), lineHeight: STRIP(s.lineHeight)
+    })),
+    skipped,
     counts: {
       primitive: primVars.length, semantic: semVars.length, component: compVars.length,
       effectStyles: effectStyles.length, textStyles: textStyles.length,
